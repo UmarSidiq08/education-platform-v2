@@ -50,6 +50,10 @@ class User extends Authenticatable
      * Check if user is mentor using Spatie Permission.
      */
     public function isGuru()
+    {
+        return $this->role === 'guru';
+    }
+
     // Scopes for different user types
     public function scopeMentors($query)
     {
