@@ -19,19 +19,19 @@ class User extends Authenticatable
      *
      * @var array<int, string>
      */
-protected $fillable = [
-    'name',
-    'email',
-    'role',
-    'is_verified',
-    'password',
-    'phone',
-    'location',
-    'bio',
-    'skills',
-    'photo',
-    'password',
-];
+    protected $fillable = [
+        'name',
+        'email',
+        'role',
+        'is_verified',
+        'password',
+        'phone',
+        'location',
+        'bio',
+        'skills',
+        'photo',
+        'password',
+    ];
 
 
 
@@ -60,7 +60,7 @@ protected $fillable = [
     /**
      * Check if user is mentor using Spatie Permission.
      */
-   public function isGuru()
+    public function isGuru()
     {
         return $this->role === 'guru';
     }
@@ -115,6 +115,16 @@ protected $fillable = [
     {
         return $this->hasMany(ClassModel::class, 'mentor_id');
     }
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
 
-
+    /**
+     * Relationship: User has many classes as mentor (alias).
+     */
+    public function mentorClasses()
+    {
+        return $this->hasMany(ClassModel::class, 'mentor_id');
+    }
 }

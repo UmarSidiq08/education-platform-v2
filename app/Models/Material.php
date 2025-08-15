@@ -32,6 +32,16 @@ class Material extends Model
     {
         return $this->belongsTo(ClassModel::class, 'class_id');
     }
+    public function quizzes()
+    {
+        return $this->hasMany(Quiz::class);
+    }
+
+    // Quiz aktif untuk materi ini
+    public function activeQuiz()
+    {
+        return $this->hasOne(Quiz::class)->where('is_active', true);
+    }
 
     /**
      * Get the video URL for display.
@@ -59,7 +69,7 @@ class Material extends Model
     {
         return !empty($this->video_path) || !empty($this->video_url);
     }
-    
+
 
     /**
      * Get video type (file or url).

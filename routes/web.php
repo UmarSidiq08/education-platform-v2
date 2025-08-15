@@ -8,6 +8,7 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\NavbarMentorController;
 
 // Redirect root ke dashboard
@@ -86,6 +87,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/classes/{id}/learn', [ClassController::class, 'learn'])->name('classes.learn');
     Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');
+    Route::get('materials/{material}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+    Route::get('materials/{material}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('materials/{material}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::post('quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
 });
 
 /*
