@@ -8,7 +8,9 @@ use App\Http\Controllers\AdminDashboardController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\MaterialController;
+use App\Http\Controllers\QuizController;
 use App\Http\Controllers\NavbarMentorController;
+
 
 // Redirect root ke dashboard
 Route::get('/', function () {
@@ -86,6 +88,11 @@ Route::middleware('auth')->group(function () {
     Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/classes/{id}/learn', [ClassController::class, 'learn'])->name('classes.learn');
     Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');
+    Route::get('materials/{material}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
+    Route::get('materials/{material}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+    Route::post('materials/{material}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
+    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::post('quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
 });
 
 /*
@@ -127,6 +134,15 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
 Route::get('/mentor/{id}', function ($id) {
     return "Profile mentor ID: " . $id;
 })->name('mentor.profile')->middleware('auth');
+
+
+Route::get('/mentor', [MentorController::class, 'index'])->name('mentor.index');
+Route::get('/mentor/{id}', [MentorController::class, 'show'])->name('mentor.show');
+
+Route::get('/navbar/mentor', [MentorController::class, 'index'])->name('mentor.index');
+Route::get('/navbar/mentor/{id}', [MentorController::class, 'show'])->name('mentor.show');
+
+Route::get('/mentor', [MentorController::class, 'index'])->name('navbar.mentor');
 
 // Auth routes
 require __DIR__ . '/auth.php';

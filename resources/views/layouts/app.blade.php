@@ -28,6 +28,7 @@
         @yield('content')
     </main>
 
+@include('layout.footer')
     @stack('scripts')
 </body>
 

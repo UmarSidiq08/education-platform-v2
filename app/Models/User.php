@@ -5,116 +5,108 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Laravel\Sanctum\HasApiTokens;
-use Spatie\Permission\Traits\HasRoles;
-use App\Models\Activity;
-use App\Models\ClassModel;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+    use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-protected $fillable = [
-    'name',
-    'email',
-    'role',
-    'is_verified',
-    'password',
-    'phone',
-    'location',
-    'bio',
-    'skills',
-    'photo',
-    'password',
-];
+    protected $fillable = [
+        'name',
+        'email',
+        'password',
+        'role',
+        'phone',
+        'location',
+        'bio',
+        'avatar',
+        'profile_photo_path',
+        'expertise',
+        'specialties',
+        'rating',
+        'total_students',
+        'mentor_badge',
+        'badge_color',
+        'skills',
+        'total_projects',
+        'completed_tasks',
+        'total_hours',
+        'achievements',
+    ];
 
-
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
-        'skills' => 'array', // Cast skills sebagai array
-        'is_verified' => 'boolean',
+        'specialties' => 'array', // JSON to array
+        'skills' => 'array', // JSON to array
+        'rating' => 'decimal:2',
     ];
 
     /**
      * Check if user is mentor using Spatie Permission.
      */
-   public function isGuru()
+    public function isGuru()
+    // Scopes for different user types
+    public function scopeMentors($query)
     {
-        return $this->role === 'guru';
+        return $query->where('role', 'mentor');
     }
+
+    public function scopeStudents($query)
+    {
+        return $query->where('role', 'student');
+    }
+
+    public function scopeAdmins($query)
+    {
+        return $query->where('role', 'guru');
+    }
+
+    // Helper methods
     public function isMentor()
     {
         return $this->role === 'mentor';
     }
-    public function isSiswa()
+
+    public function isStudent()
     {
-        return $this->role === 'siswa';
+        return $this->role === 'student';
     }
 
-    /**
-     * Check if user can upload video.
-     */
-    public function canUploadVideo(): bool
+    public function isAdmin()
     {
-        return $this->isMentor() && $this->is_verified;
+        return $this->role === 'guru';
     }
 
-    /**
-     * Get skills as array (accessor).
-     */
-    public function getSkillsListAttribute(): array
+    // Get avatar URL
+    public function getAvatarUrlAttribute()
     {
-        return $this->skills ?? [];
-    }
-
-    /**
-     * Get skills as comma-separated string.
-     */
-    public function getSkillsStringAttribute(): string
-    {
-        if (!$this->skills || !is_array($this->skills)) {
-            return '';
+        if ($this->avatar) {
+            return asset('storage/' . $this->avatar);
         }
-        return implode(', ', $this->skills);
+        
+        if ($this->profile_photo_path) {
+            return asset('storage/' . $this->profile_photo_path);
+        }
+
+        // Default avatar
+        $initials = strtoupper(substr($this->name, 0, 2));
+        return "https://via.placeholder.com/400x400/4F46E5/FFFFFF?text={$initials}";
     }
 
-    /**
-     * Relationship: User has many activities.
-     */
-    public function activities()
+    // Get full rating stars
+    public function getFullStarsAttribute()
     {
-        return $this->hasMany(Activity::class, 'user_id');
+        return floor($this->rating);
     }
 
-    /**
-     * Relationship: User has many classes (as mentor).
-     */
-    public function classes()
+    // Check if has half star
+    public function getHasHalfStarAttribute()
     {
-        return $this->hasMany(ClassModel::class, 'mentor_id');
+        return ($this->rating - floor($this->rating)) >= 0.5;
     }
-
-
 }

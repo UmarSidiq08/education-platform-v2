@@ -23,6 +23,13 @@ class ProfileController extends Controller
         ]);
     }
 
+
+      public function show(): View
+    {
+        return view('user.profile', [
+            'user' => Auth::user(),
+        ]);
+    }
     /**
      * Update profil user (versi Laravel Breeze default).
      */

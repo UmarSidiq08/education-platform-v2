@@ -95,6 +95,175 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- Enhanced Quiz Section -->
+                @if ($material->activeQuiz)
+                    <div class="quiz-section">
+                        <div class="quiz-card">
+                            <div class="quiz-header">
+                                <div class="quiz-icon">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div class="quiz-header-content">
+                                    <h3 class="quiz-title">{{ $material->activeQuiz->title }}</h3>
+                                    @if ($material->activeQuiz->description)
+                                        <p class="quiz-description">{{ $material->activeQuiz->description }}</p>
+                                    @endif
+                                </div>
+                                @if (auth()->user()->role === 'siswa' && $quizAttempt)
+                                    <div class="quiz-score-badge">
+                                        <div class="score-circle">
+                                            <span class="score-percentage">{{ $quizAttempt->percentage }}%</span>
+                                            <span class="score-label">Skor</span>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="quiz-body">
+                                <div class="quiz-stats">
+                                    <div class="stat-item">
+                                        <div class="stat-icon">
+                                            <i class="fas fa-question-circle"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <span class="stat-value">{{ $material->activeQuiz->total_questions }}</span>
+                                            <span class="stat-label">Soal</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-icon">
+                                            <i class="fas fa-clock"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <span class="stat-value">{{ $material->activeQuiz->time_limit }}</span>
+                                            <span class="stat-label">Menit</span>
+                                        </div>
+                                    </div>
+                                    <div class="stat-item">
+                                        <div class="stat-icon">
+                                            <i class="fas fa-star"></i>
+                                        </div>
+                                        <div class="stat-content">
+                                            <span class="stat-value">{{ $material->activeQuiz->questions->sum('points') ?? 0 }}</span>
+                                            <span class="stat-label">Poin</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (auth()->user()->role === 'siswa')
+                                    @if ($quizAttempt)
+                                        <!-- Sudah mengerjakan - Detail Results -->
+                                        <div class="quiz-results">
+                                            <div class="results-header">
+                                                <h5><i class="fas fa-chart-line me-2"></i>Hasil Quiz Anda</h5>
+                                            </div>
+                                            <div class="results-grid">
+                                                <div class="result-card">
+                                                    <div class="result-icon success">
+                                                        <i class="fas fa-trophy"></i>
+                                                    </div>
+                                                    <div class="result-info">
+                                                        <span class="result-value">{{ $quizAttempt->score }}</span>
+                                                        <span class="result-label">Total Poin</span>
+                                                    </div>
+                                                </div>
+                                                <div class="result-card">
+                                                    <div class="result-icon info">
+                                                        <i class="fas fa-check-circle"></i>
+                                                    </div>
+                                                    <div class="result-info">
+                                                        <span class="result-value">{{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}</span>
+                                                        <span class="result-label">Jawaban Benar</span>
+                                                    </div>
+                                                </div>
+                                                <div class="result-card">
+                                                    <div class="result-icon {{ $quizAttempt->percentage >= 80 ? 'success' : ($quizAttempt->percentage >= 60 ? 'warning' : 'danger') }}">
+                                                        <i class="fas fa-percent"></i>
+                                                    </div>
+                                                    <div class="result-info">
+                                                        <span class="result-value">{{ $quizAttempt->percentage }}%</span>
+                                                        <span class="result-label">Persentase</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="quiz-actions">
+                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}" class="btn btn-outline-primary btn-lg">
+                                                    <i class="fas fa-eye me-2"></i>Lihat Detail Jawaban
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @else
+                                        <!-- Belum mengerjakan - Call to Action -->
+                                        <div class="quiz-cta">
+                                            <div class="cta-content">
+                                                <h5>Siap untuk mengerjakan quiz?</h5>
+                                                <p>Uji pemahaman Anda tentang materi yang telah dipelajari</p>
+                                            </div>
+                                            <div class="quiz-actions">
+                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}" class="btn btn-primary btn-lg pulse-animation">
+                                                    <i class="fas fa-play me-2"></i>Mulai Quiz Sekarang
+                                                </a>
+                                            </div>
+                                        </div>
+                                    @endif
+                                @endif
+
+                                @if (auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
+                                    <!-- Mentor Actions -->
+                                    <div class="mentor-quiz-actions">
+                                        <div class="action-header">
+                                            <h5><i class="fas fa-cogs me-2"></i>Kelola Quiz</h5>
+                                            <p class="text-muted">Kelola dan pantau quiz untuk materi ini</p>
+                                        </div>
+                                        <div class="quiz-actions mentor-actions">
+                                            <a href="{{ route('quizzes.index', $material) }}" class="btn btn-info btn-lg">
+                                                <i class="fas fa-chart-bar me-2"></i>
+                                                <span>Lihat Statistik</span>
+                                                <small class="d-block">Analisis hasil siswa</small>
+                                            </a>
+                                            <a href="{{ route('quizzes.create', $material) }}" class="btn btn-warning btn-lg">
+                                                <i class="fas fa-edit me-2"></i>
+                                                <span>Edit Quiz</span>
+                                                <small class="d-block">Ubah soal & pengaturan</small>
+                                            </a>
+                                        </div>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @elseif(auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
+                    <!-- No Quiz - Create New -->
+                    <div class="quiz-section">
+                        <div class="quiz-empty-state">
+                            <div class="empty-state-content">
+                                <div class="empty-state-icon">
+                                    <i class="fas fa-lightbulb"></i>
+                                </div>
+                                <h4>Tingkatkan Pembelajaran dengan Quiz</h4>
+                                <p>Buat quiz interaktif untuk membantu siswa menguji pemahaman mereka tentang materi ini</p>
+                                <div class="empty-state-features">
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <span>Pertanyaan pilihan ganda</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <span>Penilaian otomatis</span>
+                                    </div>
+                                    <div class="feature-item">
+                                        <i class="fas fa-check text-success me-2"></i>
+                                        <span>Laporan detail</span>
+                                    </div>
+                                </div>
+                                <a href="{{ route('quizzes.create', $material) }}" class="btn btn-primary btn-xl shine-effect">
+                                    <i class="fas fa-plus me-2"></i>Buat Quiz Pertama
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                @endif
             </div>
 
             <!-- Sidebar -->
@@ -209,7 +378,7 @@
         }
 
         .content-column {
-            min-width: 0; /* Prevents overflow */
+            min-width: 0;
             overflow-wrap: break-word;
             word-wrap: break-word;
         }
@@ -227,6 +396,7 @@
             transition: all 0.3s ease;
             word-wrap: break-word;
             overflow-wrap: break-word;
+            margin-bottom: 2rem;
         }
 
         .material-card:hover {
@@ -409,7 +579,6 @@
             overflow-wrap: break-word;
         }
 
-        /* Handle long URLs and text */
         .content-body a,
         .content-body code,
         .content-body pre {
@@ -432,6 +601,470 @@
             padding: 0.2em 0.4em;
             border-radius: 4px;
             font-size: 0.9em;
+        }
+
+        /* Enhanced Quiz Section */
+        .quiz-section {
+            margin-top: 2rem;
+        }
+
+        .quiz-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .quiz-card:hover {
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+            border-color: #667eea;
+        }
+
+        .quiz-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 2rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transform: translate(50%, -50%);
+        }
+
+        .quiz-icon {
+            background: rgba(255, 255, 255, 0.2);
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            flex-shrink: 0;
+        }
+
+        .quiz-header-content {
+            flex: 1;
+        }
+
+        .quiz-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .quiz-description {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            font-size: 1rem;
+        }
+
+        .quiz-score-badge {
+            position: relative;
+            z-index: 2;
+        }
+
+        .score-circle {
+            background: rgba(255, 255, 255, 0.2);
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+            border: 3px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .score-percentage {
+            font-size: 1.25rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .score-label {
+            font-size: 0.7rem;
+            opacity: 0.9;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .quiz-body {
+            padding: 2.5rem;
+        }
+
+        .quiz-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: #f8f9fa;
+            border-radius: 16px;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .stat-content {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #212529;
+            line-height: 1;
+        }
+
+        .stat-label {
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Quiz Results */
+        .quiz-results {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 16px;
+            padding: 2rem;
+            border: 1px solid #dee2e6;
+        }
+
+        .results-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .results-header h5 {
+            color: #495057;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .result-card:hover {
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .result-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            color: white;
+        }
+
+        .result-icon.success {
+            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
+        }
+
+        .result-icon.info {
+            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+        }
+
+        .result-icon.warning {
+            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+        }
+
+        .result-icon.danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .result-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .result-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #212529;
+            line-height: 1;
+        }
+
+        .result-label {
+            color: #6c757d;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        /* Quiz Call to Action */
+        .quiz-cta {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .quiz-cta::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+            animation: shimmer 3s ease-in-out infinite;
+        }
+
+        @keyframes shimmer {
+            0%, 100% {
+                transform: rotate(0deg);
+            }
+            50% {
+                transform: rotate(180deg);
+            }
+        }
+
+        .cta-content {
+            position: relative;
+            z-index: 2;
+            margin-bottom: 2rem;
+        }
+
+        .cta-content h5 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .cta-content p {
+            color: rgba(255, 255, 255, 0.9);
+            margin: 0;
+            font-size: 1.1rem;
+        }
+
+        /* Mentor Quiz Actions */
+        .mentor-quiz-actions {
+            background: #f8f9fa;
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid #e9ecef;
+        }
+
+        .action-header {
+            margin-bottom: 1.5rem;
+        }
+
+        .action-header h5 {
+            color: #495057;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .action-header p {
+            color: #6c757d;
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .mentor-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .mentor-actions .btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 1.5rem 1rem;
+            height: auto;
+            min-height: 120px;
+            justify-content: center;
+        }
+
+        .mentor-actions .btn i {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .mentor-actions .btn span {
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .mentor-actions .btn small {
+            opacity: 0.8;
+            font-size: 0.8rem;
+        }
+
+        /* Quiz Empty State */
+        .quiz-empty-state {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            border: 2px dashed #dee2e6;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-empty-state:hover {
+            border-color: #667eea;
+            box-shadow: 0 12px 48px rgba(102, 126, 234, 0.15);
+        }
+
+        .empty-state-icon {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 1.5rem;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
+        }
+
+        .empty-state-content h4 {
+            color: #212529;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+
+        .empty-state-content p {
+            color: #6c757d;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .empty-state-features {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2.5rem;
+            flex-wrap: wrap;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            color: #495057;
+            font-weight: 500;
+        }
+
+        /* Quiz Actions */
+        .quiz-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .quiz-actions .btn {
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Pulse Animation */
+        .pulse-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            }
+            50% {
+                box-shadow: 0 8px 40px rgba(102, 126, 234, 0.6);
+            }
+            100% {
+                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            }
+        }
+
+        /* Shine Effect */
+        .shine-effect {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .shine-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.6s;
+        }
+
+        .shine-effect:hover::before {
+            left: 100%;
         }
 
         /* Sidebar */
@@ -553,19 +1186,75 @@
             transition: all 0.3s ease;
             border: none;
             cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
         }
 
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+            text-decoration: none;
         }
 
         .btn-primary {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            color: white;
+        }
+
+        .btn-outline-primary {
+            background: transparent;
+            color: #667eea;
+            border: 2px solid #667eea;
+        }
+
+        .btn-outline-primary:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
+            color: white;
+        }
+
+        .btn-info:hover {
+            color: white;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            color: #212529;
         }
 
         .btn-danger {
             background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            color: white;
+        }
+
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+
+        .btn-xl {
+            padding: 1.25rem 2.5rem;
+            font-size: 1.2rem;
+            font-weight: 700;
         }
 
         /* Badges */
@@ -578,6 +1267,7 @@
 
         .bg-success {
             background: linear-gradient(135deg, #51cf66 0%, #40c057 100%) !important;
+            color: white !important;
         }
 
         .bg-warning {
@@ -627,6 +1317,37 @@
                 padding: 2rem 1.5rem;
             }
 
+            .quiz-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
+            }
+
+            .quiz-body {
+                padding: 2rem 1.5rem;
+            }
+
+            .quiz-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .mentor-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .empty-state-features {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .quiz-actions {
+                flex-direction: column;
+            }
+
             .info-card .card-body {
                 padding: 1.25rem;
             }
@@ -666,6 +1387,22 @@
                 padding: 1.5rem 1rem;
             }
 
+            .quiz-header {
+                padding: 1.5rem;
+            }
+
+            .quiz-body {
+                padding: 1.5rem 1rem;
+            }
+
+            .quiz-cta {
+                padding: 2rem 1.5rem;
+            }
+
+            .quiz-empty-state {
+                padding: 2rem 1.5rem;
+            }
+
             .info-card .card-header,
             .info-card .card-body {
                 padding: 1rem;
@@ -674,6 +1411,12 @@
             .meta-item {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.85rem;
+            }
+
+            .empty-state-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
             }
         }
 
@@ -684,7 +1427,9 @@
             }
 
             .material-card,
-            .info-card {
+            .info-card,
+            .quiz-card,
+            .quiz-empty-state {
                 background: #2d3748;
                 color: #e2e8f0;
             }
@@ -707,6 +1452,22 @@
             .detail-label {
                 color: #a0aec0;
             }
+
+            .stat-item {
+                background: #4a5568;
+                border-color: #4a5568;
+            }
+
+            .quiz-results,
+            .mentor-quiz-actions {
+                background: #4a5568;
+                border-color: #4a5568;
+            }
+
+            .result-card {
+                background: #2d3748;
+                border-color: #4a5568;
+            }
         }
 
         /* Smooth scrolling */
@@ -727,7 +1488,9 @@
         }
 
         .material-card,
-        .info-card {
+        .info-card,
+        .quiz-card,
+        .quiz-empty-state {
             animation: fadeIn 0.6s ease-out;
         }
 
@@ -741,6 +1504,46 @@
 
         .info-card:nth-child(4) {
             animation-delay: 0.3s;
+        }
+
+        .quiz-section {
+            animation-delay: 0.4s;
+        }
+
+        /* Accessibility improvements */
+        .btn:focus,
+        .btn:focus-visible {
+            outline: 2px solid #667eea;
+            outline-offset: 2px;
+        }
+
+        .quiz-card:focus-within {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        /* Print styles */
+        @media print {
+            .quiz-section,
+            .sidebar-column,
+            .action-buttons {
+                display: none;
+            }
+
+            .main-container {
+                grid-template-columns: 1fr;
+                max-width: none;
+            }
+
+            .material-card {
+                box-shadow: none;
+                border: 1px solid #ddd;
+            }
+
+            .material-header {
+                background: #f8f9fa !important;
+                color: #212529 !important;
+            }
         }
     </style>
 
@@ -760,8 +1563,9 @@
                 }
             }
 
-            // Smooth scroll untuk breadcrumb navigation
+            // Enhanced interactions
             document.addEventListener('DOMContentLoaded', function() {
+                // Smooth scroll untuk breadcrumb navigation
                 const breadcrumbLinks = document.querySelectorAll('.breadcrumb-item a');
                 breadcrumbLinks.forEach(link => {
                     link.addEventListener('click', function(e) {
@@ -800,8 +1604,34 @@
                 embedThumbnails.forEach(thumbnail => {
                     imageObserver.observe(thumbnail);
                 });
+
+                // Enhanced button interactions
+                const buttons = document.querySelectorAll('.btn');
+                buttons.forEach(button => {
+                    button.addEventListener('mouseenter', function() {
+                        this.style.transform = 'translateY(-2px)';
+                    });
+
+                    button.addEventListener('mouseleave', function() {
+                        this.style.transform = 'translateY(0)';
+                    });
+
+                    button.addEventListener('mousedown', function() {
+                        this.style.transform = 'translateY(0) scale(0.98)';
+                    });
+
+                    button.addEventListener('mouseup', function() {
+                        this.style.transform = 'translateY(-2px) scale(1)';
+                    });
+                });
+
+                // Progress animation for quiz results
+                const resultCards = document.querySelectorAll('.result-card');
+                resultCards.forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.classList.add('fadeIn');
+                });
             });
         </script>
-        
     @endpush
 @endsection

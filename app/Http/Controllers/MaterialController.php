@@ -6,6 +6,7 @@ use App\Models\ClassModel;
 use App\Models\Material;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
@@ -72,11 +73,34 @@ class MaterialController extends Controller
             ->with('success', 'Materi berhasil dibuat!');
     }
     // Menampilkan detail materi
-    public function show(Material $material)
-    {
-        return view('materials.show', compact('material'));
+   public function show(Material $material)
+{
+    $material->load(['class.mentor', 'activeQuiz.questions']);
+    $user = Auth::user();
+
+    // Kontrol akses sederhana berdasarkan role
+    if ($user->role === 'mentor') {
+        // Mentor hanya bisa akses materi kelasnya sendiri
+        if ($user->id !== $material->class->mentor_id) {
+            abort(403, 'Anda tidak memiliki akses ke materi ini.');
+        }
+    }
+    // Untuk siswa, izinkan akses ke semua materi
+    elseif ($user->role === 'siswa') {
+        // Siswa bisa akses semua materi
+    }
+    else {
+        abort(403, 'Akses ditolak.');
     }
 
+    // Jika ada quiz aktif, cek status attempt user
+    $quizAttempt = null;
+    if ($material->activeQuiz && $user->role === 'siswa') {
+        $quizAttempt = $material->activeQuiz->getAttemptByUser($user->id);
+    }
+
+    return view('materials.show', compact('material', 'quizAttempt'));
+}
     // Form edit materi
     public function edit(Material $material)
     {
@@ -179,6 +203,5 @@ class MaterialController extends Controller
 
         // Return original URL if not recognized
         return $url;
-        
     }
 }

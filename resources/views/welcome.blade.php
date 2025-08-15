@@ -20,7 +20,6 @@
         </div>
 
         <div class="footer-content">
-@include('layout.footer')
 
     <style>
         /* ===================

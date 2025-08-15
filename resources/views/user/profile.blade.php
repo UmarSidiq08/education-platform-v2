@@ -32,25 +32,32 @@
 
 <body class="bg-gradient-to-br from-blue-950 via-cyan-900 to-blue-700 min-h-screen">
 
-    <!-- Navigation -->
-    <nav class="bg-white/10 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center py-4">
-                <div class="flex items-center">
-                    <h1 class="text-2xl font-bold text-white">Dashboard Profile</h1>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <!-- Logout -->
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <button class="p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200">
-                            Logout
-                        </button>
-                    </form>
-                </div>
+<!-- Navigation -->
+<nav class="bg-white/10 backdrop-blur-lg border-b border-white/20 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between items-center py-4">
+            <div class="flex items-center">
+                <h1 class="text-2xl font-bold text-white">Dashboard Profile</h1>
+            </div>
+            <div class="flex items-center space-x-4">
+                <!-- Home Button -->
+                <a href="{{ route('dashboard') }}"
+                    class="px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
+                    Kembali ke Beranda
+                </a>
+
+                <!-- Logout -->
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button
+                        class="px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
+                        Logout
+                    </button>
+                </form>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <!-- Profile Header -->

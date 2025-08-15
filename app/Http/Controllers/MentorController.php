@@ -137,4 +137,17 @@ class MentorController extends Controller
             return back()->with('error', 'Terjadi kesalahan saat menolak mentor.');
         }
     }
+
+    public function index()
+{
+    $mentors = User::mentors()->get();
+    return view('mentor', compact('mentors'));
+}
+
+public function show($id)
+{
+    $mentor = User::mentors()->findOrFail($id);
+    return view('profile', compact('mentor'));
+}
+
 }

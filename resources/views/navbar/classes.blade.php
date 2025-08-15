@@ -1,6 +1,6 @@
 @extends('layout.template')
 @section('content')
-    @include('layout.navbar')
+    @include('layout.app')
     <!-- Classes Tab Content -->
     <div class="classes-container">
         <!DOCTYPE html>

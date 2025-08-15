@@ -56,8 +56,39 @@
 
     <div class="flex items-center gap-4">
         <x-primary-button>{{ __('Simpan') }}</x-primary-button>
-        @if (session('status') === 'profile-updated')
-            <p class="text-sm text-gray-600">{{ __('Tersimpan.') }}</p>
-        @endif
     </div>
 </form>
+
+{{-- SweetAlert2 CDN --}}
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+{{-- Alert Script --}}
+@if (session('status') === 'profile-updated')
+    <script>
+        Swal.fire({
+            title: 'Berhasil!',
+            text: 'Profile berhasil diperbarui',
+            icon: 'success',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#3B82F6'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirect ke halaman profile
+                window.location.href = "{{ route('profile.index') }}"; // atau route yang sesuai
+            }
+        });
+    </script>
+@endif
+
+{{-- Alternatif: Jika ada error --}}
+@if ($errors->any())
+    <script>
+        Swal.fire({
+            title: 'Error!',
+            text: 'Terdapat kesalahan dalam pengisian form',
+            icon: 'error',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#EF4444'
+        });
+    </script>
+@endif

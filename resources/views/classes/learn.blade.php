@@ -425,13 +425,13 @@
                                                         method="POST" class="d-inline"
                                                         onsubmit="return confirm('Yakin mau hapus materi ini?');">
                                                         @csrf
-                                                        
+
                                                         @method('DELETE')
                                                         <button class="btn-delete" title="Hapus Materi">
                                                             <i class="fas fa-trash"></i>
                                                         </button>
                                                     </form>
-                                                    <a href="#" class="btn-quiz">
+                                                    <a href="{{ route('quizzes.create', $material) }}" class="btn-quiz">
                                                         <i class="fas fa-question-circle me-1"></i>Tambah Kuis
                                                     </a>
                                                 @else
