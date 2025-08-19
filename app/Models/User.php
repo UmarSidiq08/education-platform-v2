@@ -5,32 +5,29 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable;
+    use HasRoles, HasFactory, Notifiable;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array<int, string>
+     */
     protected $fillable = [
         'name',
         'email',
-        'password',
         'role',
+        'is_verified',
+        'password',
         'phone',
         'location',
         'bio',
-        'avatar',
-        'profile_photo_path',
-        'expertise',
-        'specialties',
-        'rating',
-        'total_students',
-        'mentor_badge',
-        'badge_color',
         'skills',
-        'total_projects',
-        'completed_tasks',
-        'total_hours',
-        'achievements',
+        'photo',
+        'password',
     ];
 
     protected $hidden = [
@@ -112,5 +109,17 @@ class User extends Authenticatable
     public function getHasHalfStarAttribute()
     {
         return ($this->rating - floor($this->rating)) >= 0.5;
+    }
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+
+    /**
+     * Relationship: User has many classes as mentor (alias).
+     */
+    public function mentorClasses()
+    {
+        return $this->hasMany(ClassModel::class, 'mentor_id');
     }
 }
