@@ -38,6 +38,14 @@ Route::get('/navbar/mentor', function () {
     return view('navbar.mentor');
 })->name('navbar.mentor')->middleware('auth');
 
+Route::get('/navbar/achievement', function () {
+    return view('navbar.achievement');
+})->name('navbar.achievement')->middleware('auth');
+
+Route::get('/navbar/leaderboard', function () {
+    return view('navbar.leaderboard');
+})->name('navbar.leaderboard')->middleware('auth');
+
 // Logout
 Route::post('/logout', function () {
     Auth::logout();
