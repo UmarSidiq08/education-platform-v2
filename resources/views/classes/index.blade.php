@@ -2,436 +2,304 @@
 @section('content')
 
 <style>
-    /* Classes Tab Styles */
-    .classes-container {
+    /* Custom gradient and glass effects */
+    .bg-main-gradient {
         background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: calc(100vh - 80px);
-        padding: 40px 20px;
-        margin: -20px -15px 0 -15px; /* Remove container padding */
     }
 
-    .classes-content {
-        max-width: 1200px;
-        margin: 0 auto;
+    .bg-card-gradient {
+        background: linear-gradient(145deg, rgba(255,255,255,0.95) 0%, rgba(255,255,255,0.9) 100%);
     }
 
-    .page-header {
-        text-align: center;
-        margin-bottom: 50px;
+    .glass-effect {
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
     }
 
-
-    .page-title {
-        font-size: 3rem;
-        font-weight: 700;
-        color: white;
-        margin-bottom: 15px;
-        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    .page-subtitle {
-        font-size: 1.2rem;
-        color: rgba(255, 255, 255, 0.9);
-        max-width: 600px;
-        margin: 0 auto 30px;
-    }
-
-    .header-actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-        margin-top: 30px;
-        flex-wrap: wrap;
-    }
-
-    .header-btn {
-        padding: 12px 25px;
-        border: 2px solid rgba(255, 255, 255, 0.3);
-        border-radius: 25px;
-        color: white;
-        text-decoration: none;
-        font-weight: 500;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-        background: rgba(255, 255, 255, 0.1);
-    }
-
-    .header-btn:hover {
-        background: rgba(255, 255, 255, 0.2);
-        color: white;
-        text-decoration: none;
-        transform: translateY(-2px);
-        border-color: rgba(255, 255, 255, 0.5);
-    }
-
-    .header-btn.btn-success {
-        background: rgba(40, 167, 69, 0.8);
-        border-color: #28a745;
-    }
-
-    .header-btn.btn-success:hover {
-        background: rgba(40, 167, 69, 1);
-        border-color: #28a745;
-    }
-
-    /* Alert Styles */
-    .alert {
-        border-radius: 15px;
-        border: none;
-        backdrop-filter: blur(10px);
-        margin-bottom: 30px;
-    }
-
-    .alert-success {
-        background: rgba(40, 167, 69, 0.9);
-        color: white;
-    }
-
-    .alert-danger {
-        background: rgba(220, 53, 69, 0.9);
-        color: white;
-    }
-
-    .alert-info {
-        background: rgba(23, 162, 184, 0.9);
-        color: white;
-    }
-
-    /* Classes Grid */
-    .classes-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-        gap: 30px;
-        margin-bottom: 50px;
-    }
-
-    .class-card {
-        background: rgba(255, 255, 255, 0.95);
-        border-radius: 20px;
-        padding: 25px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-        backdrop-filter: blur(10px);
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .class-card::before {
+    .gradient-border::before {
         content: '';
         position: absolute;
         top: 0;
         left: 0;
         right: 0;
         height: 4px;
-        background: linear-gradient(45deg, #667eea, #764ba2);
+        background: linear-gradient(90deg, #667eea, #764ba2, #48bb78);
     }
 
-    .class-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    .floating-animation {
+        animation: float 6s ease-in-out infinite;
     }
 
-    .class-title {
-        font-size: 1.4rem;
-        font-weight: 700;
-        color: #333;
-        margin-bottom: 15px;
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-10px); }
     }
 
-    .class-description {
-        color: #666;
-        line-height: 1.6;
-        margin-bottom: 20px;
-        flex-grow: 1;
-    }
-
-    .class-mentor {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        margin-bottom: 20px;
-        padding: 15px;
-        background: rgba(102, 126, 234, 0.05);
-        border-radius: 12px;
-    }
-
-    .mentor-avatar {
-        width: 40px;
-        height: 40px;
-        background: linear-gradient(45deg, #667eea, #764ba2);
+    .hero-decoration {
+        position: absolute;
+        background: rgba(255,255,255,0.1);
         border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        text-transform: uppercase;
     }
 
-    .mentor-info h4 {
-        font-size: 0.9rem;
-        font-weight: 600;
-        color: #333;
-        margin: 0;
+    .scroll-fade-in {
+        opacity: 0;
+        transform: translateY(30px);
+        transition: all 0.6s ease;
     }
 
-    .mentor-info p {
-        font-size: 0.8rem;
-        color: #666;
-        margin: 0;
-    }
-
-    .class-date {
-        font-size: 0.85rem;
-        color: #999;
-        margin-bottom: 15px;
-        display: flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .view-details-btn {
-        background: linear-gradient(45deg, #667eea, #764ba2);
-        color: white;
-        border: none;
-        padding: 12px 25px;
-        border-radius: 25px;
-        font-weight: 600;
-        text-decoration: none;
-        display: inline-block;
-        text-align: center;
-        transition: all 0.3s ease;
-        width: 100%;
-    }
-
-    .view-details-btn:hover {
-        color: white;
-        text-decoration: none;
-        transform: translateY(-2px);
-        box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-    }
-
-    .no-classes {
-        text-align: center;
-        padding: 60px 20px;
-        background: rgba(255, 255, 255, 0.9);
-        border-radius: 20px;
-        backdrop-filter: blur(10px);
-    }
-
-    .no-classes i {
-        font-size: 4rem;
-        color: #667eea;
-        margin-bottom: 20px;
-    }
-
-    .no-classes h3 {
-        color: #333;
-        margin-bottom: 15px;
-    }
-
-    .no-classes p {
-        color: #666;
-        margin-bottom: 25px;
-    }
-
-    /* Tombol khusus untuk no-classes yang lebih kecil dan rapi */
-    .create-first-btn {
-        background: linear-gradient(45deg, #667eea, #764ba2) !important;
-        color: white !important;
-        border: none !important;
-        padding: 12px 30px !important;
-        border-radius: 25px !important;
-        font-weight: 600 !important;
-        text-decoration: none !important;
-        display: inline-block !important;
-        text-align: center !important;
-        transition: all 0.3s ease !important;
-        font-size: 0.95rem !important;
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3) !important;
-        width: auto !important;
-        max-width: 200px !important;
-        white-space: nowrap !important;
-    }
-
-    .create-first-btn:hover {
-        color: white;
-        text-decoration: none;
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        background: linear-gradient(45deg, #5a6fd8, #6a42a0);
-    }
-
-    .create-first-btn:active {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .classes-container {
-            margin: -20px -15px 0 -15px;
-            padding: 20px 15px;
-        }
-
-        .page-title {
-            font-size: 2rem;
-        }
-
-        .classes-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .header-actions {
-            flex-direction: column;
-            align-items: center;
-        }
-
-        .header-btn {
-            width: 200px;
-            text-align: center;
-        }
-
-        .create-first-btn {
-            padding: 10px 25px;
-            font-size: 0.9rem;
-        }
+    .scroll-fade-in.visible {
+        opacity: 1;
+        transform: translateY(0);
     }
 </style>
 
-<div class="classes-container">
-    <div class="classes-content">
-        <div class="page-header">
-            <h1 class="page-title">All Classes</h1>
-            <p class="page-subtitle">Discover amazing classes from expert mentors and enhance your skills with our comprehensive learning platform.</p>
+<div class="bg-main-gradient min-h-screen -mx-4 -mt-5 px-6">
+    <div class="max-w-6xl mx-auto">
+        <!-- Hero Header Section with proper top spacing -->
+        <div class="relative text-center mb-20 px-4 pt-20 md:pt-24 lg:pt-10">
+            <!-- Floating Decorative Elements -->
+            <div class="hero-decoration w-24 h-24 absolute -top-2 -left-6 floating-animation" style="animation-delay: 0s;"></div>
+            <div class="hero-decoration w-16 h-16 absolute top-6 -right-2 floating-animation" style="animation-delay: 2s;"></div>
+            <div class="hero-decoration w-12 h-12 absolute -bottom-6 left-1/4 floating-animation" style="animation-delay: 4s;"></div>
 
-            @if(auth()->user()->isMentor())
-                <div class="header-actions">
-                    <a href="{{ route('classes.my') }}" class="header-btn">
-                        <i class="fas fa-chalkboard-teacher me-2"></i>My Classes
-                    </a>
-                    <a href="{{ route('classes.create') }}" class="header-btn btn-success">
-                        <i class="fas fa-plus me-2"></i>Create New Class
-                    </a>
-                </div>
-            @endif
+            <div class="relative z-10">
+                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 tracking-tight leading-tight">
+                    <span class="block mb-2">Jelajahi</span>
+                    <span class="block bg-gradient-to-r from-yellow-300 to-orange-300 bg-clip-text text-transparent">Kelas Terbaik</span>
+                </h1>
+
+                <p class="text-lg md:text-xl text-white/90 max-w-2xl mx-auto mb-10 leading-relaxed px-4">
+                    Kembangkan potensi dirimu dengan kursus berkualitas dari mentor berpengalaman.
+                    Tingkatkan kemampuanmu bersama platform pembelajaran terdepan.
+                </p>
+
+                @if(auth()->user()->isMentor())
+                    <div class="flex flex-col sm:flex-row justify-center items-center gap-5 mb-8">
+                        <a href="{{ route('classes.my') }}"
+                           class="group px-8 py-3.5 bg-white/20 border-2 border-white/30 rounded-full text-white font-semibold transition-all duration-300 hover:bg-white/30 hover:scale-105 hover:-translate-y-1 glass-effect min-w-48 text-center">
+                            <i class="fas fa-chalkboard-teacher mr-2 group-hover:rotate-12 transition-transform"></i>
+                            Kelas Saya
+                        </a>
+                        <a href="{{ route('classes.create') }}"
+                           class="group px-8 py-3.5 bg-gradient-to-r from-green-500 to-green-600 text-white font-semibold rounded-full transition-all duration-300 hover:from-green-600 hover:to-green-700 hover:scale-105 hover:-translate-y-1 shadow-xl min-w-48 text-center">
+                            <i class="fas fa-plus mr-2 group-hover:rotate-90 transition-transform"></i>
+                            Buat Kelas Baru
+                        </a>
+                    </div>
+                @endif
+            </div>
         </div>
 
+        <!-- Alert Messages -->
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="fas fa-check-circle me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            <div class="mb-8 mx-2">
+                <div class="bg-green-500/90 text-white px-6 py-4 rounded-2xl shadow-xl glass-effect border border-white/20 flex items-center gap-3">
+                    <i class="fas fa-check-circle text-xl"></i>
+                    <span class="font-medium flex-1">{{ session('success') }}</span>
+                    <button type="button" class="text-white/80 hover:text-white transition-colors p-1" data-bs-dismiss="alert">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="fas fa-exclamation-circle me-2"></i>
-                {{ session('error') }}
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="alert"></button>
+            <div class="mb-8 mx-2">
+                <div class="bg-red-500/90 text-white px-6 py-4 rounded-2xl shadow-xl glass-effect border border-white/20 flex items-center gap-3">
+                    <i class="fas fa-exclamation-circle text-xl"></i>
+                    <span class="font-medium flex-1">{{ session('error') }}</span>
+                    <button type="button" class="text-white/80 hover:text-white transition-colors p-1" data-bs-dismiss="alert">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
             </div>
         @endif
 
-        @if($classes->isEmpty())
-            <div class="no-classes">
-                <i class="fas fa-graduation-cap"></i>
-                <h3>No Classes Available</h3>
-                <p>There are no classes available at the moment. Check back later or create your first class!</p>
-                @if(auth()->user()->isMentor())
-                    <a href="{{ route('classes.create') }}" class="create-first-btn">
-                        Create First Class
-                    </a>
-                @endif
-            </div>
-        @else
-            <div class="classes-grid">
-                @foreach($classes as $class)
-                    <div class="class-card">
-                        <h3 class="class-title">{{ $class->name }}</h3>
+        <!-- Classes Content with bottom spacing -->
+        <div class="pb-16 md:pb-20 lg:pb-24">
+            @if($classes->isEmpty())
+                <!-- Empty State -->
+                <div class="mx-2">
+                    <div class="bg-card-gradient glass-effect rounded-3xl shadow-2xl border border-white/20 text-center py-16 px-8">
+                        <div class="relative max-w-md mx-auto">
+                            <div class="w-28 h-28 mx-auto mb-8 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center shadow-xl">
+                                <i class="fas fa-graduation-cap text-4xl text-white"></i>
+                            </div>
 
-                        @if($class->description)
-                            <p class="class-description">
-                                {{ Str::limit($class->description, 150) }}
+                            <h3 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Belum Ada Kelas Tersedia</h3>
+                            <p class="text-base md:text-lg text-gray-600 mb-8 leading-relaxed">
+                                Jadilah yang pertama mengeksplorasi peluang belajar yang menakjubkan! Kelas-kelas baru akan segera ditambahkan.
                             </p>
-                        @endif
 
-                        <div class="class-date">
-                            <i class="fas fa-calendar"></i>
-                            Created {{ $class->created_at->format('d M Y') }}
+                            @if(auth()->user()->isMentor())
+                                <a href="{{ route('classes.create') }}"
+                                   class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-full transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 hover:scale-105 hover:-translate-y-2 shadow-2xl">
+                                    <i class="fas fa-rocket mr-3 group-hover:translate-x-1 transition-transform"></i>
+                                    Buat Kelas Pertama
+                                    <div class="absolute inset-0 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 opacity-0 group-hover:opacity-20 transition-opacity blur"></div>
+                                </a>
+                            @endif
                         </div>
-
-                        <div class="class-mentor">
-                            <div class="mentor-avatar">
-                                {{ strtoupper(substr($class->mentor->name ?? 'U', 0, 2)) }}
-                            </div>
-                            <div class="mentor-info">
-                                <h4>{{ $class->mentor->name ?? 'Unknown Mentor' }}</h4>
-                                <p>Class Instructor</p>
-                            </div>
-                        </div>
-
-                        <a href="{{ route('classes.show', $class->id) }}" class="view-details-btn">
-                            <i class="fas fa-eye me-2"></i>View Details
-                        </a>
                     </div>
-                @endforeach
-            </div>
-        @endif
+                </div>
+            @else
+                <!-- Classes Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 px-2">
+                    @foreach($classes as $index => $class)
+                        <div class="scroll-fade-in group relative" style="animation-delay: {{ $index * 100 }}ms;">
+                            <div class="bg-card-gradient glass-effect rounded-2xl lg:rounded-3xl shadow-xl border border-white/20 p-6 lg:p-8 h-full flex flex-col relative overflow-hidden gradient-border transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.02]">
+                                <!-- Hover Glow Effect -->
+                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl lg:rounded-3xl"></div>
+
+                                <div class="relative z-10">
+                                    <!-- Class Title -->
+                                    <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-4 group-hover:text-indigo-700 transition-colors duration-300 leading-tight">
+                                        {{ $class->name }}
+                                    </h3>
+
+                                    <!-- Description -->
+                                    @if($class->description)
+                                        <p class="text-gray-600 leading-relaxed mb-6 flex-grow text-sm lg:text-base">
+                                            {{ Str::limit($class->description, 120) }}
+                                        </p>
+                                    @else
+                                        <div class="mb-6 flex-grow"></div>
+                                    @endif
+
+                                    <!-- Date Badge -->
+                                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
+                                        <div class="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
+                                        <span>Dibuat {{ $class->created_at->format('d M Y') }}</span>
+                                    </div>
+
+                                    <!-- Mentor Info -->
+                                    <div class="flex items-center gap-4 mb-6 p-4 bg-gradient-to-r from-gray-50 to-indigo-50 rounded-xl lg:rounded-2xl border border-gray-100 group-hover:from-indigo-50 group-hover:to-purple-50 transition-all duration-300">
+                                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
+                                            {{ strtoupper(substr($class->mentor->name ?? 'U', 0, 2)) }}
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <h4 class="font-bold text-gray-800 text-base lg:text-lg truncate">{{ $class->mentor->name ?? 'Mentor Tidak Diketahui' }}</h4>
+                                            <p class="text-sm text-gray-500">Instruktur Ahli</p>
+                                        </div>
+                                        <div class="w-3 h-3 bg-green-400 rounded-full shadow-lg animate-pulse flex-shrink-0"></div>
+                                    </div>
+
+                                    <!-- Action Button -->
+                                    <a href="{{ route('classes.show', $class->id) }}"
+                                       class="group/btn block w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl lg:rounded-2xl text-center transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-sm lg:text-base">
+                                        <span class="relative z-10 flex items-center justify-center gap-2">
+                                            <i class="fas fa-eye group-hover/btn:scale-110 transition-transform"></i>
+                                            Lihat Detail Kelas
+                                        </span>
+                                        <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            @endif
+        </div>
     </div>
 </div>
 
 <script>
-    // Add scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry, index) => {
-            if (entry.isIntersecting) {
-                setTimeout(() => {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0)';
-                }, index * 100);
-            }
-        });
-    }, observerOptions);
-
-    // Apply scroll animations to class cards
     document.addEventListener('DOMContentLoaded', function() {
-        document.querySelectorAll('.class-card').forEach(card => {
-            card.style.opacity = '0';
-            card.style.transform = 'translateY(30px)';
-            card.style.transition = 'all 0.6s ease';
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach((entry, index) => {
+                if (entry.isIntersecting) {
+                    setTimeout(() => {
+                        entry.target.classList.add('visible');
+                    }, index * 150);
+                }
+            });
+        }, observerOptions);
+
+        // Observe all cards
+        document.querySelectorAll('.scroll-fade-in').forEach(card => {
             observer.observe(card);
         });
+
+        // Enhanced hover effects for buttons
+        document.querySelectorAll('a[href*="classes.show"]').forEach(btn => {
+            btn.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px) scale(1.02)';
+            });
+
+            btn.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0) scale(1)';
+            });
+        });
+
+        // Parallax effect for hero decorations
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const decorations = document.querySelectorAll('.hero-decoration');
+
+            decorations.forEach((decoration, index) => {
+                const speed = 0.3 + (index * 0.1);
+                decoration.style.transform = `translateY(${scrolled * speed}px)`;
+            });
+        });
+
+        // Auto-dismiss alerts
+        setTimeout(() => {
+            document.querySelectorAll('[data-bs-dismiss="alert"]').forEach(btn => {
+                const alert = btn.closest('.mb-8');
+                if (alert) {
+                    alert.style.opacity = '0';
+                    alert.style.transform = 'translateY(-20px)';
+                    setTimeout(() => {
+                        alert.remove();
+                    }, 300);
+                }
+            });
+        }, 5000);
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('a, button').forEach(element => {
+            element.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
     });
 
-    // Enhanced button hover effects
-    document.querySelectorAll('.view-details-btn').forEach(btn => {
-        btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-2px) scale(1.02)';
-        });
-
-        btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
-
-    // Enhanced button hover effects untuk create-first-btn
-    document.querySelectorAll('.create-first-btn').forEach(btn => {
-        btn.addEventListener('mouseenter', function() {
-            this.style.transform = 'translateY(-3px) scale(1.05)';
-        });
-
-        btn.addEventListener('mouseleave', function() {
-            this.style.transform = 'translateY(0) scale(1)';
-        });
-    });
+    // Add ripple animation CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes ripple {
+            to { transform: scale(4); opacity: 0; }
+        }
+    `;
+    document.head.appendChild(style);
 </script>
 @endsection

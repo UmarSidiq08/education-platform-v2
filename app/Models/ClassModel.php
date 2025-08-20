@@ -27,11 +27,21 @@ class ClassModel extends Model
     {
         return $this->belongsTo(User::class, 'mentor_id');
     }
-    // Relasi ke User (mentor)
+
+    // Relasi ke Materials
     public function materials()
+    {
+        return $this->hasMany(Material::class, 'class_id');
+    }
+
+    // Relasi ke PostTests (BARU)
+    public function postTests()
 {
-    // Mengarah ke model Material, foreign key = class_id
-    return $this->hasMany(Material::class, 'class_id');
+    return $this->hasMany(PostTest::class, 'class_id'); // Pastikan foreign key benar
 }
 
+public function activePostTest()
+{
+    return $this->hasOne(PostTest::class, 'class_id')->where('is_active', true);
+}
 }

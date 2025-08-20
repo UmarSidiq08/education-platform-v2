@@ -1,44 +1,53 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="material-creation-container">
-        <div class="creation-header">
-            <div class="header-content">
-                <h1 class="creation-title">Edit Learning Material</h1>
-                <p class="creation-subtitle">Update your educational content</p>
-                <div class="material-badge">{{ $material->title }}</div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 font-sans">
+        <!-- Header Section -->
+        <div class="relative mb-8 sm:mb-12 p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-amber-500 to-amber-600 rounded-2xl text-white overflow-hidden text-center sm:text-left">
+            <div class="relative z-10">
+                <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-2">Edit Learning Material</h1>
+                <p class="text-base sm:text-lg opacity-90 mb-4">Update your educational content</p>
+                <div class="inline-block py-2 px-4 bg-white bg-opacity-20 rounded-full text-sm font-semibold max-w-xs sm:max-w-sm overflow-hidden text-ellipsis whitespace-nowrap">
+                    {{ $material->title }}
+                </div>
             </div>
-            <div class="header-decoration">
-                <div class="deco-circle deco-1"></div>
-                <div class="deco-circle deco-2"></div>
-                <div class="deco-circle deco-3"></div>
+
+            <!-- Header Decoration - Hidden on mobile -->
+            <div class="absolute inset-0 overflow-hidden hidden sm:block">
+                <div class="absolute w-32 h-32 sm:w-48 sm:h-48 bg-white bg-opacity-10 rounded-full -top-8 -right-8 sm:-top-12 sm:-right-12"></div>
+                <div class="absolute w-24 h-24 sm:w-36 sm:h-36 bg-white bg-opacity-10 rounded-full top-1/2 right-16 sm:right-24"></div>
+                <div class="absolute w-16 h-16 sm:w-24 sm:h-24 bg-white bg-opacity-10 rounded-full -bottom-4 right-32 sm:-bottom-8 sm:right-48"></div>
             </div>
         </div>
 
-        <div class="creation-card-container">
-            <div class="creation-card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between align-items-center">
+        <!-- Card Container -->
+        <div class="relative -mt-6 sm:-mt-12 z-10">
+            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden">
+                <!-- Card Header -->
+                <div class="px-4 sm:px-8 lg:px-16 py-4 sm:py-6 lg:py-8 bg-gray-50 border-b border-gray-200">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
                         <div>
-                            <h2 class="card-title">Update Material Details</h2>
-                            <p class="card-subtitle">Modify your learning content</p>
+                            <h2 class="text-xl sm:text-2xl font-bold text-gray-800 mb-1">Update Material Details</h2>
+                            <p class="text-sm text-gray-600">Modify your learning content</p>
                         </div>
-                        <a href="{{ route('materials.show', $material) }}" class="btn-back">
-                            <i class="fas fa-arrow-left"></i> Back to Material
+                        <a href="{{ route('materials.show', $material) }}"
+                           class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-gray-700 font-medium hover:bg-gray-50 hover:-translate-y-0.5 transition-all duration-300 self-start">
+                            <i class="fas fa-arrow-left"></i> <span class="hidden sm:inline">Back to Material</span><span class="sm:hidden">Back</span>
                         </a>
                     </div>
                 </div>
 
-                <div class="card-body">
+                <!-- Card Body -->
+                <div class="px-4 sm:px-8 lg:px-16 py-6 sm:py-8 lg:py-12">
                     <!-- Error & Success Messages -->
                     @if ($errors->any())
-                        <div class="alert-message">
-                            <div class="alert-icon">
+                        <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 mb-4 sm:mb-6 bg-red-50 border-l-4 border-red-400 rounded">
+                            <div class="text-red-500 text-lg flex-shrink-0">
                                 <i class="fas fa-exclamation-circle"></i>
                             </div>
-                            <div class="alert-content">
-                                <h4>Please fix the following issues:</h4>
-                                <ul>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-red-700 font-medium mb-2 text-sm sm:text-base">Please fix the following issues:</h4>
+                                <ul class="text-red-700 list-disc pl-5 text-sm">
                                     @foreach ($errors->all() as $error)
                                         <li>{{ $error }}</li>
                                     @endforeach
@@ -48,34 +57,36 @@
                     @endif
 
                     @if (session('success'))
-                        <div class="success-message">
-                            <div class="success-icon">
+                        <div class="flex gap-3 sm:gap-4 p-3 sm:p-4 mb-4 sm:mb-6 bg-green-50 border-l-4 border-green-400 rounded">
+                            <div class="text-green-600 text-lg flex-shrink-0">
                                 <i class="fas fa-check-circle"></i>
                             </div>
-                            <div class="success-content">
-                                <h4>Success!</h4>
-                                <p>{{ session('success') }}</p>
+                            <div class="flex-1 min-w-0">
+                                <h4 class="text-green-700 font-medium mb-1 text-sm sm:text-base">Success!</h4>
+                                <p class="text-green-700 m-0 text-sm">{{ session('success') }}</p>
                             </div>
                         </div>
                     @endif
 
-                    <form action="{{ route('materials.update', $material) }}" method="POST" enctype="multipart/form-data" id="materialForm" class="creation-form">
+                    <form action="{{ route('materials.update', $material) }}" method="POST" enctype="multipart/form-data"
+                          id="materialForm" class="flex flex-col gap-4 sm:gap-6">
                         @csrf
                         @method('PUT')
 
-                        <div class="form-layout">
+                        <!-- Form Layout -->
+                        <div class="grid grid-cols-1 xl:grid-cols-3 gap-6 sm:gap-8 lg:gap-16">
                             <!-- Left Column - Main Content -->
-                            <div class="main-content">
+                            <div class="xl:col-span-2 flex flex-col gap-4 sm:gap-6 order-2 xl:order-1">
                                 <!-- Title -->
-                                <div class="form-group">
-                                    <div class="form-header">
-                                        <label for="title" class="form-label">Material Title</label>
-                                        <span class="required-badge">Required</span>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
+                                        <label for="title" class="text-base font-semibold text-slate-800">Material Title</label>
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded self-start sm:self-center">Required</span>
                                     </div>
-                                    <div class="input-with-icon">
-                                        <i class="fas fa-heading"></i>
+                                    <div class="relative">
+                                        <i class="fas fa-heading absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                                         <input type="text"
-                                               class="form-control @error('title') is-invalid @enderror"
+                                               class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:border-amber-500 focus:ring-3 focus:ring-amber-200 transition-all duration-300 @error('title') border-red-500 @enderror"
                                                id="title"
                                                name="title"
                                                value="{{ old('title', $material->title) }}"
@@ -83,92 +94,90 @@
                                                placeholder="Enter an engaging material title">
                                     </div>
                                     @error('title')
-                                        <div class="error-message">{{ $message }}</div>
+                                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 
                                 <!-- Description -->
-                                <div class="form-group">
-                                    <div class="form-header">
-                                        <label for="description" class="form-label">Short Description</label>
-                                        <span class="optional-badge">Optional</span>
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
+                                        <label for="description" class="text-base font-semibold text-slate-800">Short Description</label>
+                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded self-start sm:self-center">Optional</span>
                                     </div>
-                                    <div class="textarea-with-icon">
-                                        <i class="fas fa-align-left"></i>
-                                        <textarea class="form-control @error('description') is-invalid @enderror"
+                                    <div class="relative">
+                                        <i class="fas fa-align-left absolute left-4 top-5 text-slate-400"></i>
+                                        <textarea class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:border-amber-500 focus:ring-3 focus:ring-amber-200 transition-all duration-300 resize-vertical @error('description') border-red-500 @enderror"
                                                   id="description"
                                                   name="description"
                                                   rows="3"
                                                   placeholder="Provide a brief description of this material...">{{ old('description', $material->description) }}</textarea>
                                     </div>
                                     @error('description')
-                                        <div class="error-message">{{ $message }}</div>
+                                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                <!-- Content -->
-                                <div class="form-group">
-                                    <div class="form-header">
-                                        <label for="content" class="form-label">Material Content</label>
-                                        <span class="required-badge">Required</span>
+                                <!-- Content with Rich Text Editor -->
+                                <div class="flex flex-col gap-2">
+                                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
+                                        <label for="content" class="text-base font-semibold text-slate-800">Material Content</label>
+                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded self-start sm:self-center">Required</span>
                                     </div>
-                                    <div class="textarea-with-icon content-textarea">
-                                        <i class="fas fa-file-text"></i>
-                                        <textarea class="form-control @error('content') is-invalid @enderror"
-                                                  id="content"
-                                                  name="content"
-                                                  rows="12"
-                                                  required
-                                                  placeholder="Write your material content here...">{{ old('content', $material->content) }}</textarea>
+                                    <div class="border-2 border-slate-200 rounded-xl overflow-hidden transition-all duration-300 focus-within:border-amber-500 focus-within:ring-4 focus-within:ring-amber-200">
+                                        <div id="quill-editor" style="height: 400px;">{!! old('content', $material->content) !!}</div>
+                                        <textarea name="content" id="content" class="hidden" required>{{ old('content', $material->content) }}</textarea>
                                     </div>
                                     @error('content')
-                                        <div class="error-message">{{ $message }}</div>
+                                        <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                                     @enderror
-                                    <div class="form-hint">
-                                        <i class="fas fa-lightbulb"></i> Tip: Use clear headings and examples to make content engaging
+                                    <div class="flex items-center gap-2 mt-2 text-sm text-slate-600">
+                                        <i class="fas fa-lightbulb text-amber-500"></i>
+                                        <span>Tip: Use the toolbar above to format your content with headings, bold text, lists, and more</span>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Right Column - Media & Settings -->
-                            <div class="sidebar-content">
+                            <div class="flex flex-col gap-4 sm:gap-6 order-1 xl:order-2">
                                 <!-- Current Video Display -->
                                 @if($material->hasVideo())
-                                    <div class="settings-card current-video-card">
-                                        <div class="settings-header">
-                                            <i class="fas fa-play-circle"></i>
-                                            <h3>Current Video</h3>
+                                    <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden transition-all duration-300" id="currentVideoCard">
+                                        <div class="flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200">
+                                            <i class="fas fa-play-circle text-amber-500 text-lg"></i>
+                                            <h3 class="text-base font-semibold text-slate-800">Current Video</h3>
                                         </div>
-                                        
-                                        <div class="settings-body">
+
+                                        <div class="p-4">
                                             @if($material->getVideoType() === 'file')
-                                                <div class="video-container">
-                                                    <video controls class="current-video">
+                                                <div class="relative w-full rounded-lg overflow-hidden mb-3">
+                                                    <video controls class="w-full h-auto rounded-lg">
                                                         <source src="{{ $material->video_url_for_display }}" type="video/mp4">
                                                     </video>
                                                 </div>
-                                                <div class="video-info">
-                                                    <small class="video-filename">{{ basename($material->video_path) }}</small>
+                                                <div class="mb-4">
+                                                    <span class="text-slate-600 bg-slate-200 px-2 py-1 rounded text-sm font-mono">{{ basename($material->video_path) }}</span>
                                                 </div>
                                             @else
-                                                <div class="video-url-display">
-                                                    <i class="fas fa-external-link-alt"></i>
-                                                    <div class="url-content">
-                                                        <strong>Video URL:</strong>
-                                                        <a href="{{ $material->video_url }}" target="_blank" class="video-link">
+                                                <div class="flex gap-3 p-4 bg-teal-50 rounded-lg mb-4">
+                                                    <i class="fas fa-external-link-alt text-cyan-600 mt-1"></i>
+                                                    <div class="flex-1">
+                                                        <strong class="block text-teal-800 mb-1">Video URL:</strong>
+                                                        <a href="{{ $material->video_url }}" target="_blank"
+                                                           class="text-cyan-600 no-underline break-all hover:underline">
                                                             {{ Str::limit($material->video_url, 40) }}
                                                         </a>
                                                     </div>
                                                 </div>
                                             @endif
 
-                                            <div class="remove-option">
-                                                <div class="custom-checkbox danger">
-                                                    <input type="checkbox" class="checkbox-input" id="remove_video" name="remove_video" value="1">
-                                                    <label class="checkbox-label" for="remove_video">
-                                                        <div class="checkbox-content">
-                                                            <strong>Remove this video</strong>
-                                                            <small>This will delete the current video</small>
+                                            <div class="mt-4 pt-4 border-t border-slate-200">
+                                                <div class="relative">
+                                                    <input type="checkbox" class="absolute opacity-0 w-0 h-0" id="remove_video" name="remove_video" value="1">
+                                                    <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg transition-all duration-300 hover:bg-red-50" for="remove_video">
+                                                        <div class="w-5 h-5 border-2 border-slate-300 rounded flex-shrink-0 mt-0.5 transition-all duration-300 checkbox-custom"></div>
+                                                        <div class="flex-1">
+                                                            <strong class="block text-slate-800 mb-1">Remove this video</strong>
+                                                            <small class="text-slate-600">This will delete the current video</small>
                                                         </div>
                                                     </label>
                                                 </div>
@@ -178,108 +187,119 @@
                                 @endif
 
                                 <!-- Video Section -->
-                                <div class="settings-card video-card">
-                                    <div class="settings-header">
-                                        <i class="fas fa-video"></i>
-                                        <h3>{{ $material->hasVideo() ? 'Replace Video' : 'Add Video' }}</h3>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+                                    <div class="flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200">
+                                        <i class="fas fa-video text-cyan-600 text-lg"></i>
+                                        <h3 class="text-base font-semibold text-slate-800">{{ $material->hasVideo() ? 'Replace Video' : 'Add Video' }} Media</h3>
                                     </div>
-                                    <div class="settings-body">
+                                    <div class="p-4">
                                         <!-- Video Upload Option -->
-                                        <div class="form-group">
-                                            <label class="form-label-small">Upload Video File</label>
-                                            <div class="file-upload-area">
+                                        <div class="mb-4">
+                                            <label class="text-sm font-semibold text-slate-800 mb-2 block">Upload Video File</label>
+                                            <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-4 text-center cursor-pointer hover:border-amber-600 hover:bg-slate-50 transition-all duration-300">
                                                 <input type="file"
-                                                       class="form-control-file @error('video') is-invalid @enderror"
-                                                       id="video"
-                                                       name="video"
-                                                       accept="video/*"
-                                                       onchange="handleVideoUpload(this)">
-                                                <div class="file-upload-text">
-                                                    <i class="fas fa-cloud-upload-alt"></i>
+                                                    class="absolute inset-0 w-full h-full opacity-0 cursor-pointer @error('video') border-red-500 @enderror"
+                                                    id="video" name="video" accept="video/*"
+                                                    onchange="handleVideoUpload(this)">
+                                                <div class="flex flex-col items-center gap-2 text-slate-600">
+                                                    <i class="fas fa-cloud-upload-alt text-2xl text-amber-600"></i>
                                                     <span>Choose video file</span>
                                                 </div>
                                             </div>
-                                            <div class="form-hint-small">
+                                            <div class="text-xs text-slate-600 mt-1">
                                                 Format: MP4, MOV, AVI, WMV, FLV, WebM<br>
                                                 Maximum: 100MB
                                             </div>
                                             @error('video')
-                                                <div class="error-message">{{ $message }}</div>
+                                                <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                                             @enderror
                                         </div>
 
-                                        <div class="divider">
-                                            <span>OR</span>
+                                        <div class="relative text-center my-4">
+                                            <div class="absolute inset-0 flex items-center">
+                                                <div class="w-full border-t border-slate-200"></div>
+                                            </div>
+                                            <div class="relative bg-slate-50 px-3">
+                                                <span class="text-xs font-medium text-slate-600">OR</span>
+                                            </div>
                                         </div>
 
                                         <!-- Video URL Option -->
-                                        <div class="form-group">
-                                            <label for="video_url" class="form-label-small">Online Video Link</label>
-                                            <div class="input-with-icon-small">
-                                                <i class="fas fa-link"></i>
+                                        <div class="mb-4">
+                                            <label for="video_url" class="text-sm font-semibold text-slate-800 mb-2 block">Online Video Link</label>
+                                            <div class="relative">
+                                                <i class="fas fa-link absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                                                 <input type="url"
-                                                       class="form-control @error('video_url') is-invalid @enderror"
-                                                       id="video_url"
-                                                       name="video_url"
-                                                       value="{{ old('video_url', $material->video_url) }}"
-                                                       placeholder="https://youtube.com/watch?v=..."
-                                                       onchange="handleVideoUrl(this)">
+                                                    class="w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-amber-600 focus:ring-2 focus:ring-amber-200 transition-all duration-300 @error('video_url') border-red-500 @enderror"
+                                                    id="video_url" name="video_url" value="{{ old('video_url', $material->video_url) }}"
+                                                    placeholder="https://youtube.com/watch?v=..."
+                                                    onchange="handleVideoUrl(this)">
                                             </div>
-                                            <div class="form-hint-small">
-                                                Supports YouTube , Vimeo, etc.
+                                            <div class="text-xs text-slate-600 mt-1">
+                                                Supports YouTube, Vimeo, etc.
                                             </div>
                                             @error('video_url')
-                                                <div class="error-message">{{ $message }}</div>
+                                                <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                                             @enderror
                                         </div>
 
                                         <!-- Video Preview -->
-                                        <div id="videoPreview" class="video-preview d-none">
-                                            <div class="preview-content">
-                                                <i class="fas fa-check-circle"></i>
+                                        <div id="videoPreview" class="hidden mt-4 p-3 bg-teal-50 rounded-lg">
+                                            <div class="text-sm text-teal-800">
+                                                <i class="fas fa-check-circle text-teal-600 mr-2"></i>
                                                 <strong>New video selected:</strong>
                                                 <div id="videoInfo"></div>
                                             </div>
+                                        </div>
+
+                                        <div class="mb-3">
+                                            <label for="video_thumbnail" class="text-sm font-semibold text-slate-800 mb-2 block">Thumbnail Video</label>
+                                            <input type="file" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-amber-50 file:text-amber-700 hover:file:bg-amber-100"
+                                                   id="video_thumbnail" name="video_thumbnail">
+                                            @if (isset($material) && $material->video_thumbnail)
+                                                <img src="{{ $material->video_thumbnail_url }}" width="100" class="mt-2 rounded-lg">
+                                            @endif
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Publishing Settings -->
-                                <div class="settings-card publish-card">
-                                    <div class="settings-header">
-                                        <i class="fas fa-cog"></i>
-                                        <h3>Publishing Settings</h3>
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl overflow-hidden">
+                                    <div class="flex items-center gap-3 px-4 py-3 bg-white border-b border-slate-200">
+                                        <i class="fas fa-cog text-emerald-600 text-lg"></i>
+                                        <h3 class="text-base font-semibold text-slate-800">Publishing Settings</h3>
                                     </div>
-                                    <div class="settings-body">
-                                        <div class="publish-option">
+                                    <div class="p-4">
+                                        <div>
                                             <input type="hidden" name="is_published" value="0">
-                                            <div class="custom-checkbox">
+                                            <div class="relative">
                                                 <input type="checkbox"
-                                                       class="checkbox-input @error('is_published') is-invalid @enderror"
-                                                       id="is_published"
-                                                       name="is_published"
-                                                       value="1"
-                                                       {{ old('is_published', $material->is_published) ? 'checked' : '' }}>
-                                                <label class="checkbox-label" for="is_published">
-                                                    <div class="checkbox-content">
-                                                        <strong>Publish Material</strong>
-                                                        <small>Material will be visible to students</small>
+                                                    class="absolute opacity-0 w-0 h-0 @error('is_published') border-red-500 @enderror"
+                                                    id="is_published" name="is_published" value="1"
+                                                    {{ old('is_published', $material->is_published) ? 'checked' : '' }}>
+                                                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-green-50 transition-all duration-300" for="is_published">
+                                                    <div class="w-5 h-5 border-2 border-slate-300 rounded mt-0.5 flex-shrink-0 transition-all duration-300 peer-checked:bg-emerald-600 peer-checked:border-emerald-600 relative">
+                                                        <i class="fas fa-check text-white text-xs absolute top-0.5 left-0.5 opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></i>
+                                                    </div>
+                                                    <div>
+                                                        <strong class="block text-slate-800 mb-1">Publish Material</strong>
+                                                        <small class="text-slate-600">Material will be visible to students</small>
                                                     </div>
                                                 </label>
                                             </div>
                                             @error('is_published')
-                                                <div class="error-message">{{ $message }}</div>
+                                                <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Action Buttons -->
-                                <div class="form-actions">
-                                    <button type="submit" class="btn-update">
+                                <div class="flex flex-col gap-3">
+                                    <button type="submit" class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-white font-semibold rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-500/40 transition-all duration-300">
                                         <i class="fas fa-save"></i> Update Material
                                     </button>
-                                    <a href="{{ route('materials.show', $material) }}" class="btn-cancel">
+                                    <a href="{{ route('materials.show', $material) }}" class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-white text-slate-600 font-medium border border-slate-200 rounded-lg hover:bg-slate-50 hover:-translate-y-0.5 transition-all duration-300 no-underline">
                                         <i class="fas fa-times"></i> Cancel
                                     </a>
                                 </div>
@@ -291,8 +311,45 @@
         </div>
     </div>
 
+    <!-- Quill.js CSS & JS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/quill/2.0.2/quill.snow.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quill/2.0.2/quill.min.js"></script>
+
     <!-- JavaScript for enhanced UX -->
     <script>
+        // Initialize Quill Editor
+        var quill = new Quill('#quill-editor', {
+            theme: 'snow',
+            modules: {
+                toolbar: [
+                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+                    [{ 'font': [] }],
+                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    ['bold', 'italic', 'underline', 'strike'],
+                    [{ 'color': [] }, { 'background': [] }],
+                    [{ 'script': 'sub'}, { 'script': 'super' }],
+                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                    [{ 'indent': '-1'}, { 'indent': '+1' }],
+                    [{ 'direction': 'rtl' }],
+                    [{ 'align': [] }],
+                    ['blockquote', 'code-block'],
+                    ['link', 'image', 'video'],
+                    ['clean']
+                ]
+            },
+            placeholder: 'Write your material content here. Use the toolbar to format your text...'
+        });
+
+        // Sync Quill content with hidden textarea
+        quill.on('text-change', function() {
+            document.getElementById('content').value = quill.root.innerHTML;
+        });
+
+        // Set initial content if exists
+        if (document.getElementById('content').value) {
+            quill.root.innerHTML = document.getElementById('content').value;
+        }
+
         function handleVideoUpload(input) {
             const videoPreview = document.getElementById('videoPreview');
             const videoInfo = document.getElementById('videoInfo');
@@ -306,12 +363,12 @@
                     <strong>${file.name}</strong><br>
                     <small>Size: ${fileSize} MB</small>
                 `;
-                videoPreview.classList.remove('d-none');
+                videoPreview.classList.remove('hidden');
 
                 // Clear video URL if file is selected
                 videoUrlInput.value = '';
             } else {
-                videoPreview.classList.add('d-none');
+                videoPreview.classList.add('hidden');
             }
         }
 
@@ -325,12 +382,12 @@
                     <strong>Video URL:</strong><br>
                     <small>${input.value}</small>
                 `;
-                videoPreview.classList.remove('d-none');
+                videoPreview.classList.remove('hidden');
 
                 // Clear file input if URL is entered
                 videoFileInput.value = '';
             } else {
-                videoPreview.classList.add('d-none');
+                videoPreview.classList.add('hidden');
             }
         }
 
@@ -338,14 +395,14 @@
         document.getElementById('remove_video')?.addEventListener('change', function() {
             const videoInput = document.getElementById('video');
             const videoUrlInput = document.getElementById('video_url');
-            const currentVideoCard = document.querySelector('.current-video-card');
+            const currentVideoCard = document.getElementById('currentVideoCard');
 
             if (this.checked) {
                 videoInput.disabled = true;
                 videoUrlInput.disabled = true;
                 videoInput.value = '';
                 videoUrlInput.value = '';
-                document.getElementById('videoPreview').classList.add('d-none');
+                document.getElementById('videoPreview').classList.add('hidden');
 
                 // Visual feedback
                 if (currentVideoCard) {
@@ -367,709 +424,188 @@
         // Form validation
         document.getElementById('materialForm').addEventListener('submit', function(e) {
             const title = document.getElementById('title').value.trim();
-            const content = document.getElementById('content').value.trim();
+            const content = quill.getText().trim(); // Get text content from Quill
 
             if (!title || !content) {
                 e.preventDefault();
                 alert('Title and content are required!');
                 return false;
             }
+
+            // Ensure hidden textarea has the latest content
+            document.getElementById('content').value = quill.root.innerHTML;
         });
 
-        // Auto-resize textarea
-        document.getElementById('content').addEventListener('input', function() {
-            this.style.height = 'auto';
-            this.style.height = (this.scrollHeight) + 'px';
+        // Custom checkbox styling with JavaScript
+        document.getElementById('is_published').addEventListener('change', function() {
+            const checkIcon = this.parentElement.querySelector('.fa-check');
+            const checkBox = this.parentElement.querySelector('div');
+
+            if (this.checked) {
+                checkBox.classList.add('bg-emerald-600', 'border-emerald-600');
+                checkBox.classList.remove('border-slate-300');
+                checkIcon.classList.remove('opacity-0');
+                checkIcon.classList.add('opacity-100');
+            } else {
+                checkBox.classList.remove('bg-emerald-600', 'border-emerald-600');
+                checkBox.classList.add('border-slate-300');
+                checkIcon.classList.add('opacity-0');
+                checkIcon.classList.remove('opacity-100');
+            }
+        });
+
+        // Custom checkbox styling for remove video
+        document.addEventListener('DOMContentLoaded', function() {
+            const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+            checkboxes.forEach(checkbox => {
+                const updateCheckbox = () => {
+                    const customCheckbox = checkbox.parentNode.querySelector('.checkbox-custom');
+                    if (customCheckbox) {
+                        if (checkbox.checked) {
+                            customCheckbox.classList.add('bg-red-500', 'border-red-500');
+                            customCheckbox.classList.remove('border-slate-300');
+                            customCheckbox.innerHTML = '<svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>';
+                        } else {
+                            customCheckbox.classList.remove('bg-red-500', 'border-red-500');
+                            customCheckbox.classList.add('border-slate-300');
+                            customCheckbox.innerHTML = '';
+                        }
+                    }
+                };
+
+                checkbox.addEventListener('change', updateCheckbox);
+                updateCheckbox(); // Initial state
+            });
         });
     </script>
 
     <style>
-        /* Base Styles */
-        .material-creation-container {
-            max-width: 1600px;
-            margin: 0 auto;
-            padding: 2rem 2rem;
-            font-family: 'Figtree', sans-serif;
-        }
-
-        /* Header Section */
-        .creation-header {
-            position: relative;
-            margin-bottom: 3rem;
-            padding: 2rem;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            border-radius: 16px;
-            color: white;
-            overflow: hidden;
-        }
-
-        .header-content {
-            position: relative;
-            z-index: 2;
-        }
-
-        .creation-title {
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-        }
-
-        .creation-subtitle {
-            font-size: 1.1rem;
-            opacity: 0.9;
-            margin-bottom: 1rem;
-        }
-
-        .material-badge {
-            display: inline-block;
-            padding: 0.5rem 1rem;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            max-width: 300px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .header-decoration {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-
-        .deco-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .deco-1 {
-            width: 200px;
-            height: 200px;
-            top: -50px;
-            right: -50px;
-        }
-
-        .deco-2 {
-            width: 150px;
-            height: 150px;
-            top: 50%;
-            right: 100px;
-        }
-
-        .deco-3 {
-            width: 100px;
-            height: 100px;
-            bottom: -30px;
-            right: 200px;
-        }
-
-        /* Card Container */
-        .creation-card-container {
-            position: relative;
-            margin-top: -50px;
-            z-index: 10;
-        }
-
-        .creation-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-
-        .card-header {
-            padding: 2rem 4rem;
+        /* Quill Editor Custom Styling to match Tailwind design */
+        .ql-toolbar {
+            border: none !important;
+            border-bottom: 1px solid #e2e8f0 !important;
             background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
+            padding: 16px !important;
         }
 
-        .card-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
+        .ql-container {
+            border: none !important;
+            font-size: 16px !important;
         }
 
-        .card-subtitle {
-            font-size: 0.9rem;
-            color: #718096;
+        .ql-editor {
+            padding: 24px !important;
+            line-height: 1.6 !important;
+            font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif !important;
         }
 
-        .btn-back {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.5rem 1rem;
-            background: white;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            color: #4a5568;
-            text-decoration: none;
-            font-weight: 500;
-            transition: all 0.3s ease;
+        .ql-editor.ql-blank::before {
+            color: #94a3b8 !important;
+            font-style: normal !important;
         }
 
-        .btn-back:hover {
-            background: #edf2f7;
-            transform: translateY(-2px);
+        .ql-snow .ql-tooltip {
+            z-index: 1000;
         }
 
-        /* Card Body */
-        .card-body {
-            padding: 3rem 4rem;
+        /* Custom focus styles for better UX */
+        .ql-snow.ql-toolbar button:hover,
+        .ql-snow .ql-toolbar button:hover,
+        .ql-snow.ql-toolbar button.ql-active,
+        .ql-snow .ql-toolbar button.ql-active {
+            color: #f59e0b !important;
         }
 
-        /* Alert Messages */
-        .alert-message {
+        .ql-snow.ql-toolbar .ql-stroke.ql-fill,
+        .ql-snow .ql-toolbar .ql-stroke.ql-fill {
+            fill: #f59e0b !important;
+        }
+
+        .ql-snow.ql-toolbar .ql-stroke,
+        .ql-snow .ql-toolbar .ql-stroke {
+            stroke: #f59e0b !important;
+        }
+
+        /* Hide default checkbox appearance and use custom styling */
+        input[type="checkbox"] {
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        .checkbox-custom {
             display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: #fff5f5;
-            border-left: 4px solid #fc8181;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-        }
-
-        .alert-icon {
-            color: #e53e3e;
-            font-size: 1.2rem;
-        }
-
-        .alert-content h4 {
-            font-size: 1rem;
-            color: #e53e3e;
-            margin-bottom: 0.5rem;
-        }
-
-        .alert-content ul {
-            margin: 0;
-            padding-left: 1.2rem;
-            color: #e53e3e;
-        }
-
-        .success-message {
-            display: flex;
-            gap: 1rem;
-            padding: 1rem;
-            background: #f0fff4;
-            border-left: 4px solid #68d391;
-            border-radius: 4px;
-            margin-bottom: 1.5rem;
-        }
-
-        .success-icon {
-            color: #38a169;
-            font-size: 1.2rem;
-        }
-
-        .success-content h4 {
-            font-size: 1rem;
-            color: #38a169;
-            margin-bottom: 0.25rem;
-        }
-
-        .success-content p {
-            color: #38a169;
-            margin: 0;
-        }
-
-        /* Form Layout */
-        .creation-form {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .form-layout {
-            display: grid;
-            grid-template-columns: 1fr 450px;
-            gap: 4rem;
-        }
-
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        .sidebar-content {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        /* Form Groups */
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .form-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .form-label {
-            font-weight: 600;
-            color: #2d3748;
-            font-size: 0.95rem;
-        }
-
-        .form-label-small {
-            font-weight: 600;
-            color: #2d3748;
-            font-size: 0.85rem;
-        }
-
-        .required-badge {
-            background: #fed7d7;
-            color: #e53e3e;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .optional-badge {
-            background: #ebf8ff;
-            color: #3182ce;
-            padding: 0.2rem 0.5rem;
-            border-radius: 4px;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        /* Input Styles */
-        .input-with-icon,
-        .textarea-with-icon,
-        .input-with-icon-small {
-            position: relative;
-        }
-
-        .input-with-icon i,
-        .textarea-with-icon i,
-        .input-with-icon-small i {
-            position: absolute;
-            left: 1rem;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #a0aec0;
-            z-index: 2;
-        }
-
-        .textarea-with-icon i {
-            top: 1.25rem;
-            transform: none;
-        }
-
-        .content-textarea i {
-            top: 1rem;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 0.75rem 1rem 0.75rem 2.5rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: all 0.3s ease;
-        }
-
-        .form-control:focus {
-            border-color: #f59e0b;
-            box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.2);
-            outline: none;
-        }
-
-        textarea.form-control {
-            min-height: 120px;
-            padding-top: 1rem;
-            resize: vertical;
-        }
-
-        #content {
-            min-height: 300px;
-        }
-
-        .error-message {
-            color: #e53e3e;
-            font-size: 0.85rem;
-            margin-top: 0.25rem;
-        }
-
-        .form-hint {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.85rem;
-            color: #718096;
-            margin-top: 0.5rem;
-        }
-
-        .form-hint i {
-            color: #f6ad55;
-        }
-
-        .form-hint-small {
-            font-size: 0.8rem;
-            color: #718096;
-            margin-top: 0.25rem;
-        }
-
-        /* Settings Cards */
-        .settings-card {
-            background: #f7fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .settings-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: white;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .settings-header i {
-            color: #4f46e5;
-            font-size: 1.1rem;
-        }
-
-        .current-video-card .settings-header i {
-            color: #f59e0b;
-        }
-
-        .video-card .settings-header i {
-            color: #06b6d4;
-        }
-
-        .publish-card .settings-header i {
-            color: #10b981;
-        }
-
-        .settings-header h3 {
-            font-size: 1rem;
-            font-weight: 600;
-            color: #2d3748;
-            margin: 0;
-        }
-
-        .settings-body {
-            padding: 1rem;
-        }
-
-        /* Current Video Styles */
-        .video-container {
-            position: relative;
-            width: 100%;
-            border-radius: 8px;
-            overflow: hidden;
-            margin-bottom: 0.75rem;
-        }
-
-        .current-video {
-            width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
-
-        .video-info {
-            margin-bottom: 1rem;
-        }
-
-        .video-filename {
-            color: #718096;
-            background: #edf2f7;
-            padding: 0.25rem 0.5rem;
-            border-radius: 4px;
-            font-family: 'Monaco', 'Consolas', monospace;
-        }
-
-        .video-url-display {
-            display: flex;
-            gap: 0.75rem;
-            padding: 1rem;
-            background: #e6fffa;
-            border-radius: 8px;
-            margin-bottom: 1rem;
-        }
-
-        .video-url-display i {
-            color: #0891b2;
-            margin-top: 0.2rem;
-        }
-
-        .url-content strong {
-            display: block;
-            color: #0f766e;
-            margin-bottom: 0.25rem;
-        }
-
-        .video-link {
-            color: #0891b2;
-            text-decoration: none;
-            word-break: break-all;
-        }
-
-        .video-link:hover {
-            text-decoration: underline;
-        }
-
-        .remove-option {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #e2e8f0;
-        }
-
-        /* File Upload */
-        .file-upload-area {
-            position: relative;
-            border: 2px dashed #cbd5e0;
-            border-radius: 8px;
-            padding: 1rem;
-            text-align: center;
-            transition: all 0.3s ease;
-            cursor: pointer;
-        }
-
-        .file-upload-area:hover {
-            border-color: #f59e0b;
-            background: #f7fafc;
-        }
-
-        .form-control-file {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .file-upload-text {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 0.5rem;
-            color: #718096;
-        }
-
-        .file-upload-text i {
-            font-size: 1.5rem;
-            color: #f59e0b;
-        }
-
-        /* Divider */
-        .divider {
-            text-align: center;
-            position: relative;
-            margin: 1rem 0;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #e2e8f0;
-        }
-
-        .divider span {
-            background: #f7fafc;
-            padding: 0 0.75rem;
-            color: #718096;
-            font-size: 0.8rem;
-            font-weight: 500;
-        }
-
-        /* Video Preview */
-        .video-preview {
-            margin-top: 1rem;
-            padding: 0.75rem;
-            background: #e6fffa;
-            border-radius: 6px;
-        }
-
-        .preview-content {
-            font-size: 0.85rem;
-            color: #285e61;
-        }
-
-        .preview-content i {
-            color: #38b2ac;
-            margin-right: 0.5rem;
-        }
-
-        /* Custom Checkbox */
-        .custom-checkbox {
-            position: relative;
-        }
-
-        .checkbox-input {
-            position: absolute;
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-
-        .checkbox-label {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.75rem;
-            cursor: pointer;
-            padding: 0.75rem;
-            border-radius: 8px;
-            transition: all 0.3s ease;
-        }
-
-        .checkbox-label::before {
-            content: '';
-            width: 20px;
-            height: 20px;
-            border: 2px solid #cbd5e0;
-            border-radius: 4px;
-            flex-shrink: 0;
-            transition: all 0.3s ease;
-            margin-top: 0.1rem;
-        }
-
-        .checkbox-input:checked + .checkbox-label::before {
-            background: #10b981;
-            border-color: #10b981;
-        }
-
-        .checkbox-input:checked + .checkbox-label::after {
-            content: '✓';
-            position: absolute;
-            left: 0.85rem;
-            top: 0.85rem;
-            color: white;
-            font-size: 0.8rem;
-            font-weight: bold;
-        }
-
-        .checkbox-label:hover {
-            background: #f0fff4;
-        }
-
-        .checkbox-content strong {
-            display: block;
-            color: #2d3748;
-            margin-bottom: 0.25rem;
-        }
-
-        .checkbox-content small {
-            color: #718096;
-        }
-
-        /* Action Buttons */
-        .form-actions {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .btn-update {
-            display: inline-flex;
             align-items: center;
             justify-content: center;
-            gap: 0.5rem;
-            width: 100%;
-            padding: 0.75rem 1.5rem;
-            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
         }
 
-        .btn-update:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(245, 158, 11, 0.4);
-        }
-
-        .btn-cancel {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            width: 100%;
-            padding: 0.75rem 1.5rem;
-            background: white;
-            color: #4a5568;
-            border: 1px solid #e2e8f0;
-            border-radius: 8px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-
-        .btn-cancel:hover {
-            background: #f7fafc;
-            transform: translateY(-2px);
-        }
-
-        /* Responsive Design */
+        /* Responsive adjustments */
         @media (max-width: 1024px) {
-            .form-layout {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
+            .max-w-7xl {
+                padding-left: 1rem;
+                padding-right: 1rem;
             }
 
-            .sidebar-content {
-                order: -1;
+            .px-16 {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .py-12 {
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+
+            .ql-toolbar {
+                padding: 8px !important;
+            }
+
+            .ql-editor {
+                padding: 16px !important;
             }
         }
 
         @media (max-width: 768px) {
-            .material-creation-container {
-                padding: 1rem;
+            .xl\:grid-cols-3 {
+                grid-template-columns: 1fr;
             }
 
-            .creation-header {
-                padding: 1.5rem;
-                text-align: center;
+            .xl\:col-span-2 {
+                grid-column: span 1;
             }
 
-            .creation-title {
+            .xl\:order-1 {
+                order: 2;
+            }
+
+            .xl\:order-2 {
+                order: 1;
+            }
+
+            .px-16 {
+                padding-left: 1.5rem;
+                padding-right: 1.5rem;
+            }
+
+            .py-12 {
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+
+            .py-8 {
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem;
+            }
+
+            .text-4xl {
                 font-size: 2rem;
             }
 
-            .creation-card-container {
-                margin-top: -30px;
+            .-mt-12 {
+                margin-top: -2rem;
             }
 
-            .card-header .d-flex {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 1rem;
-            }
-
-            .card-body {
-                padding: 1.5rem;
-            }
-
-            .card-header {
-                padding: 1.5rem;
-            }
-
-            .settings-card {
-                margin-bottom: 1rem;
+            .gap-16 {
+                gap: 1.5rem;
             }
         }
     </style>

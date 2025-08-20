@@ -1,82 +1,85 @@
 @extends('layouts.app')
 
 @section('content')
-    <div class="page-wrapper">
-        <div class="main-container">
+    <div class="min-h-screen bg-gray-50 py-8">
+        <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 xl:grid-cols-[1fr_350px] gap-8">
             <!-- Main Content -->
-            <div class="content-column">
-                <div class="material-card">
+            <div class="min-w-0 break-words">
+                <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl mb-8 break-words">
                     <!-- Header -->
-                    <div class="material-header">
+                    <div class="p-10 border-b border-gray-200 bg-gradient-to-br from-indigo-500 to-purple-600 text-white relative overflow-hidden">
                         <nav aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a href="{{ route('classes.show', $material->class->id) }}">
-                                        <i class="fas fa-arrow-left me-2"></i>{{ $material->class->name }}
+                            <ol class="flex items-center space-x-2 mb-6">
+                                <li>
+                                    <a href="{{ route('classes.learn', $material->class->id) }}"
+                                       class="flex items-center text-white/80 hover:text-white transition-colors duration-300 font-medium">
+                                        <i class="fas fa-arrow-left mr-2"></i>{{ $material->class->name }}
                                     </a>
                                 </li>
-                                <li class="breadcrumb-item active">{{ $material->title }}</li>
+                                <li class="text-white/90">{{ $material->title }}</li>
                             </ol>
                         </nav>
 
-                        <h1 class="material-title">{{ $material->title }}</h1>
+                        <h1 class="text-4xl font-bold mb-6 leading-tight">{{ $material->title }}</h1>
 
-                        <div class="material-meta">
-                            <span class="meta-item">
-                                <i class="fas fa-calendar text-muted me-1"></i>
+                        <div class="flex flex-wrap items-center gap-8 mb-6">
+                            <span class="flex items-center text-white/90 bg-white/10 px-4 py-2 rounded-full backdrop-blur">
+                                <i class="fas fa-calendar text-white/80 mr-2"></i>
                                 {{ $material->created_at->format('d M Y') }}
                             </span>
-                            <span class="meta-item">
-                                <i class="fas fa-user text-muted me-1"></i>
+                            <span class="flex items-center text-white/90 bg-white/10 px-4 py-2 rounded-full backdrop-blur">
+                                <i class="fas fa-user text-white/80 mr-2"></i>
                                 {{ $material->class->mentor->name }}
                             </span>
                             @if ($material->is_published)
-                                <span class="badge bg-success">
-                                    <i class="fas fa-check-circle me-1"></i>Published
+                                <span class="inline-flex items-center bg-green-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
+                                    <i class="fas fa-check-circle mr-2"></i>Published
                                 </span>
                             @else
-                                <span class="badge bg-warning">
-                                    <i class="fas fa-clock me-1"></i>Draft
+                                <span class="inline-flex items-center bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
+                                    <i class="fas fa-clock mr-2"></i>Draft
                                 </span>
                             @endif
                         </div>
 
                         @if ($material->description)
-                            <div class="material-description">
-                                <p>{{ $material->description }}</p>
+                            <div class="bg-white/15 p-6 rounded-xl border border-white/20 backdrop-blur">
+                                <p class="text-white/95 leading-relaxed">{{ $material->description }}</p>
                             </div>
                         @endif
                     </div>
 
                     <!-- Video Section -->
                     @if ($material->hasVideo())
-                        <div class="video-section">
-                            <div class="video-container">
+                        <div class="p-10 bg-black">
+                            <div class="max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl">
                                 @if ($material->getVideoType() === 'file')
-                                    <video controls poster="{{ $material->video_thumbnail_url }}" class="video-player">
+                                    <video controls poster="{{ $material->video_thumbnail_url }}"
+                                           class="w-full aspect-video rounded-2xl">
                                         <source src="{{ $material->video_url_for_display }}" type="video/mp4">
                                         Browser tidak mendukung pemutaran video.
                                     </video>
                                 @elseif($material->isVideoEmbeddable())
-                                    <div class="embed-thumbnail"
-                                        style="background-image: url('{{ $material->video_thumbnail_url }}')"
-                                        onclick="playEmbeddedVideo(this)">
-                                        <div class="play-button">
-                                            <i class="fas fa-play-circle"></i>
+                                    <div class="relative w-full aspect-video bg-cover bg-center cursor-pointer rounded-2xl overflow-hidden"
+                                         style="background-image: url('{{ $material->video_thumbnail_url }}')"
+                                         onclick="playEmbeddedVideo(this)">
+                                        <div class="absolute inset-0 flex items-center justify-center">
+                                            <div class="text-8xl text-white/90 transition-all duration-300 hover:text-white hover:scale-110 drop-shadow-lg">
+                                                <i class="fas fa-play-circle"></i>
+                                            </div>
                                         </div>
                                         <iframe src="{{ $material->video_url }}" frameborder="0" allowfullscreen
-                                            class="video-player" style="display: none">
-                                        </iframe>
+                                                class="w-full aspect-video rounded-2xl hidden"></iframe>
                                     </div>
                                 @else
-                                    <div class="external-video">
-                                        <div class="external-video-content">
-                                            <i class="fas fa-play-circle fa-4x text-primary mb-3"></i>
-                                            <h4>Video Eksternal</h4>
-                                            <p class="text-muted mb-4">Klik untuk menonton video di platform eksternal</p>
+                                    <div class="aspect-video flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-center p-12 rounded-2xl">
+                                        <div>
+                                            <i class="fas fa-play-circle text-6xl mb-6"></i>
+                                            <h4 class="text-2xl font-bold mb-4">Video Eksternal</h4>
+                                            <p class="text-white/80 mb-8 text-lg">Klik untuk menonton video di platform eksternal</p>
                                             <a href="{{ $material->video_url }}" target="_blank"
-                                                class="btn btn-primary btn-lg">
-                                                <i class="fas fa-external-link-alt me-2"></i>Tonton Video
+                                               class="inline-flex items-center bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors duration-300">
+                                                <i class="fas fa-external-link-alt mr-3"></i>Tonton Video
                                             </a>
                                         </div>
                                     </div>
@@ -86,68 +89,71 @@
                     @endif
 
                     <!-- Content Section -->
-                    <div class="content-section">
-                        <h5 class="content-title">
-                            <i class="fas fa-file-text text-primary me-2"></i>Materi Pembelajaran
+                    <div class="p-10 break-words">
+                        <h5 class="flex items-center text-xl font-semibold text-gray-600 mb-8">
+                            <i class="fas fa-file-text text-indigo-500 mr-3"></i>Materi Pembelajaran
                         </h5>
-                        <div class="content-body">
-                            {!! nl2br(e($material->content)) !!}
+                        <div class="prose prose-lg max-w-none break-words text-gray-600 leading-relaxed">
+                            {!! $material->content !!}
                         </div>
                     </div>
                 </div>
 
                 <!-- Enhanced Quiz Section -->
                 @if ($material->activeQuiz)
-                    <div class="quiz-section">
-                        <div class="quiz-card">
-                            <div class="quiz-header">
-                                <div class="quiz-icon">
+                    <div class="mt-8 mb-16">
+                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl border-2 border-transparent hover:border-indigo-500">
+                            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-8 text-white flex items-center gap-6 relative overflow-hidden">
+                                <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+
+                                <div class="bg-white/20 w-20 h-20 rounded-3xl flex items-center justify-center text-3xl backdrop-blur border-2 border-white/30 shrink-0 relative z-10">
                                     <i class="fas fa-brain"></i>
                                 </div>
-                                <div class="quiz-header-content">
-                                    <h3 class="quiz-title">{{ $material->activeQuiz->title }}</h3>
+
+                                <div class="flex-1 relative z-10">
+                                    <h3 class="text-2xl font-bold mb-2">{{ $material->activeQuiz->title }}</h3>
                                     @if ($material->activeQuiz->description)
-                                        <p class="quiz-description">{{ $material->activeQuiz->description }}</p>
+                                        <p class="text-white/90 text-lg">{{ $material->activeQuiz->description }}</p>
                                     @endif
                                 </div>
+
                                 @if (auth()->user()->role === 'siswa' && $quizAttempt)
-                                    <div class="quiz-score-badge">
-                                        <div class="score-circle">
-                                            <span class="score-percentage">{{ $quizAttempt->percentage }}%</span>
-                                            <span class="score-label">Skor</span>
+                                    <div class="relative z-10">
+                                        <div class="bg-white/20 w-20 h-20 rounded-full flex flex-col items-center justify-center backdrop-blur border-3 border-white/30">
+                                            <span class="text-xl font-black leading-none">{{ $quizAttempt->percentage }}%</span>
+                                            <span class="text-xs opacity-90 uppercase font-semibold">Skor</span>
                                         </div>
                                     </div>
                                 @endif
                             </div>
 
-                            <div class="quiz-body">
-                                <div class="quiz-stats">
-                                    <div class="stat-item">
-                                        <div class="stat-icon">
+                            <div class="p-10">
+                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                                    <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
+                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
                                             <i class="fas fa-question-circle"></i>
                                         </div>
-                                        <div class="stat-content">
-                                            <span class="stat-value">{{ $material->activeQuiz->total_questions }}</span>
-                                            <span class="stat-label">Soal</span>
+                                        <div>
+                                            <div class="text-2xl font-bold text-gray-900">{{ $material->activeQuiz->total_questions }}</div>
+                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Soal</div>
                                         </div>
                                     </div>
-                                    <div class="stat-item">
-                                        <div class="stat-icon">
+                                    <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
+                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
                                             <i class="fas fa-clock"></i>
                                         </div>
-                                        <div class="stat-content">
-                                            <span class="stat-value">{{ $material->activeQuiz->time_limit }}</span>
-                                            <span class="stat-label">Menit</span>
+                                        <div>
+                                            <div class="text-2xl font-bold text-gray-900">{{ $material->activeQuiz->time_limit }}</div>
+                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Menit</div>
                                         </div>
                                     </div>
-                                    <div class="stat-item">
-                                        <div class="stat-icon">
+                                    <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
+                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
                                             <i class="fas fa-star"></i>
                                         </div>
-                                        <div class="stat-content">
-                                            <span
-                                                class="stat-value">{{ $material->activeQuiz->questions->sum('points') ?? 0 }}</span>
-                                            <span class="stat-label">Poin</span>
+                                        <div>
+                                            <div class="text-2xl font-bold text-gray-900">{{ $material->activeQuiz->questions->sum('points') ?? 0 }}</div>
+                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Poin</div>
                                         </div>
                                     </div>
                                 </div>
@@ -155,59 +161,60 @@
                                 @if (auth()->user()->role === 'siswa')
                                     @if ($quizAttempt)
                                         <!-- Sudah mengerjakan - Detail Results -->
-                                        <div class="quiz-results">
-                                            <div class="results-header">
-                                                <h5><i class="fas fa-chart-line me-2"></i>Hasil Quiz Anda</h5>
+                                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200">
+                                            <div class="mb-6">
+                                                <h5 class="flex items-center text-xl font-semibold text-gray-600">
+                                                    <i class="fas fa-chart-line mr-3"></i>Hasil Quiz Anda
+                                                </h5>
                                             </div>
-                                            <div class="results-grid">
-                                                <div class="result-card">
-                                                    <div class="result-icon success">
+                                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                                                <div class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 text-white flex items-center justify-center text-xl">
                                                         <i class="fas fa-trophy"></i>
                                                     </div>
-                                                    <div class="result-info">
-                                                        <span class="result-value">{{ $quizAttempt->score }}</span>
-                                                        <span class="result-label">Total Poin</span>
+                                                    <div>
+                                                        <div class="text-xl font-bold text-gray-900">{{ $quizAttempt->score }}</div>
+                                                        <div class="text-gray-500 text-sm font-medium">Total Poin</div>
                                                     </div>
                                                 </div>
-                                                <div class="result-card">
-                                                    <div class="result-icon info">
+                                                <div class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center text-xl">
                                                         <i class="fas fa-check-circle"></i>
                                                     </div>
-                                                    <div class="result-info">
-                                                        <span
-                                                            class="result-value">{{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}</span>
-                                                        <span class="result-label">Jawaban Benar</span>
+                                                    <div>
+                                                        <div class="text-xl font-bold text-gray-900">{{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}</div>
+                                                        <div class="text-gray-500 text-sm font-medium">Jawaban Benar</div>
                                                     </div>
                                                 </div>
-                                                <div class="result-card">
-                                                    <div
-                                                        class="result-icon {{ $quizAttempt->percentage >= 80 ? 'success' : ($quizAttempt->percentage >= 60 ? 'warning' : 'danger') }}">
+                                                <div class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br {{ $quizAttempt->percentage >= 80 ? 'from-green-400 to-green-600' : ($quizAttempt->percentage >= 60 ? 'from-yellow-400 to-yellow-600' : 'from-red-400 to-red-600') }} text-white flex items-center justify-center text-xl">
                                                         <i class="fas fa-percent"></i>
                                                     </div>
-                                                    <div class="result-info">
-                                                        <span class="result-value">{{ $quizAttempt->percentage }}%</span>
-                                                        <span class="result-label">Persentase</span>
+                                                    <div>
+                                                        <div class="text-xl font-bold text-gray-900">{{ $quizAttempt->percentage }}%</div>
+                                                        <div class="text-gray-500 text-sm font-medium">Persentase</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="quiz-actions">
+                                            <div class="flex justify-center">
                                                 <a href="{{ route('quizzes.show', $material->activeQuiz) }}"
-                                                    class="btn btn-outline-primary btn-lg">
-                                                    <i class="fas fa-eye me-2"></i>Lihat Detail Jawaban
+                                                   class="inline-flex items-center px-8 py-4 bg-transparent border-2 border-indigo-500 text-indigo-500 rounded-xl font-semibold text-lg transition-all duration-300 hover:bg-indigo-500 hover:text-white hover:-translate-y-1 hover:shadow-lg">
+                                                    <i class="fas fa-eye mr-3"></i>Lihat Detail Jawaban
                                                 </a>
                                             </div>
                                         </div>
                                     @else
                                         <!-- Belum mengerjakan - Call to Action -->
-                                        <div class="quiz-cta">
-                                            <div class="cta-content">
-                                                <h5>Siap untuk mengerjakan quiz?</h5>
-                                                <p>Uji pemahaman Anda tentang materi yang telah dipelajari</p>
+                                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-10 rounded-2xl text-center relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+                                            <div class="relative z-10 mb-8">
+                                                <h5 class="text-2xl font-bold mb-2">Siap untuk mengerjakan quiz?</h5>
+                                                <p class="text-white/90 text-lg">Uji pemahaman Anda tentang materi yang telah dipelajari</p>
                                             </div>
-                                            <div class="quiz-actions">
+                                            <div class="relative z-10">
                                                 <a href="{{ route('quizzes.show', $material->activeQuiz) }}"
-                                                    class="btn btn-primary btn-lg pulse-animation">
-                                                    <i class="fas fa-play me-2"></i>Mulai Quiz Sekarang
+                                                   class="inline-flex items-center px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl animate-pulse">
+                                                    <i class="fas fa-play mr-3"></i>Mulai Quiz Sekarang
                                                 </a>
                                             </div>
                                         </div>
@@ -216,24 +223,26 @@
 
                                 @if (auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
                                     <!-- Mentor Actions -->
-                                    <div class="mentor-quiz-actions">
-                                        <div class="action-header">
-                                            <h5><i class="fas fa-cogs me-2"></i>Kelola Quiz</h5>
-                                            <p class="text-muted">Kelola dan pantau quiz untuk materi ini</p>
+                                    <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100">
+                                        <div class="mb-6">
+                                            <h5 class="flex items-center text-xl font-semibold text-gray-600 mb-2">
+                                                <i class="fas fa-cogs mr-3"></i>Kelola Quiz
+                                            </h5>
+                                            <p class="text-gray-500">Kelola dan pantau quiz untuk materi ini</p>
                                         </div>
-                                        <div class="quiz-actions mentor-actions">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <a href="{{ route('quizzes.index', $material) }}"
-                                                class="btn btn-info btn-lg">
-                                                <i class="fas fa-chart-bar me-2"></i>
-                                                <span>Lihat Statistik</span>
-                                                <small class="d-block">Analisis hasil siswa</small>
+                                               class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                                <i class="fas fa-chart-bar text-2xl mb-2"></i>
+                                                <span class="font-semibold mb-1">Lihat Statistik</span>
+                                                <small class="text-blue-100 text-sm">Analisis hasil siswa</small>
                                             </a>
                                             @if ($activeQuiz)
                                                 <a href="{{ route('quizzes.edit', [$material, $activeQuiz]) }}"
-                                                    class="btn btn-warning btn-lg">
-                                                    <i class="fas fa-edit me-2"></i>
-                                                    <span>Edit Quiz</span>
-                                                    <small class="d-block">Ubah soal & pengaturan</small>
+                                                   class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                                    <i class="fas fa-edit text-2xl mb-2"></i>
+                                                    <span class="font-semibold mb-1">Edit Quiz</span>
+                                                    <small class="text-yellow-100 text-sm">Ubah soal & pengaturan</small>
                                                 </a>
                                             @endif
                                         </div>
@@ -244,96 +253,100 @@
                     </div>
                 @elseif(auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
                     <!-- No Quiz - Create New -->
-                    <div class="quiz-section">
-                        <div class="quiz-empty-state">
-                            <div class="empty-state-content">
-                                <div class="empty-state-icon">
-                                    <i class="fas fa-lightbulb"></i>
-                                </div>
-                                <h4>Tingkatkan Pembelajaran dengan Quiz</h4>
-                                <p>Buat quiz interaktif untuk membantu siswa menguji pemahaman mereka tentang materi ini</p>
-                                <div class="empty-state-features">
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        <span>Pertanyaan pilihan ganda</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        <span>Penilaian otomatis</span>
-                                    </div>
-                                    <div class="feature-item">
-                                        <i class="fas fa-check text-success me-2"></i>
-                                        <span>Laporan detail</span>
-                                    </div>
-                                </div>
-                                <a href="{{ route('quizzes.create', $material) }}"
-                                    class="btn btn-primary btn-xl shine-effect">
-                                    <i class="fas fa-plus me-2"></i>Buat Quiz Pertama
-                                </a>
+                    <div class="mt-8 mb-16">
+                        <div class="bg-white rounded-3xl p-12 text-center shadow-2xl border-2 border-dashed border-gray-200 transition-all duration-300 hover:border-indigo-500 hover:shadow-3xl">
+                            <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-5xl text-white shadow-2xl">
+                                <i class="fas fa-lightbulb"></i>
                             </div>
+                            <h4 class="text-gray-900 font-bold mb-4 text-2xl">Tingkatkan Pembelajaran dengan Quiz</h4>
+                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat quiz interaktif untuk membantu siswa menguji pemahaman mereka tentang materi ini</p>
+                            <div class="flex justify-center gap-8 mb-10 flex-wrap">
+                                <div class="flex items-center text-gray-600 font-medium">
+                                    <i class="fas fa-check text-green-500 mr-3"></i>
+                                    <span>Pertanyaan pilihan ganda</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 font-medium">
+                                    <i class="fas fa-check text-green-500 mr-3"></i>
+                                    <span>Penilaian otomatis</span>
+                                </div>
+                                <div class="flex items-center text-gray-600 font-medium">
+                                    <i class="fas fa-check text-green-500 mr-3"></i>
+                                    <span>Laporan detail</span>
+                                </div>
+                            </div>
+                            <a href="{{ route('quizzes.create', $material) }}"
+                               class="inline-flex items-center px-12 py-5 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl relative overflow-hidden group">
+                                <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600"></span>
+                                <i class="fas fa-plus mr-3 relative z-10"></i>
+                                <span class="relative z-10">Buat Quiz Pertama</span>
+                            </a>
                         </div>
                     </div>
                 @endif
             </div>
 
             <!-- Sidebar -->
-            <div class="sidebar-column">
-                <div class="sidebar-content">
+            <div class="min-w-0 mb-16">
+                <div class="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto space-y-6">
                     <!-- Class Info -->
-                    <div class="info-card">
-                        <div class="card-header">
-                            <h6><i class="fas fa-graduation-cap me-2"></i>Informasi Kelas</h6>
+                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-5">
+                            <h6 class="flex items-center font-semibold text-gray-600">
+                                <i class="fas fa-graduation-cap mr-3"></i>Informasi Kelas
+                            </h6>
                         </div>
-                        <div class="card-body">
-                            <div class="class-info">
-                                <div class="class-avatar">
+                        <div class="p-6">
+                            <div class="flex items-center mb-4">
+                                <div class="w-15 h-15 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mr-4 shadow-xl">
                                     {{ substr($material->class->name, 0, 2) }}
                                 </div>
-                                <div class="class-details">
-                                    <h6>{{ $material->class->name }}</h6>
-                                    <small class="text-muted">Mentor: {{ $material->class->mentor->name }}</small>
+                                <div>
+                                    <h6 class="text-gray-900 font-semibold mb-1">{{ $material->class->name }}</h6>
+                                    <small class="text-gray-500">Mentor: {{ $material->class->mentor->name }}</small>
                                 </div>
                             </div>
                             @if ($material->class->description)
-                                <p class="class-description">{{ $material->class->description }}</p>
+                                <p class="text-gray-500 text-sm leading-relaxed">{{ $material->class->description }}</p>
                             @endif
                         </div>
                     </div>
 
                     <!-- Material Details -->
-                    <div class="info-card">
-                        <div class="card-header">
-                            <h6><i class="fas fa-info-circle me-2"></i>Detail Materi</h6>
+                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-5">
+                            <h6 class="flex items-center font-semibold text-gray-600">
+                                <i class="fas fa-info-circle mr-3"></i>Detail Materi
+                            </h6>
                         </div>
-                        <div class="card-body">
-                            <div class="detail-row">
-                                <span class="detail-label">Status:</span>
-                                <span class="detail-value">
+                        <div class="p-6">
+                            <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+                                <span class="font-semibold text-gray-500 text-sm">Status:</span>
+                                <span>
                                     @if ($material->is_published)
-                                        <span class="badge bg-success">Published</span>
+                                        <span class="inline-flex items-center bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Published</span>
                                     @else
-                                        <span class="badge bg-warning">Draft</span>
+                                        <span class="inline-flex items-center bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Draft</span>
                                     @endif
                                 </span>
                             </div>
 
-                            <div class="detail-row">
-                                <span class="detail-label">Dibuat:</span>
-                                <span class="detail-value">{{ $material->created_at->format('d M Y, H:i') }}</span>
+                            <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+                                <span class="font-semibold text-gray-500 text-sm">Dibuat:</span>
+                                <span class="text-gray-600 text-sm font-medium">{{ $material->created_at->format('d M Y, H:i') }}</span>
                             </div>
 
                             @if ($material->updated_at != $material->created_at)
-                                <div class="detail-row">
-                                    <span class="detail-label">Diperbarui:</span>
-                                    <span class="detail-value">{{ $material->updated_at->format('d M Y, H:i') }}</span>
+                                <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
+                                    <span class="font-semibold text-gray-500 text-sm">Diperbarui:</span>
+                                    <span class="text-gray-600 text-sm font-medium">{{ $material->updated_at->format('d M Y, H:i') }}</span>
                                 </div>
                             @endif
 
                             @if ($material->hasVideo())
-                                <div class="detail-row">
-                                    <span class="detail-label">Media:</span>
-                                    <span class="detail-value">
-                                        <i class="fas fa-video text-primary me-1"></i>
+                                <div class="flex justify-between items-center">
+                                    <span class="font-semibold text-gray-500 text-sm">Media:</span>
+                                    <span class="flex items-center text-gray-600 text-sm font-medium">
+                                        <i class="fas fa-video text-indigo-500 mr-2"></i>
                                         {{ $material->getVideoType() === 'file' ? 'Video File' : 'Video Online' }}
                                     </span>
                                 </div>
@@ -343,22 +356,26 @@
 
                     <!-- Mentor Actions -->
                     @if (auth()->id() === $material->class->mentor_id)
-                        <div class="info-card">
-                            <div class="card-header">
-                                <h6><i class="fas fa-cogs me-2"></i>Aksi Mentor</h6>
+                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                            <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-5">
+                                <h6 class="flex items-center font-semibold text-gray-600">
+                                    <i class="fas fa-cogs mr-3"></i>Aksi Mentor
+                                </h6>
                             </div>
-                            <div class="card-body">
-                                <div class="action-buttons">
-                                    <a href="{{ route('materials.edit', $material) }}" class="btn btn-primary">
-                                        <i class="fas fa-edit me-2"></i>Edit Materi
+                            <div class="p-6">
+                                <div class="space-y-3">
+                                    <a href="{{ route('materials.edit', $material) }}"
+                                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                        <i class="fas fa-edit mr-3"></i>Edit Materi
                                     </a>
 
                                     <form action="{{ route('materials.destroy', $material) }}" method="POST"
-                                        onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
+                                          onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="btn btn-danger">
-                                            <i class="fas fa-trash me-2"></i>Hapus Materi
+                                        <button type="submit"
+                                                class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                            <i class="fas fa-trash mr-3"></i>Hapus Materi
                                         </button>
                                     </form>
                                 </div>
@@ -370,1209 +387,16 @@
         </div>
     </div>
 
-    <style>
-        /* Main Layout */
-        .page-wrapper {
-            min-height: 100vh;
-            background: #f8f9fa;
-            padding: 2rem 0;
-        }
-
-        .main-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 1fr 350px;
-            gap: 2rem;
-        }
-
-        .content-column {
-            min-width: 0;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-        }
-
-        .sidebar-column {
-            min-width: 0;
-        }
-
-        /* Material Card */
-        .material-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            overflow: hidden;
-            transition: all 0.3s ease;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            margin-bottom: 2rem;
-        }
-
-        .material-card:hover {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-        }
-
-        /* Header Section */
-        .material-header {
-            padding: 2.5rem;
-            border-bottom: 1px solid #e9ecef;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .breadcrumb {
-            background: none;
-            padding: 0;
-            margin-bottom: 1.5rem;
-        }
-
-        .breadcrumb-item a {
-            color: rgba(255, 255, 255, 0.8);
-            text-decoration: none;
-            transition: color 0.3s ease;
-            font-weight: 500;
-        }
-
-        .breadcrumb-item a:hover {
-            color: white;
-        }
-
-        .breadcrumb-item.active {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .material-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 1.5rem;
-            line-height: 1.2;
-        }
-
-        .material-meta {
-            display: flex;
-            gap: 2rem;
-            flex-wrap: wrap;
-            align-items: center;
-            margin-bottom: 1.5rem;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            font-size: 0.95rem;
-            color: rgba(255, 255, 255, 0.9);
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            backdrop-filter: blur(10px);
-        }
-
-        .meta-item i {
-            color: rgba(255, 255, 255, 0.8) !important;
-        }
-
-        .material-description {
-            background: rgba(255, 255, 255, 0.15);
-            padding: 1.5rem;
-            border-radius: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-        }
-
-        .material-description p {
-            margin: 0;
-            color: rgba(255, 255, 255, 0.95);
-            line-height: 1.6;
-        }
-
-        /* Video Section */
-        .video-section {
-            padding: 2.5rem;
-            background: #000;
-        }
-
-        .video-container {
-            max-width: 100%;
-            margin: 0 auto;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.5);
-        }
-
-        .video-player {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 16/9;
-            display: block;
-            border-radius: 16px;
-        }
-
-        .embed-thumbnail {
-            position: relative;
-            width: 100%;
-            aspect-ratio: 16/9;
-            background-size: cover;
-            background-position: center;
-            cursor: pointer;
-            border-radius: 16px;
-            overflow: hidden;
-        }
-
-        .embed-thumbnail .play-button {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 5rem;
-            color: rgba(255, 255, 255, 0.9);
-            transition: all 0.3s ease;
-            filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
-        }
-
-        .embed-thumbnail:hover .play-button {
-            color: white;
-            transform: translate(-50%, -50%) scale(1.1);
-        }
-
-        .external-video {
-            aspect-ratio: 16/9;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            text-align: center;
-            padding: 3rem;
-            border-radius: 16px;
-        }
-
-        .external-video-content h4 {
-            color: white;
-            margin-bottom: 0.5rem;
-        }
-
-        /* Content Section */
-        .content-section {
-            padding: 2.5rem;
-            overflow-wrap: break-word;
-            word-wrap: break-word;
-        }
-
-        .content-title {
-            margin-bottom: 2rem;
-            font-weight: 600;
-            color: #495057;
-            font-size: 1.25rem;
-        }
-
-        .content-body {
-            font-size: 1.1rem;
-            line-height: 1.8;
-            color: #495057;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            hyphens: auto;
-            max-width: 100%;
-        }
-
-        .content-body p {
-            margin-bottom: 1.5rem;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-            max-width: 100%;
-        }
-
-        .content-body * {
-            max-width: 100%;
-            word-wrap: break-word;
-            overflow-wrap: break-word;
-        }
-
-        .content-body a,
-        .content-body code,
-        .content-body pre {
-            word-break: break-all;
-            overflow-wrap: break-word;
-            hyphens: none;
-        }
-
-        .content-body pre {
-            white-space: pre-wrap;
-            overflow-x: auto;
-            background: #f8f9fa;
-            padding: 1rem;
-            border-radius: 8px;
-            border: 1px solid #e9ecef;
-        }
-
-        .content-body code {
-            background: #f8f9fa;
-            padding: 0.2em 0.4em;
-            border-radius: 4px;
-            font-size: 0.9em;
-        }
-
-        /* Enhanced Quiz Section */
-        .quiz-section {
-            margin-top: 2rem;
-        }
-
-        .quiz-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            overflow: hidden;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-
-        .quiz-card:hover {
-            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
-            border-color: #667eea;
-        }
-
-        .quiz-header {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            padding: 2rem;
-            color: white;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quiz-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 200px;
-            height: 200px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 50%;
-            transform: translate(50%, -50%);
-        }
-
-        .quiz-icon {
-            background: rgba(255, 255, 255, 0.2);
-            width: 80px;
-            height: 80px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            backdrop-filter: blur(10px);
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            flex-shrink: 0;
-        }
-
-        .quiz-header-content {
-            flex: 1;
-        }
-
-        .quiz-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .quiz-description {
-            color: rgba(255, 255, 255, 0.9);
-            margin: 0;
-            font-size: 1rem;
-        }
-
-        .quiz-score-badge {
-            position: relative;
-            z-index: 2;
-        }
-
-        .score-circle {
-            background: rgba(255, 255, 255, 0.2);
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-            border: 3px solid rgba(255, 255, 255, 0.3);
-        }
-
-        .score-percentage {
-            font-size: 1.25rem;
-            font-weight: 800;
-            line-height: 1;
-        }
-
-        .score-label {
-            font-size: 0.7rem;
-            opacity: 0.9;
-            text-transform: uppercase;
-            font-weight: 600;
-        }
-
-        .quiz-body {
-            padding: 2.5rem;
-        }
-
-        .quiz-stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.5rem;
-            background: #f8f9fa;
-            border-radius: 16px;
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-
-        .stat-item:hover {
-            background: #e9ecef;
-            transform: translateY(-2px);
-        }
-
-        .stat-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-        }
-
-        .stat-content {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stat-value {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #212529;
-            line-height: 1;
-        }
-
-        .stat-label {
-            color: #6c757d;
-            font-size: 0.85rem;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        /* Quiz Results */
-        .quiz-results {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 16px;
-            padding: 2rem;
-            border: 1px solid #dee2e6;
-        }
-
-        .results-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .results-header h5 {
-            color: #495057;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .results-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .result-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            border: 1px solid #e9ecef;
-            transition: all 0.3s ease;
-        }
-
-        .result-card:hover {
-            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12);
-            transform: translateY(-2px);
-        }
-
-        .result-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.25rem;
-            color: white;
-        }
-
-        .result-icon.success {
-            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%);
-        }
-
-        .result-icon.info {
-            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
-        }
-
-        .result-icon.warning {
-            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
-        }
-
-        .result-icon.danger {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-        }
-
-        .result-info {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .result-value {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #212529;
-            line-height: 1;
-        }
-
-        .result-label {
-            color: #6c757d;
-            font-size: 0.85rem;
-            font-weight: 500;
-        }
-
-        /* Quiz Call to Action */
-        .quiz-cta {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2.5rem;
-            border-radius: 16px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .quiz-cta::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
-            animation: shimmer 3s ease-in-out infinite;
-        }
-
-        @keyframes shimmer {
-
-            0%,
-            100% {
-                transform: rotate(0deg);
-            }
-
-            50% {
-                transform: rotate(180deg);
-            }
-        }
-
-        .cta-content {
-            position: relative;
-            z-index: 2;
-            margin-bottom: 2rem;
-        }
-
-        .cta-content h5 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .cta-content p {
-            color: rgba(255, 255, 255, 0.9);
-            margin: 0;
-            font-size: 1.1rem;
-        }
-
-        /* Mentor Quiz Actions */
-        .mentor-quiz-actions {
-            background: #f8f9fa;
-            padding: 2rem;
-            border-radius: 16px;
-            border: 1px solid #e9ecef;
-        }
-
-        .action-header {
-            margin-bottom: 1.5rem;
-        }
-
-        .action-header h5 {
-            color: #495057;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .action-header p {
-            color: #6c757d;
-            margin: 0;
-            font-size: 0.95rem;
-        }
-
-        .mentor-actions {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        .mentor-actions .btn {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-            padding: 1.5rem 1rem;
-            height: auto;
-            min-height: 120px;
-            justify-content: center;
-        }
-
-        .mentor-actions .btn i {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .mentor-actions .btn span {
-            font-weight: 600;
-            margin-bottom: 0.25rem;
-        }
-
-        .mentor-actions .btn small {
-            opacity: 0.8;
-            font-size: 0.8rem;
-        }
-
-        /* Quiz Empty State */
-        .quiz-empty-state {
-            background: white;
-            border-radius: 20px;
-            padding: 3rem;
-            text-align: center;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-            border: 2px dashed #dee2e6;
-            transition: all 0.3s ease;
-        }
-
-        .quiz-empty-state:hover {
-            border-color: #667eea;
-            box-shadow: 0 12px 48px rgba(102, 126, 234, 0.15);
-        }
-
-        .empty-state-icon {
-            width: 100px;
-            height: 100px;
-            margin: 0 auto 1.5rem;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: white;
-            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.3);
-        }
-
-        .empty-state-content h4 {
-            color: #212529;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            font-size: 1.5rem;
-        }
-
-        .empty-state-content p {
-            color: #6c757d;
-            font-size: 1.1rem;
-            line-height: 1.6;
-            margin-bottom: 2rem;
-        }
-
-        .empty-state-features {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2.5rem;
-            flex-wrap: wrap;
-        }
-
-        .feature-item {
-            display: flex;
-            align-items: center;
-            color: #495057;
-            font-weight: 500;
-        }
-
-        /* Quiz Actions */
-        .quiz-actions {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .quiz-actions .btn {
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Pulse Animation */
-        .pulse-animation {
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            }
-
-            50% {
-                box-shadow: 0 8px 40px rgba(102, 126, 234, 0.6);
-            }
-
-            100% {
-                box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
-            }
-        }
-
-        /* Shine Effect */
-        .shine-effect {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .shine-effect::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
-            transition: left 0.6s;
-        }
-
-        .shine-effect:hover::before {
-            left: 100%;
-        }
-
-        /* Sidebar */
-        .sidebar-content {
-            position: sticky;
-            top: 2rem;
-            max-height: calc(100vh - 4rem);
-            overflow-y: auto;
-        }
-
-        .info-card {
-            background: white;
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
-            margin-bottom: 1.5rem;
-            overflow: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .info-card:hover {
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
-        }
-
-        .info-card .card-header {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-bottom: 1px solid #e9ecef;
-            padding: 1.25rem 1.5rem;
-        }
-
-        .info-card .card-header h6 {
-            margin: 0;
-            font-weight: 600;
-            color: #495057;
-        }
-
-        .info-card .card-body {
-            padding: 1.5rem;
-        }
-
-        /* Class Info */
-        .class-info {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-
-        .class-avatar {
-            width: 60px;
-            height: 60px;
-            border-radius: 16px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-weight: bold;
-            font-size: 1.2rem;
-            margin-right: 1rem;
-            box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
-        }
-
-        .class-details h6 {
-            margin-bottom: 0.25rem;
-            color: #212529;
-            font-weight: 600;
-        }
-
-        .class-description {
-            font-size: 0.9rem;
-            color: #6c757d;
-            margin: 0;
-            line-height: 1.6;
-        }
-
-        /* Detail Rows */
-        .detail-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 1px solid #f1f3f4;
-        }
-
-        .detail-row:last-child {
-            margin-bottom: 0;
-            padding-bottom: 0;
-            border-bottom: none;
-        }
-
-        .detail-label {
-            font-weight: 600;
-            color: #6c757d;
-            font-size: 0.9rem;
-        }
-
-        .detail-value {
-            color: #495057;
-            font-size: 0.9rem;
-            font-weight: 500;
-        }
-
-        /* Action Buttons */
-        .action-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-
-        .action-buttons .btn {
-            width: 100%;
-        }
-
-        /* Buttons */
-        .btn {
-            border-radius: 12px;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            transition: all 0.3s ease;
-            border: none;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-        }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-
-        .btn-primary:hover {
-            color: white;
-        }
-
-        .btn-outline-primary {
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-        }
-
-        .btn-outline-primary:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        .btn-info {
-            background: linear-gradient(135deg, #339af0 0%, #228be6 100%);
-            color: white;
-        }
-
-        .btn-info:hover {
-            color: white;
-        }
-
-        .btn-warning {
-            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%);
-            color: #212529;
-        }
-
-        .btn-warning:hover {
-            color: #212529;
-        }
-
-        .btn-danger {
-            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
-            color: white;
-        }
-
-        .btn-danger:hover {
-            color: white;
-        }
-
-        .btn-lg {
-            padding: 1rem 2rem;
-            font-size: 1.1rem;
-        }
-
-        .btn-xl {
-            padding: 1.25rem 2.5rem;
-            font-size: 1.2rem;
-            font-weight: 700;
-        }
-
-        /* Badges */
-        .badge {
-            font-size: 0.8rem;
-            padding: 0.5rem 1rem;
-            border-radius: 25px;
-            font-weight: 600;
-        }
-
-        .bg-success {
-            background: linear-gradient(135deg, #51cf66 0%, #40c057 100%) !important;
-            color: white !important;
-        }
-
-        .bg-warning {
-            background: linear-gradient(135deg, #ffd43b 0%, #fab005 100%) !important;
-            color: #212529 !important;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1024px) {
-            .main-container {
-                grid-template-columns: 1fr;
-                max-width: 800px;
-            }
-
-            .sidebar-content {
-                position: static;
-                max-height: none;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .page-wrapper {
-                padding: 1rem 0;
-            }
-
-            .main-container {
-                padding: 0 0.75rem;
-                gap: 1.5rem;
-            }
-
-            .material-header {
-                padding: 2rem 1.5rem;
-            }
-
-            .material-title {
-                font-size: 2rem;
-            }
-
-            .material-meta {
-                gap: 1rem;
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .content-section,
-            .video-section {
-                padding: 2rem 1.5rem;
-            }
-
-            .quiz-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 1rem;
-            }
-
-            .quiz-body {
-                padding: 2rem 1.5rem;
-            }
-
-            .quiz-stats {
-                grid-template-columns: 1fr;
-            }
-
-            .results-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .mentor-actions {
-                grid-template-columns: 1fr;
-            }
-
-            .empty-state-features {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .quiz-actions {
-                flex-direction: column;
-            }
-
-            .info-card .card-body {
-                padding: 1.25rem;
-            }
-
-            .class-info {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .class-avatar {
-                margin-right: 0;
-                margin-bottom: 1rem;
-            }
-
-            .detail-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.5rem;
-            }
-
-            .action-buttons {
-                gap: 0.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .material-header {
-                padding: 1.5rem 1rem;
-            }
-
-            .material-title {
-                font-size: 1.75rem;
-            }
-
-            .content-section,
-            .video-section {
-                padding: 1.5rem 1rem;
-            }
-
-            .quiz-header {
-                padding: 1.5rem;
-            }
-
-            .quiz-body {
-                padding: 1.5rem 1rem;
-            }
-
-            .quiz-cta {
-                padding: 2rem 1.5rem;
-            }
-
-            .quiz-empty-state {
-                padding: 2rem 1.5rem;
-            }
-
-            .info-card .card-header,
-            .info-card .card-body {
-                padding: 1rem;
-            }
-
-            .meta-item {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.85rem;
-            }
-
-            .empty-state-icon {
-                width: 80px;
-                height: 80px;
-                font-size: 2.5rem;
-            }
-        }
-
-        /* Dark mode support */
-        @media (prefers-color-scheme: dark) {
-            .page-wrapper {
-                background: #1a202c;
-            }
-
-            .material-card,
-            .info-card,
-            .quiz-card,
-            .quiz-empty-state {
-                background: #2d3748;
-                color: #e2e8f0;
-            }
-
-            .info-card .card-header {
-                background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
-                border-color: #4a5568;
-            }
-
-            .content-body,
-            .detail-value,
-            .class-description {
-                color: #e2e8f0;
-            }
-
-            .detail-row {
-                border-color: #4a5568;
-            }
-
-            .detail-label {
-                color: #a0aec0;
-            }
-
-            .stat-item {
-                background: #4a5568;
-                border-color: #4a5568;
-            }
-
-            .quiz-results,
-            .mentor-quiz-actions {
-                background: #4a5568;
-                border-color: #4a5568;
-            }
-
-            .result-card {
-                background: #2d3748;
-                border-color: #4a5568;
-            }
-        }
-
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-
-        /* Loading animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .material-card,
-        .info-card,
-        .quiz-card,
-        .quiz-empty-state {
-            animation: fadeIn 0.6s ease-out;
-        }
-
-        .info-card:nth-child(2) {
-            animation-delay: 0.1s;
-        }
-
-        .info-card:nth-child(3) {
-            animation-delay: 0.2s;
-        }
-
-        .info-card:nth-child(4) {
-            animation-delay: 0.3s;
-        }
-
-        .quiz-section {
-            animation-delay: 0.4s;
-        }
-
-        /* Accessibility improvements */
-        .btn:focus,
-        .btn:focus-visible {
-            outline: 2px solid #667eea;
-            outline-offset: 2px;
-        }
-
-        .quiz-card:focus-within {
-            border-color: #667eea;
-            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
-        }
-
-        /* Print styles */
-        @media print {
-
-            .quiz-section,
-            .sidebar-column,
-            .action-buttons {
-                display: none;
-            }
-
-            .main-container {
-                grid-template-columns: 1fr;
-                max-width: none;
-            }
-
-            .material-card {
-                box-shadow: none;
-                border: 1px solid #ddd;
-            }
-
-            .material-header {
-                background: #f8f9fa !important;
-                color: #212529 !important;
-            }
-        }
-    </style>
-
     @push('scripts')
         <script>
             function playEmbeddedVideo(element) {
                 const iframe = element.querySelector('iframe');
                 const playButton = element.querySelector('.play-button');
 
-                playButton.style.display = 'none';
+                if (playButton) playButton.style.display = 'none';
                 element.style.backgroundImage = 'none';
                 iframe.style.display = 'block';
+                iframe.classList.remove('hidden');
 
                 // Auto-play untuk YouTube/Vimeo
                 if (iframe.src.includes('youtube.com') || iframe.src.includes('vimeo.com')) {
@@ -1583,7 +407,7 @@
             // Enhanced interactions
             document.addEventListener('DOMContentLoaded', function() {
                 // Smooth scroll untuk breadcrumb navigation
-                const breadcrumbLinks = document.querySelectorAll('.breadcrumb-item a');
+                const breadcrumbLinks = document.querySelectorAll('nav a');
                 breadcrumbLinks.forEach(link => {
                     link.addEventListener('click', function(e) {
                         if (this.getAttribute('href').startsWith('#')) {
@@ -1600,7 +424,7 @@
                 });
 
                 // Lazy loading untuk video thumbnails
-                const embedThumbnails = document.querySelectorAll('.embed-thumbnail');
+                const embedThumbnails = document.querySelectorAll('[onclick*="playEmbeddedVideo"]');
                 const imageObserver = new IntersectionObserver((entries) => {
                     entries.forEach(entry => {
                         if (entry.isIntersecting) {
@@ -1623,14 +447,18 @@
                 });
 
                 // Enhanced button interactions
-                const buttons = document.querySelectorAll('.btn');
+                const buttons = document.querySelectorAll('a[class*="bg-"], button[class*="bg-"]');
                 buttons.forEach(button => {
                     button.addEventListener('mouseenter', function() {
-                        this.style.transform = 'translateY(-2px)';
+                        if (!this.classList.contains('hover:scale-105')) {
+                            this.style.transform = 'translateY(-2px)';
+                        }
                     });
 
                     button.addEventListener('mouseleave', function() {
-                        this.style.transform = 'translateY(0)';
+                        if (!this.classList.contains('hover:scale-105')) {
+                            this.style.transform = 'translateY(0)';
+                        }
                     });
 
                     button.addEventListener('mousedown', function() {
@@ -1643,11 +471,330 @@
                 });
 
                 // Progress animation for quiz results
-                const resultCards = document.querySelectorAll('.result-card');
+                const resultCards = document.querySelectorAll('.bg-white.p-6.rounded-xl');
                 resultCards.forEach((card, index) => {
                     card.style.animationDelay = `${index * 0.1}s`;
-                    card.classList.add('fadeIn');
+                    card.classList.add('animate-fadeIn');
                 });
+
+                // Add custom CSS for animations
+                const style = document.createElement('style');
+                style.textContent = `
+                    @keyframes fadeIn {
+                        from {
+                            opacity: 0;
+                            transform: translateY(20px);
+                        }
+                        to {
+                            opacity: 1;
+                            transform: translateY(0);
+                        }
+                    }
+
+                    .animate-fadeIn {
+                        animation: fadeIn 0.6s ease-out forwards;
+                    }
+
+                    /* Custom prose styles for rich content */
+                    .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
+                        color: #374151 !important;
+                        font-weight: 700 !important;
+                        margin-top: 2rem !important;
+                        margin-bottom: 1rem !important;
+                    }
+
+                    .prose h1 { font-size: 2.5rem !important; }
+                    .prose h2 { font-size: 2rem !important; }
+                    .prose h3 { font-size: 1.75rem !important; }
+                    .prose h4 { font-size: 1.5rem !important; }
+                    .prose h5 { font-size: 1.25rem !important; }
+                    .prose h6 { font-size: 1.1rem !important; }
+
+                    .prose p {
+                        margin-bottom: 1.5rem !important;
+                        word-wrap: break-word !important;
+                        overflow-wrap: break-word !important;
+                        line-height: 1.8 !important;
+                        color: #6B7280 !important;
+                    }
+
+                    .prose strong, .prose b {
+                        font-weight: 700 !important;
+                        color: #374151 !important;
+                    }
+
+                    .prose em, .prose i {
+                        font-style: italic !important;
+                    }
+
+                    .prose u {
+                        text-decoration: underline !important;
+                    }
+
+                    .prose s, .prose strike {
+                        text-decoration: line-through !important;
+                    }
+
+                    .prose mark {
+                        background-color: #FEF3C7 !important;
+                        padding: 0.2em 0.4em !important;
+                        border-radius: 0.375rem !important;
+                    }
+
+                    .prose ul, .prose ol {
+                        margin-bottom: 1.5rem !important;
+                        padding-left: 2rem !important;
+                    }
+
+                    .prose ul li, .prose ol li {
+                        margin-bottom: 0.5rem !important;
+                        line-height: 1.6 !important;
+                    }
+
+                    .prose ul {
+                        list-style-type: disc !important;
+                    }
+
+                    .prose ol {
+                        list-style-type: decimal !important;
+                    }
+
+                    .prose a {
+                        color: #6366F1 !important;
+                        text-decoration: none !important;
+                        font-weight: 500 !important;
+                        transition: all 0.3s ease !important;
+                        word-break: break-all !important;
+                        overflow-wrap: break-word !important;
+                    }
+
+                    .prose a:hover {
+                        color: #8B5CF6 !important;
+                        text-decoration: underline !important;
+                    }
+
+                    .prose blockquote {
+                        margin: 1.5rem 0 !important;
+                        padding: 1.5rem !important;
+                        background: #F9FAFB !important;
+                        border-left: 4px solid #6366F1 !important;
+                        border-radius: 0 0.5rem 0.5rem 0 !important;
+                        font-style: italic !important;
+                        color: #6B7280 !important;
+                    }
+
+                    .prose blockquote p:last-child {
+                        margin-bottom: 0 !important;
+                    }
+
+                    .prose code {
+                        background: #F9FAFB !important;
+                        padding: 0.2em 0.4em !important;
+                        border-radius: 0.25rem !important;
+                        font-size: 0.9em !important;
+                        color: #DB2777 !important;
+                        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+                        word-break: break-all !important;
+                        overflow-wrap: break-word !important;
+                    }
+
+                    .prose pre {
+                        background: #F9FAFB !important;
+                        padding: 1.5rem !important;
+                        border-radius: 0.5rem !important;
+                        border: 1px solid #E5E7EB !important;
+                        overflow-x: auto !important;
+                        margin-bottom: 1.5rem !important;
+                        white-space: pre-wrap !important;
+                        word-wrap: break-word !important;
+                    }
+
+                    .prose pre code {
+                        background: none !important;
+                        padding: 0 !important;
+                        color: #6B7280 !important;
+                        font-size: 0.875rem !important;
+                    }
+
+                    .prose table {
+                        width: 100% !important;
+                        margin-bottom: 1.5rem !important;
+                        background-color: transparent !important;
+                        border-collapse: collapse !important;
+                        border: 1px solid #D1D5DB !important;
+                        border-radius: 0.5rem !important;
+                        overflow: hidden !important;
+                    }
+
+                    .prose table th, .prose table td {
+                        padding: 0.75rem !important;
+                        vertical-align: top !important;
+                        border-top: 1px solid #D1D5DB !important;
+                        word-wrap: break-word !important;
+                        overflow-wrap: break-word !important;
+                    }
+
+                    .prose table th {
+                        background-color: #F9FAFB !important;
+                        font-weight: 600 !important;
+                        color: #6B7280 !important;
+                        border-top: none !important;
+                    }
+
+                    .prose table tbody tr:nth-of-type(odd) {
+                        background-color: rgba(0, 0, 0, 0.02) !important;
+                    }
+
+                    .prose img {
+                        max-width: 100% !important;
+                        height: auto !important;
+                        border-radius: 0.5rem !important;
+                        margin: 1rem 0 !important;
+                        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+                        transition: all 0.3s ease !important;
+                    }
+
+                    .prose img:hover {
+                        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1) !important;
+                        transform: translateY(-2px) !important;
+                    }
+
+                    .prose hr {
+                        margin: 2rem 0 !important;
+                        border: none !important;
+                        height: 2px !important;
+                        background: linear-gradient(90deg, transparent, #D1D5DB, transparent) !important;
+                    }
+
+                    /* Text Alignment */
+                    .prose .text-left { text-align: left !important; }
+                    .prose .text-center { text-align: center !important; }
+                    .prose .text-right { text-align: right !important; }
+                    .prose .text-justify { text-align: justify !important; }
+
+                    /* Text Colors */
+                    .prose .text-muted { color: #6B7280 !important; }
+                    .prose .text-primary { color: #6366F1 !important; }
+                    .prose .text-success { color: #10B981 !important; }
+                    .prose .text-info { color: #06B6D4 !important; }
+                    .prose .text-warning { color: #F59E0B !important; }
+                    .prose .text-danger { color: #EF4444 !important; }
+
+                    /* Background Colors */
+                    .prose .bg-light {
+                        background-color: #F9FAFB !important;
+                        padding: 0.5rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+
+                    .prose .bg-primary {
+                        background-color: #6366F1 !important;
+                        color: white !important;
+                        padding: 0.5rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+
+                    .prose .bg-success {
+                        background-color: #10B981 !important;
+                        color: white !important;
+                        padding: 0.5rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+
+                    .prose .bg-info {
+                        background-color: #06B6D4 !important;
+                        color: white !important;
+                        padding: 0.5rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+
+                    .prose .bg-warning {
+                        background-color: #F59E0B !important;
+                        color: #374151 !important;
+                        padding: 0.5rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+
+                    .prose .bg-danger {
+                        background-color: #EF4444 !important;
+                        color: white !important;
+                        padding: 0.5rem !important;
+                        border-radius: 0.25rem !important;
+                    }
+
+                    /* Font Sizes */
+                    .prose .small { font-size: 0.875rem !important; }
+                    .prose .lead {
+                        font-size: 1.25rem !important;
+                        font-weight: 300 !important;
+                        line-height: 1.6 !important;
+                    }
+
+                    /* Special Elements */
+                    .prose .highlight {
+                        background: linear-gradient(120deg, rgba(99, 102, 241, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%) !important;
+                        padding: 1rem !important;
+                        border-radius: 0.5rem !important;
+                        border-left: 4px solid #6366F1 !important;
+                        margin: 1.5rem 0 !important;
+                    }
+
+                    .prose .callout {
+                        background: #F9FAFB !important;
+                        border: 1px solid #E5E7EB !important;
+                        border-radius: 0.5rem !important;
+                        padding: 1.5rem !important;
+                        margin: 1.5rem 0 !important;
+                        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+                    }
+
+                    .prose .callout-primary {
+                        background: rgba(99, 102, 241, 0.05) !important;
+                        border-color: #6366F1 !important;
+                    }
+
+                    .prose .callout-success {
+                        background: rgba(16, 185, 129, 0.05) !important;
+                        border-color: #10B981 !important;
+                    }
+
+                    .prose .callout-info {
+                        background: rgba(6, 182, 212, 0.05) !important;
+                        border-color: #06B6D4 !important;
+                    }
+
+                    .prose .callout-warning {
+                        background: rgba(245, 158, 11, 0.05) !important;
+                        border-color: #F59E0B !important;
+                    }
+
+                    .prose .callout-danger {
+                        background: rgba(239, 68, 68, 0.05) !important;
+                        border-color: #EF4444 !important;
+                    }
+
+                    /* Word Break */
+                    .prose * {
+                        max-width: 100% !important;
+                        word-wrap: break-word !important;
+                        overflow-wrap: break-word !important;
+                    }
+
+                    .prose a, .prose code, .prose pre {
+                        word-break: break-all !important;
+                        overflow-wrap: break-word !important;
+                        hyphens: none !important;
+                    }
+
+                    /* Dark mode support */
+                    @media (prefers-color-scheme: dark) {
+                        .dark\\:bg-gray-800 { background-color: #1F2937; }
+                        .dark\\:text-white { color: #ffffff; }
+                        .dark\\:text-gray-300 { color: #D1D5DB; }
+                        .dark\\:border-gray-600 { border-color: #4B5563; }
+                    }
+                `;
+                document.head.appendChild(style);
             });
         </script>
     @endpush

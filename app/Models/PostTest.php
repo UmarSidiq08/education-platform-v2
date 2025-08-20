@@ -5,63 +5,61 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Quiz extends Model
+class PostTest extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'class_id',
+        'mentor_id',
         'title',
         'description',
-        'material_id',
-        'created_by',
         'time_limit',
-        'total_questions',
+        'passing_score',
         'is_active'
     ];
 
     protected $casts = [
         'is_active' => 'boolean',
         'time_limit' => 'integer',
-        'total_questions' => 'integer'
+        'passing_score' => 'integer'
     ];
 
-    public function material()
+   public function class()
+{
+    return $this->belongsTo(ClassModel::class, 'class_id'); // Tambahkan 'class_id'
+}
+
+    public function mentor()
     {
-        return $this->belongsTo(Material::class);
+        return $this->belongsTo(User::class, 'mentor_id');
     }
 
     public function questions()
     {
-        return $this->hasMany(Question::class)->orderBy('order');
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by');
+        return $this->hasMany(PostTestQuestion::class)->orderBy('order');
     }
 
     public function attempts()
     {
-        return $this->hasMany(QuizAttempt::class);
+        return $this->hasMany(PostTestAttempt::class);
     }
 
-    // Check apakah user sudah pernah mengerjakan quiz ini
+    public function getTotalPointsAttribute()
+    {
+        return $this->questions->sum('points');
+    }
+
     public function hasBeenAttemptedBy($userId)
     {
         return $this->attempts()->where('user_id', $userId)->exists();
     }
 
-    // Get attempt user untuk quiz ini
     public function getAttemptByUser($userId)
     {
         return $this->attempts()->where('user_id', $userId)->first();
     }
 
-    // Hitung total poin maksimal
-    public function getTotalPointsAttribute()
-    {
-        return $this->questions->sum('points');
-    }
     public function isCompletedByUser($userId)
     {
         return $this->attempts()

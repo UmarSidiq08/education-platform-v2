@@ -9,6 +9,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ClassController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\PostTestController;
 use App\Http\Controllers\NavbarMentorController;
 
 // Redirect root ke dashboard
@@ -83,6 +84,25 @@ Route::get('/reports', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
+// Route::resource('post-tests', PostTestController::class)->only(['show', 'store']);
+Route::prefix('classes/{class}')->group(function () {
+    Route::get('/post-tests/create', [PostTestController::class, 'create'])->name('post_tests.create');
+    Route::post('/post-tests', [PostTestController::class, 'store'])->name('post_tests.store'); // INI YANG DITAMBAHKAN
+});
+
+Route::prefix('post-tests')->group(function () {
+    Route::get('/{postTest}', [PostTestController::class, 'show'])->name('post_tests.show');
+    Route::post('/{postTest}/start', [PostTestController::class, 'start'])->name('post_tests.start');
+    Route::post('/{postTest}/submit', [PostTestController::class, 'submit'])->name('post_tests.submit');
+    Route::post('/{postTest}/activate', [PostTestController::class, 'activate'])->name('post_tests.activate');
+    Route::post('/{postTest}/update-timer', [PostTestController::class, 'updateTimer'])->name('post_tests.updateTimer');
+Route::post('/{postTest}/save-progress', [PostTestController::class, 'saveProgress'])->name('post_tests.saveProgress');
+});
+
+
+
+
+
     Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/classes/{id}/learn', [ClassController::class, 'learn'])->name('classes.learn');
