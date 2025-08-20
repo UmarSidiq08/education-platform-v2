@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use App\Models\Activity;
+use App\Models\ClassModel;
 
 class User extends Authenticatable
 {
-    use HasRoles, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
+
 
     /**
      * The attributes that are mass assignable.
@@ -41,6 +45,7 @@ class User extends Authenticatable
         'specialties' => 'array', // JSON to array
         'skills' => 'array', // JSON to array
         'rating' => 'decimal:2',
+        'is_verified' => 'boolean',
     ];
 
     /**
@@ -50,6 +55,48 @@ class User extends Authenticatable
     {
         return $this->role === 'guru';
     }
+    public function isMentor()
+    {
+        return $this->role === 'mentor';
+    }
+
+    public function isSiswa()
+    {
+        return $this->role === 'siswa';
+    }
+    public function canUploadVideo(): bool
+    {
+        return $this->isMentor() && $this->is_verified;
+    }
+    public function getSkillsListAttribute(): array
+    {
+        return $this->skills ?? [];
+    }
+    public function getSkillsStringAttribute(): string
+    {
+        if (!$this->skills || !is_array($this->skills)) {
+            return '';
+        }
+        return implode(', ', $this->skills);
+    }
+    public function activities()
+    {
+        return $this->hasMany(Activity::class, 'user_id');
+    }
+    public function quizAttempts()
+    {
+        return $this->hasMany(QuizAttempt::class);
+    }
+    public function classes()
+    {
+        return $this->hasMany(ClassModel::class, 'mentor_id');
+    }
+    public function mentorClasses()
+    {
+        return $this->hasMany(ClassModel::class, 'mentor_id');
+    }
+
+
 
     // Scopes for different user types
     public function scopeMentors($query)
@@ -59,7 +106,7 @@ class User extends Authenticatable
 
     public function scopeStudents($query)
     {
-        return $query->where('role', 'student');
+        return $query->where('role', 'siswa');
     }
 
     public function scopeAdmins($query)
@@ -68,15 +115,7 @@ class User extends Authenticatable
     }
 
     // Helper methods
-    public function isMentor()
-    {
-        return $this->role === 'mentor';
-    }
 
-    public function isStudent()
-    {
-        return $this->role === 'student';
-    }
 
     public function isAdmin()
     {
@@ -89,7 +128,7 @@ class User extends Authenticatable
         if ($this->avatar) {
             return asset('storage/' . $this->avatar);
         }
-        
+
         if ($this->profile_photo_path) {
             return asset('storage/' . $this->profile_photo_path);
         }
@@ -110,16 +149,11 @@ class User extends Authenticatable
     {
         return ($this->rating - floor($this->rating)) >= 0.5;
     }
-    public function quizAttempts()
-    {
-        return $this->hasMany(QuizAttempt::class);
-    }
+
+
 
     /**
      * Relationship: User has many classes as mentor (alias).
      */
-    public function mentorClasses()
-    {
-        return $this->hasMany(ClassModel::class, 'mentor_id');
-    }
+
 }

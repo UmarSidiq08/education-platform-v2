@@ -145,7 +145,8 @@
                                             <i class="fas fa-star"></i>
                                         </div>
                                         <div class="stat-content">
-                                            <span class="stat-value">{{ $material->activeQuiz->questions->sum('points') ?? 0 }}</span>
+                                            <span
+                                                class="stat-value">{{ $material->activeQuiz->questions->sum('points') ?? 0 }}</span>
                                             <span class="stat-label">Poin</span>
                                         </div>
                                     </div>
@@ -173,12 +174,14 @@
                                                         <i class="fas fa-check-circle"></i>
                                                     </div>
                                                     <div class="result-info">
-                                                        <span class="result-value">{{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}</span>
+                                                        <span
+                                                            class="result-value">{{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}</span>
                                                         <span class="result-label">Jawaban Benar</span>
                                                     </div>
                                                 </div>
                                                 <div class="result-card">
-                                                    <div class="result-icon {{ $quizAttempt->percentage >= 80 ? 'success' : ($quizAttempt->percentage >= 60 ? 'warning' : 'danger') }}">
+                                                    <div
+                                                        class="result-icon {{ $quizAttempt->percentage >= 80 ? 'success' : ($quizAttempt->percentage >= 60 ? 'warning' : 'danger') }}">
                                                         <i class="fas fa-percent"></i>
                                                     </div>
                                                     <div class="result-info">
@@ -188,7 +191,8 @@
                                                 </div>
                                             </div>
                                             <div class="quiz-actions">
-                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}" class="btn btn-outline-primary btn-lg">
+                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}"
+                                                    class="btn btn-outline-primary btn-lg">
                                                     <i class="fas fa-eye me-2"></i>Lihat Detail Jawaban
                                                 </a>
                                             </div>
@@ -201,7 +205,8 @@
                                                 <p>Uji pemahaman Anda tentang materi yang telah dipelajari</p>
                                             </div>
                                             <div class="quiz-actions">
-                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}" class="btn btn-primary btn-lg pulse-animation">
+                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}"
+                                                    class="btn btn-primary btn-lg pulse-animation">
                                                     <i class="fas fa-play me-2"></i>Mulai Quiz Sekarang
                                                 </a>
                                             </div>
@@ -217,16 +222,20 @@
                                             <p class="text-muted">Kelola dan pantau quiz untuk materi ini</p>
                                         </div>
                                         <div class="quiz-actions mentor-actions">
-                                            <a href="{{ route('quizzes.index', $material) }}" class="btn btn-info btn-lg">
+                                            <a href="{{ route('quizzes.index', $material) }}"
+                                                class="btn btn-info btn-lg">
                                                 <i class="fas fa-chart-bar me-2"></i>
                                                 <span>Lihat Statistik</span>
                                                 <small class="d-block">Analisis hasil siswa</small>
                                             </a>
-                                            <a href="{{ route('quizzes.create', $material) }}" class="btn btn-warning btn-lg">
-                                                <i class="fas fa-edit me-2"></i>
-                                                <span>Edit Quiz</span>
-                                                <small class="d-block">Ubah soal & pengaturan</small>
-                                            </a>
+                                            @if ($activeQuiz)
+                                                <a href="{{ route('quizzes.edit', [$material, $activeQuiz]) }}"
+                                                    class="btn btn-warning btn-lg">
+                                                    <i class="fas fa-edit me-2"></i>
+                                                    <span>Edit Quiz</span>
+                                                    <small class="d-block">Ubah soal & pengaturan</small>
+                                                </a>
+                                            @endif
                                         </div>
                                     </div>
                                 @endif
@@ -257,7 +266,8 @@
                                         <span>Laporan detail</span>
                                     </div>
                                 </div>
-                                <a href="{{ route('quizzes.create', $material) }}" class="btn btn-primary btn-xl shine-effect">
+                                <a href="{{ route('quizzes.create', $material) }}"
+                                    class="btn btn-primary btn-xl shine-effect">
                                     <i class="fas fa-plus me-2"></i>Buat Quiz Pertama
                                 </a>
                             </div>
@@ -875,9 +885,12 @@
         }
 
         @keyframes shimmer {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: rotate(0deg);
             }
+
             50% {
                 transform: rotate(180deg);
             }
@@ -1038,9 +1051,11 @@
             0% {
                 box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
             }
+
             50% {
                 box-shadow: 0 8px 40px rgba(102, 126, 234, 0.6);
             }
+
             100% {
                 box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
             }
@@ -1481,6 +1496,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1524,6 +1540,7 @@
 
         /* Print styles */
         @media print {
+
             .quiz-section,
             .sidebar-column,
             .action-buttons {

@@ -822,6 +822,9 @@
             let timeRemaining = timeLimit * 60; // convert to seconds
             const timerElement = document.getElementById('timer');
             const quizForm = document.getElementById('quiz-form');
+            const updateTimerUrl = "{{ route('quizzes.update-timer', $quiz) }}";
+            const quizId = "{{ $quiz->id }}";
+            const userId = "{{ Auth::id() }}";
 
             // Modal elements - menggunakan custom modal, BUKAN Bootstrap
             const confirmationModal = document.getElementById('confirmationModal');
@@ -864,8 +867,48 @@
                 }
 
                 timeRemaining--;
+
+                // Simpan waktu tersisa ke server setiap 10 detik
+                if (timeRemaining % 10 === 0) {
+                    saveTimeToServer(timeRemaining);
+                }
             }, 1000);
 
+            function saveTimeToServer(timeRemaining) {
+                fetch(updateTimerUrl, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            time_remaining: timeRemaining
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.time_up) {
+                            clearInterval(timerInterval);
+                            submitQuizDirectly();
+                        }
+                    })
+                    .catch(error => console.error('Error saving time:', error));
+            }
+
+            // Simpan waktu ketika user meninggalkan halaman
+            window.addEventListener('beforeunload', function(e) {
+                const isSubmitting = quizForm.classList.contains('submitting');
+                if (!isSubmitting && timeRemaining > 0) {
+                    // Synchronous request untuk memastikan waktu tersimpan
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', updateTimerUrl, false);
+                    xhr.setRequestHeader('Content-Type', 'application/json');
+                    xhr.setRequestHeader('X-CSRF-TOKEN', '{{ csrf_token() }}');
+                    xhr.send(JSON.stringify({
+                        time_remaining: timeRemaining
+                    }));
+                }
+            });
             // Function to show custom modal
             function showConfirmationModal() {
                 confirmationModal.classList.add('show');

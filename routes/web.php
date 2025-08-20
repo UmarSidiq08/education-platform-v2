@@ -11,7 +11,6 @@ use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\NavbarMentorController;
 
-
 // Redirect root ke dashboard
 Route::get('/', function () {
     return redirect()->route('dashboard');
@@ -90,9 +89,26 @@ Route::middleware('auth')->group(function () {
     Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');
     Route::get('materials/{material}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
     Route::get('materials/{material}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
+
     Route::post('materials/{material}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
     Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
-    Route::post('quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
+
+    // Tambahkan route edit dan update ini
+    Route::get('materials/{material}/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
+    Route::put('materials/{material}/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
+
+    Route::patch('quizzes/{quiz}/activate', [QuizController::class, 'activate'])->name('quizzes.activate');
+
+    // FIXED: Route quiz yang diperbaiki
+    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
+    Route::post('/quizzes/{quiz}/start', [QuizController::class, 'start'])->name('quizzes.start');
+    Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
+
+    // FIXED: Route untuk auto submit dan save progress - ubah method untuk konsistensi
+    Route::post('/quizzes/{quiz}/submit-auto', [QuizController::class, 'autoSubmit'])->name('quizzes.auto-submit');
+    Route::post('/quizzes/{quiz}/save-progress', [QuizController::class, 'saveProgress'])->name('quizzes.saveProgress');
+    Route::get('/quizzes/{quiz}/check-timer', [QuizController::class, 'checkTimer'])->name('quizzes.check-timer');
+    Route::post('/quizzes/{quiz}/update-timer', [QuizController::class, 'updateTimer'])->name('quizzes.update-timer');
 });
 
 /*
@@ -108,6 +124,7 @@ Route::middleware(['auth', 'role:mentor'])->group(function () {
         Route::get('/classes/{id}/edit', 'edit')->name('classes.edit');
         Route::put('/classes/{id}', 'update')->name('classes.update');
         Route::delete('/classes/{id}', 'destroy')->name('classes.destroy');
+        Route::post('/quizzes/{quiz}/activate', [QuizController::class, 'activate'])->name('quizzes.activate');
     });
 
     Route::controller(MaterialController::class)->group(function () {
@@ -134,7 +151,6 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
 Route::get('/mentor/{id}', function ($id) {
     return "Profile mentor ID: " . $id;
 })->name('mentor.profile')->middleware('auth');
-
 
 Route::get('/mentor', [MentorController::class, 'index'])->name('mentor.index');
 Route::get('/mentor/{id}', [MentorController::class, 'show'])->name('mentor.show');

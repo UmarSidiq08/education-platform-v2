@@ -73,34 +73,34 @@ class MaterialController extends Controller
             ->with('success', 'Materi berhasil dibuat!');
     }
     // Menampilkan detail materi
-   public function show(Material $material)
-{
-    $material->load(['class.mentor', 'activeQuiz.questions']);
-    $user = Auth::user();
+    public function show(Material $material)
+    {
+        $material->load(['class.mentor', 'activeQuiz.questions']);
+        $user = Auth::user();
 
-    // Kontrol akses sederhana berdasarkan role
-    if ($user->role === 'mentor') {
-        // Mentor hanya bisa akses materi kelasnya sendiri
-        if ($user->id !== $material->class->mentor_id) {
-            abort(403, 'Anda tidak memiliki akses ke materi ini.');
+        // Kontrol akses sederhana berdasarkan role
+        if ($user->role === 'mentor') {
+            // Mentor hanya bisa akses materi kelasnya sendiri
+            if ($user->id !== $material->class->mentor_id) {
+                abort(403, 'Anda tidak memiliki akses ke materi ini.');
+            }
         }
-    }
-    // Untuk siswa, izinkan akses ke semua materi
-    elseif ($user->role === 'siswa') {
-        // Siswa bisa akses semua materi
-    }
-    else {
-        abort(403, 'Akses ditolak.');
-    }
+        // Untuk siswa, izinkan akses ke semua materi
+        elseif ($user->role === 'siswa') {
+            // Siswa bisa akses semua materi
+        } else {
+            abort(403, 'Akses ditolak.');
+        }
 
-    // Jika ada quiz aktif, cek status attempt user
-    $quizAttempt = null;
-    if ($material->activeQuiz && $user->role === 'siswa') {
-        $quizAttempt = $material->activeQuiz->getAttemptByUser($user->id);
-    }
+        // Jika ada quiz aktif, cek status attempt user
+        $quizAttempt = null;
+        $activeQuiz = $material->quizzes()->where('is_active', true)->first();
+        if ($material->activeQuiz && $user->role === 'siswa') {
+            $quizAttempt = $material->activeQuiz->getAttemptByUser($user->id);
+        }
 
-    return view('materials.show', compact('material', 'quizAttempt'));
-}
+        return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz'));
+    }
     // Form edit materi
     public function edit(Material $material)
     {
