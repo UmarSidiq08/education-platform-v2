@@ -31,7 +31,9 @@
                             <span class="stat-label">Rating</span>
                         </div>
                     </div>
-                    <button class="slide-cta-btn">Mulai Belajar <span>→</span></button>
+                    <a href="{{ route('navbar.classes') }}">
+                        <button class="slide-cta-btn">Mulai Belajar <span>→</span></button>
+                    </a>
                 </div>
                 <div class="slide-visual">
                     <img src="{{ asset('images/gambar1.png') }}" alt="Leaderboard Illustration" class="leaderboard-image" >
@@ -59,7 +61,9 @@
                             <span class="stat-label">Success</span>
                         </div>
                     </div>
-                    <button class="slide-cta-btn">Find Mentor <span>→</span></button>
+                    <a href="{{ route('navbar.mentor') }}" class="slide-cta-btn">
+                        <span>Find Mentor</span> <span>→</span>
+                    </a>
                 </div>
                 <div class="slide-visual">
                                         <img src="{{ asset('images/GAMBAR2.png') }}" alt="Leaderboard Illustration" class="leaderboard-image">
