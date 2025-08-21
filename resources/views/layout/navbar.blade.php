@@ -32,6 +32,8 @@
                                 <span class="user-name">Guest</span>
                                 <div class="user-avatar">👤</div>
                             @endif
+
+                            
                             <span class="dropdown-arrow">▼</span>
                         </div>
 
@@ -67,6 +69,7 @@
                                     Sign Up
                                 </a>
                             @endif
+                            
                         </div>
                     </div>
 
