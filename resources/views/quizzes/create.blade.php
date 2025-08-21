@@ -1189,7 +1189,7 @@ body {
         box-shadow: none;
         border: 1px solid #ccc;
     }
-    
+
     .question-card {
         break-inside: avoid;
         margin-bottom: 20px;

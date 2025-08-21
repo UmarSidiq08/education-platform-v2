@@ -10,10 +10,10 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <h1 class="text-3xl font-bold text-white mb-2">
-                                <i class="fas fa-graduation-cap mr-3"></i>Buat Post Test Baru
+                                <i class="fas fa-edit mr-3"></i>Edit Post Test
                             </h1>
                             <p class="text-blue-100">
-                                Buat soal evaluasi akhir untuk mengukur pemahaman siswa terhadap seluruh materi
+                                Edit soal evaluasi akhir untuk kelas {{ $class->name }}
                             </p>
                         </div>
                         <div class="hidden md:block">
@@ -29,8 +29,9 @@
         <!-- Main Form -->
         <div class="bg-white rounded-xl shadow-lg border border-gray-200">
             <div class="p-8">
-                <form action="{{ route('post_tests.store', $class) }}" method="POST" id="postTestForm">
+                <form action="{{ route('post_tests.update', [$class, $postTest]) }}" method="POST" id="postTestForm">
                     @csrf
+                    @method('PUT')
 
                     <!-- Basic Information -->
                     <div class="mb-8">
@@ -48,7 +49,7 @@
                                        class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('title') border-red-500 @enderror"
                                        id="title"
                                        name="title"
-                                       value="{{ old('title') }}"
+                                       value="{{ old('title', $postTest->title) }}"
                                        placeholder="Masukkan judul post test yang menarik..."
                                        required>
                                 @error('title')
@@ -65,7 +66,7 @@
                                           id="description"
                                           name="description"
                                           rows="3"
-                                          placeholder="Berikan deskripsi singkat tentang post test ini...">{{ old('description') }}</textarea>
+                                          placeholder="Berikan deskripsi singkat tentang post test ini...">{{ old('description', $postTest->description) }}</textarea>
                                 @error('description')
                                     <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                                 @enderror
@@ -81,7 +82,7 @@
                                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('time_limit') border-red-500 @enderror"
                                            id="time_limit"
                                            name="time_limit"
-                                           value="{{ old('time_limit', 30) }}"
+                                           value="{{ old('time_limit', $postTest->time_limit) }}"
                                            min="1"
                                            required>
                                     <div class="absolute inset-y-0 right-0 flex items-center pr-3">
@@ -103,7 +104,7 @@
                                            class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('passing_score') border-red-500 @enderror"
                                            id="passing_score"
                                            name="passing_score"
-                                           value="{{ old('passing_score', 80) }}"
+                                           value="{{ old('passing_score', $postTest->passing_score) }}"
                                            min="1"
                                            max="100"
                                            required>
@@ -132,7 +133,7 @@
                         </div>
 
                         <div id="questions-container" class="space-y-6">
-                            <!-- Questions will be added here by JavaScript -->
+                            <!-- Existing questions will be loaded here -->
                         </div>
                     </div>
 
@@ -144,7 +145,7 @@
                         </a>
                         <button type="submit"
                                 class="flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-lg font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg">
-                            <i class="fas fa-save mr-2"></i>Simpan Post Test
+                            <i class="fas fa-save mr-2"></i>Update Post Test
                         </button>
                     </div>
                 </form>
@@ -313,10 +314,66 @@ document.addEventListener('DOMContentLoaded', function() {
     const questionTemplate = document.getElementById('question-template');
     const addQuestionBtn = document.getElementById('add-question');
 
-    // Add first question automatically
-    addQuestion();
+    // Load existing questions
+    const existingQuestions = @json($postTest->questions->sortBy('order'));
+
+    if (existingQuestions.length > 0) {
+        existingQuestions.forEach((question, index) => {
+            addExistingQuestion(question, index);
+        });
+    } else {
+        // Add first question automatically if no existing questions
+        addQuestion();
+    }
 
     addQuestionBtn.addEventListener('click', addQuestion);
+
+    function addExistingQuestion(questionData, index) {
+        const questionClone = questionTemplate.content.cloneNode(true);
+        const questionElement = questionClone.querySelector('.question-card');
+
+        // Update question number
+        const questionNumber = questionElement.querySelector('.question-number');
+        questionNumber.textContent = index + 1;
+
+        // Update all name attributes with correct index
+        updateQuestionNameAttributes(questionElement, index);
+
+        // Populate with existing data
+        questionElement.querySelector('.question-text').value = questionData.question;
+        questionElement.querySelector('.question-points').value = questionData.points;
+
+        // Populate options
+        const optionInputs = questionElement.querySelectorAll('input[type="text"]');
+        questionData.options.forEach((option, optionIndex) => {
+            if (optionInputs[optionIndex]) {
+                optionInputs[optionIndex].value = option;
+            }
+        });
+
+        // Set correct answer
+        const correctAnswerRadio = questionElement.querySelector(`input[name="questions[${index}][correct_answer]"][value="${questionData.correct_answer}"]`);
+        if (correctAnswerRadio) {
+            correctAnswerRadio.checked = true;
+        }
+
+        // Handle remove button
+        questionElement.querySelector('.remove-question').addEventListener('click', function() {
+            if (document.querySelectorAll('.question-card').length > 1) {
+                questionElement.style.transform = 'scale(0.95)';
+                questionElement.style.opacity = '0';
+                setTimeout(() => {
+                    questionElement.remove();
+                    updateAllQuestionIndexes();
+                }, 200);
+            } else {
+                showAlert('Minimal harus ada 1 pertanyaan', 'warning');
+            }
+        });
+
+        questionsContainer.appendChild(questionElement);
+        questionCount = Math.max(questionCount, index + 1);
+    }
 
     function addQuestion() {
         const questionClone = questionTemplate.content.cloneNode(true);
@@ -327,28 +384,18 @@ document.addEventListener('DOMContentLoaded', function() {
         questionNumber.textContent = questionCount + 1;
 
         // Update all name attributes with correct index
-        const textareas = questionElement.querySelectorAll('textarea');
-        const inputs = questionElement.querySelectorAll('input');
-        const selects = questionElement.querySelectorAll('select');
-
-        [...textareas, ...inputs, ...selects].forEach(element => {
-            if (element.name) {
-                element.name = element.name.replace(/questions\[\d+\]/g, `questions[${questionCount}]`);
-            }
-        });
+        updateQuestionNameAttributes(questionElement, questionCount);
 
         // Handle remove button
         questionElement.querySelector('.remove-question').addEventListener('click', function() {
             if (document.querySelectorAll('.question-card').length > 1) {
-                // Fade out animation
                 questionElement.style.transform = 'scale(0.95)';
                 questionElement.style.opacity = '0';
                 setTimeout(() => {
                     questionElement.remove();
-                    updateQuestionNumbers();
+                    updateAllQuestionIndexes();
                 }, 200);
             } else {
-                // Show modern alert
                 showAlert('Minimal harus ada 1 pertanyaan', 'warning');
             }
         });
@@ -367,14 +414,32 @@ document.addEventListener('DOMContentLoaded', function() {
         questionCount++;
     }
 
-    function updateQuestionNumbers() {
-        document.querySelectorAll('.question-card').forEach((card, index) => {
-            card.querySelector('.question-number').textContent = index + 1;
+    function updateQuestionNameAttributes(questionElement, index) {
+        const textareas = questionElement.querySelectorAll('textarea');
+        const inputs = questionElement.querySelectorAll('input');
+        const selects = questionElement.querySelectorAll('select');
+
+        [...textareas, ...inputs, ...selects].forEach(element => {
+            if (element.name) {
+                element.name = element.name.replace(/questions\[\d+\]/g, `questions[${index}]`);
+            }
         });
     }
 
+    function updateAllQuestionIndexes() {
+        document.querySelectorAll('.question-card').forEach((card, index) => {
+            // Update question number display
+            card.querySelector('.question-number').textContent = index + 1;
+
+            // Update all name attributes
+            updateQuestionNameAttributes(card, index);
+        });
+
+        // Update questionCount to reflect current number of questions
+        questionCount = document.querySelectorAll('.question-card').length;
+    }
+
     function showAlert(message, type = 'info') {
-        // Create alert element
         const alertDiv = document.createElement('div');
         const bgColor = type === 'warning' ? 'bg-yellow-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
 
@@ -388,12 +453,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
         document.body.appendChild(alertDiv);
 
-        // Show alert
         setTimeout(() => {
             alertDiv.classList.remove('translate-x-full');
         }, 100);
 
-        // Hide alert after 3 seconds
         setTimeout(() => {
             alertDiv.classList.add('translate-x-full');
             setTimeout(() => {
@@ -431,10 +494,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (!isValid) {
             e.preventDefault();
         } else {
-            // Show loading state
             const submitBtn = this.querySelector('button[type="submit"]');
             const originalText = submitBtn.innerHTML;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Menyimpan...';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Mengupdate...';
             submitBtn.disabled = true;
         }
     });

@@ -5,14 +5,16 @@
         <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 xl:grid-cols-[1fr_350px] gap-8">
             <!-- Main Content -->
             <div class="min-w-0 break-words">
-                <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl mb-8 break-words">
+                <div
+                    class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl mb-8 break-words">
                     <!-- Header -->
-                    <div class="p-10 border-b border-gray-200 bg-gradient-to-br from-indigo-500 to-purple-600 text-white relative overflow-hidden">
+                    <div
+                        class="p-10 border-b border-gray-200 bg-gradient-to-br from-indigo-500 to-purple-600 text-white relative overflow-hidden">
                         <nav aria-label="breadcrumb">
                             <ol class="flex items-center space-x-2 mb-6">
                                 <li>
                                     <a href="{{ route('classes.learn', $material->class->id) }}"
-                                       class="flex items-center text-white/80 hover:text-white transition-colors duration-300 font-medium">
+                                        class="flex items-center text-white/80 hover:text-white transition-colors duration-300 font-medium">
                                         <i class="fas fa-arrow-left mr-2"></i>{{ $material->class->name }}
                                     </a>
                                 </li>
@@ -32,11 +34,13 @@
                                 {{ $material->class->mentor->name }}
                             </span>
                             @if ($material->is_published)
-                                <span class="inline-flex items-center bg-green-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
+                                <span
+                                    class="inline-flex items-center bg-green-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
                                     <i class="fas fa-check-circle mr-2"></i>Published
                                 </span>
                             @else
-                                <span class="inline-flex items-center bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
+                                <span
+                                    class="inline-flex items-center bg-yellow-500 text-white px-4 py-2 rounded-full font-semibold text-sm">
                                     <i class="fas fa-clock mr-2"></i>Draft
                                 </span>
                             @endif
@@ -55,30 +59,33 @@
                             <div class="max-w-full mx-auto rounded-2xl overflow-hidden shadow-2xl">
                                 @if ($material->getVideoType() === 'file')
                                     <video controls poster="{{ $material->video_thumbnail_url }}"
-                                           class="w-full aspect-video rounded-2xl">
+                                        class="w-full aspect-video rounded-2xl">
                                         <source src="{{ $material->video_url_for_display }}" type="video/mp4">
                                         Browser tidak mendukung pemutaran video.
                                     </video>
                                 @elseif($material->isVideoEmbeddable())
                                     <div class="relative w-full aspect-video bg-cover bg-center cursor-pointer rounded-2xl overflow-hidden"
-                                         style="background-image: url('{{ $material->video_thumbnail_url }}')"
-                                         onclick="playEmbeddedVideo(this)">
+                                        style="background-image: url('{{ $material->video_thumbnail_url }}')"
+                                        onclick="playEmbeddedVideo(this)">
                                         <div class="absolute inset-0 flex items-center justify-center">
-                                            <div class="text-8xl text-white/90 transition-all duration-300 hover:text-white hover:scale-110 drop-shadow-lg">
+                                            <div
+                                                class="text-8xl text-white/90 transition-all duration-300 hover:text-white hover:scale-110 drop-shadow-lg">
                                                 <i class="fas fa-play-circle"></i>
                                             </div>
                                         </div>
                                         <iframe src="{{ $material->video_url }}" frameborder="0" allowfullscreen
-                                                class="w-full aspect-video rounded-2xl hidden"></iframe>
+                                            class="w-full aspect-video rounded-2xl hidden"></iframe>
                                     </div>
                                 @else
-                                    <div class="aspect-video flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-center p-12 rounded-2xl">
+                                    <div
+                                        class="aspect-video flex items-center justify-center bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-center p-12 rounded-2xl">
                                         <div>
                                             <i class="fas fa-play-circle text-6xl mb-6"></i>
                                             <h4 class="text-2xl font-bold mb-4">Video Eksternal</h4>
-                                            <p class="text-white/80 mb-8 text-lg">Klik untuk menonton video di platform eksternal</p>
+                                            <p class="text-white/80 mb-8 text-lg">Klik untuk menonton video di platform
+                                                eksternal</p>
                                             <a href="{{ $material->video_url }}" target="_blank"
-                                               class="inline-flex items-center bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors duration-300">
+                                                class="inline-flex items-center bg-white text-indigo-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-gray-100 transition-colors duration-300">
                                                 <i class="fas fa-external-link-alt mr-3"></i>Tonton Video
                                             </a>
                                         </div>
@@ -102,11 +109,16 @@
                 <!-- Enhanced Quiz Section -->
                 @if ($material->activeQuiz)
                     <div class="mt-8 mb-16">
-                        <div class="bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl border-2 border-transparent hover:border-indigo-500">
-                            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-8 text-white flex items-center gap-6 relative overflow-hidden">
-                                <div class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full transform translate-x-1/2 -translate-y-1/2"></div>
+                        <div
+                            class="bg-white rounded-3xl shadow-2xl overflow-hidden transition-all duration-300 hover:shadow-3xl border-2 border-transparent hover:border-indigo-500">
+                            <div
+                                class="bg-gradient-to-br from-indigo-500 to-purple-600 p-8 text-white flex items-center gap-6 relative overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-48 h-48 bg-white/10 rounded-full transform translate-x-1/2 -translate-y-1/2">
+                                </div>
 
-                                <div class="bg-white/20 w-20 h-20 rounded-3xl flex items-center justify-center text-3xl backdrop-blur border-2 border-white/30 shrink-0 relative z-10">
+                                <div
+                                    class="bg-white/20 w-20 h-20 rounded-3xl flex items-center justify-center text-3xl backdrop-blur border-2 border-white/30 shrink-0 relative z-10">
                                     <i class="fas fa-brain"></i>
                                 </div>
 
@@ -119,8 +131,10 @@
 
                                 @if (auth()->user()->role === 'siswa' && $quizAttempt)
                                     <div class="relative z-10">
-                                        <div class="bg-white/20 w-20 h-20 rounded-full flex flex-col items-center justify-center backdrop-blur border-3 border-white/30">
-                                            <span class="text-xl font-black leading-none">{{ $quizAttempt->percentage }}%</span>
+                                        <div
+                                            class="bg-white/20 w-20 h-20 rounded-full flex flex-col items-center justify-center backdrop-blur border-3 border-white/30">
+                                            <span
+                                                class="text-xl font-black leading-none">{{ $quizAttempt->percentage }}%</span>
                                             <span class="text-xs opacity-90 uppercase font-semibold">Skor</span>
                                         </div>
                                     </div>
@@ -129,98 +143,175 @@
 
                             <div class="p-10">
                                 <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                                    <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
-                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
+                                    <div
+                                        class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
                                             <i class="fas fa-question-circle"></i>
                                         </div>
                                         <div>
-                                            <div class="text-2xl font-bold text-gray-900">{{ $material->activeQuiz->total_questions }}</div>
-                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Soal</div>
+                                            <div class="text-2xl font-bold text-gray-900">
+                                                {{ $material->activeQuiz->total_questions }}</div>
+                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Soal
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
-                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
+                                    <div
+                                        class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
                                             <i class="fas fa-clock"></i>
                                         </div>
                                         <div>
-                                            <div class="text-2xl font-bold text-gray-900">{{ $material->activeQuiz->time_limit }}</div>
-                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Menit</div>
+                                            <div class="text-2xl font-bold text-gray-900">
+                                                {{ $material->activeQuiz->time_limit }}</div>
+                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Menit
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
-                                        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
+                                    <div
+                                        class="flex items-center gap-4 p-6 bg-gray-50 rounded-2xl border border-gray-100 transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1">
+                                        <div
+                                            class="w-12 h-12 rounded-xl bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center text-xl">
                                             <i class="fas fa-star"></i>
                                         </div>
                                         <div>
-                                            <div class="text-2xl font-bold text-gray-900">{{ $material->activeQuiz->questions->sum('points') ?? 0 }}</div>
-                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Poin</div>
+                                            <div class="text-2xl font-bold text-gray-900">
+                                                {{ $material->activeQuiz->questions->sum('points') ?? 0 }}</div>
+                                            <div class="text-gray-500 text-sm font-medium uppercase tracking-wide">Poin
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
 
+                                <!-- Section untuk menampilkan status quiz siswa - UPDATED untuk multiple attempts -->
                                 @if (auth()->user()->role === 'siswa')
                                     @if ($quizAttempt)
-                                        <!-- Sudah mengerjakan - Detail Results -->
-                                        <div class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200">
+                                        <!-- Sudah mengerjakan - Detail Results dengan info multiple attempts -->
+                                        <div
+                                            class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200">
                                             <div class="mb-6">
                                                 <h5 class="flex items-center text-xl font-semibold text-gray-600">
-                                                    <i class="fas fa-chart-line mr-3"></i>Hasil Quiz Anda
+                                                    <i class="fas fa-chart-line mr-3"></i>Hasil Quiz Terbaik Anda
                                                 </h5>
+                                                @if ($material->activeQuiz->getTotalAttemptsByUser(auth()->id()) > 1)
+                                                    <p class="text-sm text-gray-500 mt-1">
+                                                        Dari
+                                                        {{ $material->activeQuiz->getTotalAttemptsByUser(auth()->id()) }}
+                                                        percobaan
+                                                        <span
+                                                            class="inline-flex items-center ml-2 px-2 py-1 bg-yellow-100 text-yellow-800 rounded-full text-xs font-semibold">
+                                                            <i class="fas fa-crown mr-1"></i> SKOR TERTINGGI
+                                                        </span>
+                                                    </p>
+                                                @endif
                                             </div>
+
                                             <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                                                <div class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 text-white flex items-center justify-center text-xl">
+                                                <div
+                                                    class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                                                    <div
+                                                        class="w-12 h-12 rounded-full bg-gradient-to-br from-green-400 to-green-600 text-white flex items-center justify-center text-xl">
                                                         <i class="fas fa-trophy"></i>
                                                     </div>
                                                     <div>
-                                                        <div class="text-xl font-bold text-gray-900">{{ $quizAttempt->score }}</div>
+                                                        <div class="text-xl font-bold text-gray-900">
+                                                            {{ $quizAttempt->score }}</div>
                                                         <div class="text-gray-500 text-sm font-medium">Total Poin</div>
                                                     </div>
                                                 </div>
-                                                <div class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center text-xl">
+
+                                                <div
+                                                    class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                                                    <div
+                                                        class="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 text-white flex items-center justify-center text-xl">
                                                         <i class="fas fa-check-circle"></i>
                                                     </div>
                                                     <div>
-                                                        <div class="text-xl font-bold text-gray-900">{{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}</div>
+                                                        <div class="text-xl font-bold text-gray-900">
+                                                            {{ $quizAttempt->correct_answers }}/{{ $quizAttempt->total_questions }}
+                                                        </div>
                                                         <div class="text-gray-500 text-sm font-medium">Jawaban Benar</div>
                                                     </div>
                                                 </div>
-                                                <div class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
-                                                    <div class="w-12 h-12 rounded-full bg-gradient-to-br {{ $quizAttempt->percentage >= 80 ? 'from-green-400 to-green-600' : ($quizAttempt->percentage >= 60 ? 'from-yellow-400 to-yellow-600' : 'from-red-400 to-red-600') }} text-white flex items-center justify-center text-xl">
+
+                                                <div
+                                                    class="bg-white p-6 rounded-xl flex items-center gap-4 shadow-lg border border-gray-100 transition-all duration-300 hover:shadow-xl hover:-translate-y-1">
+                                                    <div
+                                                        class="w-12 h-12 rounded-full bg-gradient-to-br {{ $quizAttempt->percentage >= 80 ? 'from-green-400 to-green-600' : ($quizAttempt->percentage >= 60 ? 'from-yellow-400 to-yellow-600' : 'from-red-400 to-red-600') }} text-white flex items-center justify-center text-xl">
                                                         <i class="fas fa-percent"></i>
                                                     </div>
                                                     <div>
-                                                        <div class="text-xl font-bold text-gray-900">{{ $quizAttempt->percentage }}%</div>
+                                                        <div class="text-xl font-bold text-gray-900">
+                                                            {{ $quizAttempt->percentage }}%</div>
                                                         <div class="text-gray-500 text-sm font-medium">Persentase</div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="flex justify-center">
+
+                                            <div class="flex justify-center gap-4 flex-wrap">
                                                 <a href="{{ route('quizzes.show', $material->activeQuiz) }}"
-                                                   class="inline-flex items-center px-8 py-4 bg-transparent border-2 border-indigo-500 text-indigo-500 rounded-xl font-semibold text-lg transition-all duration-300 hover:bg-indigo-500 hover:text-white hover:-translate-y-1 hover:shadow-lg">
-                                                    <i class="fas fa-eye mr-3"></i>Lihat Detail Jawaban
+                                                    class="inline-flex items-center px-8 py-4 bg-transparent border-2 border-indigo-500 text-indigo-500 rounded-xl font-semibold text-lg transition-all duration-300 hover:bg-indigo-500 hover:text-white hover:-translate-y-1 hover:shadow-lg">
+                                                    <i class="fas fa-eye mr-3"></i>Lihat Detail & Riwayat
                                                 </a>
+
+                                                <form action="{{ route('quizzes.start', $activeQuiz) }}" method="POST"
+                                                    class="inline">
+                                                    @csrf
+                                                    <button type="submit"
+                                                        class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
+                                                        <i class="fas fa-redo mr-2"></i> Coba Lagi
+                                                    </button>
+                                                </form>
                                             </div>
+
+                                            @if ($quizAttempt->percentage < 70)
+                                                <div class="mt-6 p-4 bg-orange-50 border border-orange-200 rounded-xl">
+                                                    <div class="flex items-center text-orange-800">
+                                                        <i class="fas fa-lightbulb mr-2"></i>
+                                                        <span class="font-semibold">Tips:</span>
+                                                    </div>
+                                                    <p class="text-orange-700 mt-1">Nilai Anda masih bisa ditingkatkan!
+                                                        Pelajari kembali materi dan coba quiz lagi untuk mendapatkan skor
+                                                        yang lebih baik.</p>
+                                                </div>
+                                            @elseif($quizAttempt->percentage >= 90)
+                                                <div class="mt-6 p-4 bg-green-50 border border-green-200 rounded-xl">
+                                                    <div class="flex items-center text-green-800">
+                                                        <i class="fas fa-star mr-2"></i>
+                                                        <span class="font-semibold">Excellent!</span>
+                                                    </div>
+                                                    <p class="text-green-700 mt-1">Nilai Anda sangat baik! Anda dapat
+                                                        mencoba lagi untuk mempertahankan atau meningkatkan skor ini.</p>
+                                                </div>
+                                            @endif
                                         </div>
                                     @else
                                         <!-- Belum mengerjakan - Call to Action -->
-                                        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-10 rounded-2xl text-center relative overflow-hidden">
-                                            <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse"></div>
+                                        <div
+                                            class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white p-10 rounded-2xl text-center relative overflow-hidden">
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse">
+                                            </div>
                                             <div class="relative z-10 mb-8">
                                                 <h5 class="text-2xl font-bold mb-2">Siap untuk mengerjakan quiz?</h5>
-                                                <p class="text-white/90 text-lg">Uji pemahaman Anda tentang materi yang telah dipelajari</p>
+                                                <p class="text-white/90 text-lg">Uji pemahaman Anda tentang materi yang
+                                                    telah dipelajari</p>
+                                                <p class="text-white/75 text-sm mt-2">* Anda dapat mengerjakan quiz
+                                                    berulang kali, skor tertinggi akan menjadi nilai akhir</p>
                                             </div>
                                             <div class="relative z-10">
-                                                <a href="{{ route('quizzes.show', $material->activeQuiz) }}"
-                                                   class="inline-flex items-center px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl animate-pulse">
-                                                    <i class="fas fa-play mr-3"></i>Mulai Quiz Sekarang
-                                                </a>
+                                                 <form action="{{ route('quizzes.start', $activeQuiz) }}" method="POST"
+                                                      class="inline-flex items-center px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl animate-pulse">
+                                                    @csrf
+                                                    <button type="submit">
+                                                        <i class="fas fa-play mr-3"></i> Mulai Quiz Sekarang
+                                                    </button>
+                                                </form>
                                             </div>
                                         </div>
                                     @endif
                                 @endif
-
                                 @if (auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
                                     <!-- Mentor Actions -->
                                     <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100">
@@ -232,14 +323,14 @@
                                         </div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <a href="{{ route('quizzes.index', $material) }}"
-                                               class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                                class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-blue-500 to-blue-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                                 <i class="fas fa-chart-bar text-2xl mb-2"></i>
                                                 <span class="font-semibold mb-1">Lihat Statistik</span>
                                                 <small class="text-blue-100 text-sm">Analisis hasil siswa</small>
                                             </a>
                                             @if ($activeQuiz)
                                                 <a href="{{ route('quizzes.edit', [$material, $activeQuiz]) }}"
-                                                   class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                                    class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                                     <i class="fas fa-edit text-2xl mb-2"></i>
                                                     <span class="font-semibold mb-1">Edit Quiz</span>
                                                     <small class="text-yellow-100 text-sm">Ubah soal & pengaturan</small>
@@ -254,12 +345,15 @@
                 @elseif(auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
                     <!-- No Quiz - Create New -->
                     <div class="mt-8 mb-16">
-                        <div class="bg-white rounded-3xl p-12 text-center shadow-2xl border-2 border-dashed border-gray-200 transition-all duration-300 hover:border-indigo-500 hover:shadow-3xl">
-                            <div class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-5xl text-white shadow-2xl">
+                        <div
+                            class="bg-white rounded-3xl p-12 text-center shadow-2xl border-2 border-dashed border-gray-200 transition-all duration-300 hover:border-indigo-500 hover:shadow-3xl">
+                            <div
+                                class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-5xl text-white shadow-2xl">
                                 <i class="fas fa-lightbulb"></i>
                             </div>
                             <h4 class="text-gray-900 font-bold mb-4 text-2xl">Tingkatkan Pembelajaran dengan Quiz</h4>
-                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat quiz interaktif untuk membantu siswa menguji pemahaman mereka tentang materi ini</p>
+                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat quiz interaktif untuk membantu siswa
+                                menguji pemahaman mereka tentang materi ini</p>
                             <div class="flex justify-center gap-8 mb-10 flex-wrap">
                                 <div class="flex items-center text-gray-600 font-medium">
                                     <i class="fas fa-check text-green-500 mr-3"></i>
@@ -275,8 +369,9 @@
                                 </div>
                             </div>
                             <a href="{{ route('quizzes.create', $material) }}"
-                               class="inline-flex items-center px-12 py-5 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl relative overflow-hidden group">
-                                <span class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600"></span>
+                                class="inline-flex items-center px-12 py-5 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-2xl font-bold text-xl transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl relative overflow-hidden group">
+                                <span
+                                    class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600"></span>
                                 <i class="fas fa-plus mr-3 relative z-10"></i>
                                 <span class="relative z-10">Buat Quiz Pertama</span>
                             </a>
@@ -289,7 +384,8 @@
             <div class="min-w-0 mb-16">
                 <div class="sticky top-8 max-h-[calc(100vh-4rem)] overflow-y-auto space-y-6">
                     <!-- Class Info -->
-                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                    <div
+                        class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
                         <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-5">
                             <h6 class="flex items-center font-semibold text-gray-600">
                                 <i class="fas fa-graduation-cap mr-3"></i>Informasi Kelas
@@ -297,7 +393,8 @@
                         </div>
                         <div class="p-6">
                             <div class="flex items-center mb-4">
-                                <div class="w-15 h-15 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mr-4 shadow-xl">
+                                <div
+                                    class="w-15 h-15 rounded-2xl bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white font-bold text-lg mr-4 shadow-xl">
                                     {{ substr($material->class->name, 0, 2) }}
                                 </div>
                                 <div>
@@ -312,7 +409,8 @@
                     </div>
 
                     <!-- Material Details -->
-                    <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                    <div
+                        class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
                         <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-5">
                             <h6 class="flex items-center font-semibold text-gray-600">
                                 <i class="fas fa-info-circle mr-3"></i>Detail Materi
@@ -323,22 +421,26 @@
                                 <span class="font-semibold text-gray-500 text-sm">Status:</span>
                                 <span>
                                     @if ($material->is_published)
-                                        <span class="inline-flex items-center bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Published</span>
+                                        <span
+                                            class="inline-flex items-center bg-green-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Published</span>
                                     @else
-                                        <span class="inline-flex items-center bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Draft</span>
+                                        <span
+                                            class="inline-flex items-center bg-yellow-500 text-white px-3 py-1 rounded-full text-xs font-semibold">Draft</span>
                                     @endif
                                 </span>
                             </div>
 
                             <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
                                 <span class="font-semibold text-gray-500 text-sm">Dibuat:</span>
-                                <span class="text-gray-600 text-sm font-medium">{{ $material->created_at->format('d M Y, H:i') }}</span>
+                                <span
+                                    class="text-gray-600 text-sm font-medium">{{ $material->created_at->format('d M Y, H:i') }}</span>
                             </div>
 
                             @if ($material->updated_at != $material->created_at)
                                 <div class="flex justify-between items-center mb-4 pb-3 border-b border-gray-100">
                                     <span class="font-semibold text-gray-500 text-sm">Diperbarui:</span>
-                                    <span class="text-gray-600 text-sm font-medium">{{ $material->updated_at->format('d M Y, H:i') }}</span>
+                                    <span
+                                        class="text-gray-600 text-sm font-medium">{{ $material->updated_at->format('d M Y, H:i') }}</span>
                                 </div>
                             @endif
 
@@ -356,7 +458,8 @@
 
                     <!-- Mentor Actions -->
                     @if (auth()->id() === $material->class->mentor_id)
-                        <div class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
+                        <div
+                            class="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl">
                             <div class="bg-gradient-to-br from-gray-50 to-gray-100 border-b border-gray-200 px-6 py-5">
                                 <h6 class="flex items-center font-semibold text-gray-600">
                                     <i class="fas fa-cogs mr-3"></i>Aksi Mentor
@@ -365,16 +468,16 @@
                             <div class="p-6">
                                 <div class="space-y-3">
                                     <a href="{{ route('materials.edit', $material) }}"
-                                       class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                        class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                         <i class="fas fa-edit mr-3"></i>Edit Materi
                                     </a>
 
                                     <form action="{{ route('materials.destroy', $material) }}" method="POST"
-                                          onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
+                                        onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit"
-                                                class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                            class="w-full inline-flex items-center justify-center px-4 py-3 bg-gradient-to-br from-red-500 to-red-600 text-white rounded-xl font-semibold transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                             <i class="fas fa-trash mr-3"></i>Hapus Materi
                                         </button>
                                     </form>

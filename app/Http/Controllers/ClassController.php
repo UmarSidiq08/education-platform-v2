@@ -110,35 +110,66 @@ class ClassController extends Controller
         return redirect()->route('classes.my')
             ->with('success', 'Class deleted successfully!');
     }
+
+    // UPDATED: Method learn dengan logika completion 80%
     public function learn($id)
     {
-        $class = ClassModel::with(['materials' => function ($query) {
-            $query->orderBy('created_at', 'asc');
-        }])->findOrFail($id);
+        $class = ClassModel::with([
+            'materials' => function ($query) {
+                $query->orderBy('created_at', 'asc');
+            },
+            'materials.quizzes' => function ($query) {
+                $query->where('is_active', true);
+            }
+        ])->findOrFail($id);
+
+        // UPDATED: Hitung progress berdasarkan completion 80%
+        $totalMaterials = $class->materials->count();
+        $completedMaterials = 0;
+        $progressPercentage = 0;
+
+        if ($totalMaterials > 0) {
+            foreach ($class->materials as $material) {
+                $activeQuiz = $material->quizzes->where('is_active', true)->first();
+
+                // UPDATED: Material dianggap selesai jika ada quiz dan user mencapai ≥80%
+                if ($activeQuiz && $activeQuiz->isCompletedByUser(auth()->id())) {
+                    $completedMaterials++;
+                }
+                // Jika tidak ada quiz aktif, material dianggap bisa diselesaikan tanpa syarat khusus
+                // (opsional: Anda bisa ubah logika ini sesuai kebutuhan)
+            }
+
+            $progressPercentage = round(($completedMaterials / $totalMaterials) * 100);
+        }
 
         // Cek role dan kepemilikan kelas
         if (auth()->user()->role === 'siswa') {
-            // Siswa: hanya melihat materi untuk belajar
             return view('classes.learn', [
                 'class' => $class,
-                'isMentorOwner' => false
+                'isMentorOwner' => false,
+                'totalMaterials' => $totalMaterials,
+                'completedMaterials' => $completedMaterials,
+                'progressPercentage' => $progressPercentage
             ]);
         }
 
         if (auth()->user()->role === 'mentor') {
             if ($class->mentor_id === auth()->id()) {
-                // Mentor pemilik kelas: melihat halaman seperti siswa
-                // tapi nanti di Blade bisa bedakan pakai $isMentorOwner = true
                 return view('classes.learn', [
                     'class' => $class,
-                    'isMentorOwner' => true
+                    'isMentorOwner' => true,
+                    'totalMaterials' => $totalMaterials,
+                    'completedMaterials' => $completedMaterials,
+                    'progressPercentage' => $progressPercentage
                 ]);
             } else {
-                // Mentor tapi bukan pemilik kelas → treat seperti siswa
                 return view('classes.learn', [
                     'class' => $class,
-                    'isMentorOwner' => false
-                    
+                    'isMentorOwner' => false,
+                    'totalMaterials' => $totalMaterials,
+                    'completedMaterials' => $completedMaterials,
+                    'progressPercentage' => $progressPercentage
                 ]);
             }
         }

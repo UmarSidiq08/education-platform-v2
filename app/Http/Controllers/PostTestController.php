@@ -90,12 +90,10 @@ class PostTestController extends Controller
 
         // Cek apakah user berhak mengakses post test
         if ($user->role === 'siswa') {
-            // Pastikan siswa sudah menyelesaikan semua pre test
             if (!$this->hasCompletedAllPreTests($class->id, $user->id)) {
                 abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
             }
         } elseif ($user->role === 'mentor') {
-            // Pastikan mentor adalah pemilik kelas
             if ($class->mentor_id !== $user->id) {
                 abort(403, 'Unauthorized');
             }
@@ -103,21 +101,7 @@ class PostTestController extends Controller
             abort(403, 'Unauthorized');
         }
 
-        // Cek apakah user sudah pernah selesai mengerjakan post test ini
-        $completedAttempt = $postTest->attempts()
-            ->where('user_id', $user->id)
-            ->whereNotNull('finished_at')
-            ->first();
-
-        if ($completedAttempt) {
-            return view('post_tests.result', [
-                'postTest' => $postTest,
-                'attempt' => $completedAttempt,
-                'class' => $class
-            ]);
-        }
-
-        // Cek apakah ada attempt yang sedang berjalan
+        // CEK APAKAH ADA ATTEMPT YANG SEDANG BERJALAN
         $ongoingAttempt = $postTest->attempts()
             ->where('user_id', $user->id)
             ->whereNull('finished_at')
@@ -141,7 +125,30 @@ class PostTestController extends Controller
             ]);
         }
 
-        // Belum ada attempt, load questions untuk mulai post test baru
+        // CEK JIKA SISWA INGIN MEMULAI ATTEMPT BARU (DARI TOMBOL "KERJAKAN LAGI")
+        $finishedAttempts = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->count();
+
+        // Jika siswa mengakses langsung dan belum mencapai batas attempt, tampilkan halaman take
+        if ($user->role === 'siswa' && $finishedAttempts < 2) {
+            $postTest->load(['questions', 'class']);
+            return view('post_tests.take', [
+                'postTest' => $postTest,
+                'class' => $class
+            ]);
+        }
+
+        // JIKA SUDAH ADA ATTEMPT YANG SELESAI, TAMPILKAN HASIL TERAKHIR
+        $completedAttempt = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->latest()
+            ->first();
+
+
+        // JIKA BELUM ADA ATTEMPT SAMA SEKALI
         $postTest->load(['questions', 'class']);
         return view('post_tests.take', [
             'postTest' => $postTest,
@@ -156,19 +163,76 @@ class PostTestController extends Controller
 
         // Validasi untuk siswa
         if ($user->role === 'siswa') {
-            // Pastikan siswa sudah menyelesaikan semua pre test
             if (!$this->hasCompletedAllPreTests($class->id, $user->id)) {
                 abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
             }
 
-            // Cek apakah user sudah pernah mengerjakan
-            if ($postTest->hasBeenAttemptedBy($user->id)) {
-                return redirect()->route('post_tests.show', $postTest)
-                    ->with('error', 'Anda sudah mengerjakan post test ini sebelumnya.');
+            // Cek jumlah attempt yang sudah FINISHED (bukan yang approval request)
+            $finishedAttempts = $postTest->attempts()
+                ->where('user_id', $user->id)
+                ->whereNotNull('finished_at')
+                ->where(function ($query) {
+                    $query->whereNull('requires_approval')
+                        ->orWhere('requires_approval', false);
+                })
+                ->count();
+
+            // Jika sudah 2 attempt dan belum mencapai passing score
+            if ($finishedAttempts >= 2) {
+                $lastAttempt = $postTest->attempts()
+                    ->where('user_id', $user->id)
+                    ->whereNotNull('finished_at')
+                    ->where(function ($query) {
+                        $query->whereNull('requires_approval')
+                            ->orWhere('requires_approval', false);
+                    })
+                    ->latest()
+                    ->first();
+
+                if ($lastAttempt && $lastAttempt->getPercentageAttribute() < 80) {
+                    // Cek apakah sudah request approval
+                    $pendingApproval = $postTest->attempts()
+                        ->where('user_id', $user->id)
+                        ->where('requires_approval', true)
+                        ->where('mentor_approved', false)
+                        ->exists();
+
+                    if ($pendingApproval) {
+                        return redirect()->route('post_tests.show', $postTest)
+                            ->with('error', 'Anda sudah meminta approval mentor. Tunggu persetujuan.');
+                    }
+
+                    // Cek apakah sudah disetujui
+                    $approved = $postTest->attempts()
+                        ->where('user_id', $user->id)
+                        ->where('requires_approval', true)
+                        ->where('mentor_approved', true)
+                        ->exists();
+
+                    if (!$approved) {
+                        return redirect()->route('post_tests.request_approval', $postTest);
+                    }
+                }
+
+                if ($lastAttempt && $lastAttempt->getPercentageAttribute() >= 80) {
+                    return redirect()->route('post_tests.show', $postTest)
+                        ->with('error', 'Anda sudah mencapai nilai passing score. Tidak dapat mengerjakan lagi.');
+                }
             }
         }
 
-        // Create new attempt
+        // HITUNG ATTEMPT NUMBER BERDASARKAN TOTAL ATTEMPT ASLI (termasuk yang sedang berjalan)
+        $totalRealAttempts = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->where(function ($query) {
+                $query->whereNull('requires_approval')
+                    ->orWhere('requires_approval', false);
+            })
+            ->count();
+
+        $attemptNumber = $totalRealAttempts + 1;
+
+        // CREATE NEW ATTEMPT
         $attempt = PostTestAttempt::create([
             'post_test_id' => $postTest->id,
             'user_id' => $user->id,
@@ -178,9 +242,12 @@ class PostTestController extends Controller
             'correct_answers' => 0,
             'started_at' => now(),
             'time_remaining' => $postTest->time_limit * 60,
-            'finished_at' => null
+            'finished_at' => null,
+            'attempt_number' => $attemptNumber,
+            'requires_approval' => false // INI ATTEMPT ASLI, BUKAN APPROVAL REQUEST
         ]);
 
+        // REDIRECT KE HALAMAN TAKE BUKAN SHOW
         return redirect()->route('post_tests.show', $postTest);
     }
 
@@ -366,17 +433,6 @@ class PostTestController extends Controller
             if (!$this->hasCompletedAllPreTests($postTest->class_id, $user->id)) {
                 abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
             }
-
-            // Cek apakah user sudah pernah mengerjakan post test ini
-            $existingAttempt = $postTest->attempts()
-                ->where('user_id', $user->id)
-                ->whereNotNull('finished_at')
-                ->first();
-
-            if ($existingAttempt) {
-                return redirect()->route('post_tests.show', $postTest)
-                    ->with('error', 'Anda sudah mengerjakan post test ini sebelumnya.');
-            }
         }
 
         $request->validate([
@@ -400,10 +456,14 @@ class PostTestController extends Controller
             }
         }
 
-        // Cari attempt yang sedang berjalan
+        // Cari attempt yang sedang berjalan (BUKAN approval request)
         $attempt = $postTest->attempts()
             ->where('user_id', $user->id)
             ->whereNull('finished_at')
+            ->where(function ($query) {
+                $query->whereNull('requires_approval')
+                    ->orWhere('requires_approval', false);
+            })
             ->first();
 
         if ($attempt) {
@@ -416,7 +476,17 @@ class PostTestController extends Controller
                 'finished_at' => now()
             ]);
         } else {
-            // Buat attempt baru
+            // Jika tidak ada attempt yang sedang berjalan, buat baru
+            // Hitung attempt number berdasarkan attempt asli yang sudah finished
+            $attemptNumber = $postTest->attempts()
+                ->where('user_id', $user->id)
+                ->whereNotNull('finished_at')
+                ->where(function ($query) {
+                    $query->whereNull('requires_approval')
+                        ->orWhere('requires_approval', false);
+                })
+                ->count() + 1;
+
             $attempt = PostTestAttempt::create([
                 'post_test_id' => $postTest->id,
                 'user_id' => $user->id,
@@ -425,11 +495,372 @@ class PostTestController extends Controller
                 'total_questions' => $questions->count(),
                 'correct_answers' => $correctAnswers,
                 'started_at' => $request->started_at,
-                'finished_at' => now()
+                'finished_at' => now(),
+                'attempt_number' => $attemptNumber,
+                'requires_approval' => false
             ]);
         }
 
-        return redirect()->route('post_tests.show', $postTest)
+        return redirect()->route('classes.learn', $postTest->class_id)
             ->with('success', 'Post Test berhasil diselesaikan!');
+    }
+    public function requestApproval(Request $request, PostTest $postTest)
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'siswa') {
+            abort(403, 'Hanya siswa yang dapat meminta approval.');
+        }
+
+        // Cek apakah sudah meminta approval
+        $existingRequest = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->where('requires_approval', true)
+            ->first();
+
+        if ($existingRequest) {
+            if ($existingRequest->mentor_approved) {
+                return redirect()->route('post_tests.start', $postTest)
+                    ->with('success', 'Approval sudah diberikan. Anda dapat mengerjakan lagi.');
+            } else {
+                return redirect()->route('post_tests.show', $postTest)
+                    ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
+            }
+        }
+
+        // Buat record untuk request approval (BUKAN attempt asli)
+        $attempt = PostTestAttempt::create([
+            'post_test_id' => $postTest->id,
+            'user_id' => $user->id,
+            'requires_approval' => true,
+            'approval_requested_at' => now(),
+            'mentor_approved' => false,
+            'answers' => [],
+            'score' => 0,
+            'total_questions' => 0,
+            'correct_answers' => 0,
+            // JANGAN SET attempt_number untuk approval request
+        ]);
+
+        return redirect()->route('classes.learn', $postTest->class_id)
+            ->with('success', 'Permintaan approval telah dikirim ke mentor.');
+    }
+    public function approveAttempt(Request $request, PostTest $postTest, $attemptId)
+    {
+        $user = Auth::user();
+        $class = $postTest->class;
+
+        if ($user->role !== 'mentor' || $user->id !== $class->mentor_id) {
+            abort(403, 'Unauthorized');
+        }
+
+        $attempt = PostTestAttempt::findOrFail($attemptId);
+
+        $attempt->update([
+            'mentor_approved' => true,
+            'approved_at' => now()
+        ]);
+
+        return redirect()->route('post_tests.approval_requests')
+            ->with('success', 'Approval berhasil diberikan untuk ' . $attempt->user->name . '.');
+    }
+    public function showRequestApprovalForm(PostTest $postTest)
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'siswa') {
+            abort(403, 'Hanya siswa yang dapat meminta approval.');
+        }
+
+        // Cek apakah sudah meminta approval
+        $existingRequest = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->where('requires_approval', true)
+            ->first();
+
+        if ($existingRequest) {
+            if ($existingRequest->mentor_approved) {
+                return redirect()->route('post_tests.start', $postTest)
+                    ->with('success', 'Approval sudah diberikan. Anda dapat mengerjakan lagi.');
+            } else {
+                return redirect()->route('post_tests.show', $postTest)
+                    ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
+            }
+        }
+
+        $attempts = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->orderBy('attempt_number')
+            ->get();
+
+        return view('post_tests.request_approval', compact('postTest', 'attempts'));
+    }
+    public function approvalRequests()
+    {
+        $user = Auth::user();
+
+        if ($user->role !== 'mentor') {
+            abort(403, 'Hanya mentor yang dapat mengakses halaman ini.');
+        }
+
+        // Get all classes taught by this mentor
+        $classIds = ClassModel::where('mentor_id', $user->id)->pluck('id');
+
+        // Get all pending approval requests for these classes
+        $requests = PostTestAttempt::with(['postTest.class', 'user'])
+            ->whereHas('postTest', function ($query) use ($classIds) {
+                $query->whereIn('class_id', $classIds);
+            })
+            ->where('requires_approval', true)
+            ->where('mentor_approved', false)
+            ->orderBy('approval_requested_at', 'desc')
+            ->get();
+
+        return view('post_tests.approval_requests', compact('requests'));
+    }
+    public function edit(ClassModel $class, PostTest $postTest)
+    {
+        // Check authorization
+        if (Auth::id() !== $class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        // Ensure the post test belongs to the class
+        if ($postTest->class_id !== $class->id) {
+            abort(404, 'Post test not found for this class');
+        }
+
+        // Load questions with their options
+        $postTest->load(['questions' => function ($query) {
+            $query->orderBy('order');
+        }]);
+
+        return view('post_tests.edit', compact('class', 'postTest'));
+    }
+
+    /**
+     * Update the specified post test in storage.
+     */
+    public function update(Request $request, ClassModel $class, PostTest $postTest)
+    {
+        // Check authorization
+        if (Auth::id() !== $class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        // Ensure the post test belongs to the class
+        if ($postTest->class_id !== $class->id) {
+            abort(404, 'Post test not found for this class');
+        }
+
+        // Validation
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'time_limit' => 'required|integer|min:1',
+            'passing_score' => 'required|integer|min:1|max:100',
+            'questions' => 'required|array|min:1',
+            'questions.*.question' => 'required|string',
+            'questions.*.options' => 'required|array|min:2',
+            'questions.*.options.*' => 'required|string',
+            'questions.*.correct_answer' => 'required|integer|min:0',
+            'questions.*.points' => 'required|integer|min:1'
+        ], [
+            'title.required' => 'Judul post test wajib diisi.',
+            'title.max' => 'Judul post test maksimal 255 karakter.',
+            'time_limit.required' => 'Waktu pengerjaan wajib diisi.',
+            'time_limit.min' => 'Waktu pengerjaan minimal 1 menit.',
+            'passing_score.required' => 'Nilai kelulusan wajib diisi.',
+            'passing_score.min' => 'Nilai kelulusan minimal 1%.',
+            'passing_score.max' => 'Nilai kelulusan maksimal 100%.',
+            'questions.required' => 'Minimal harus ada 1 pertanyaan.',
+            'questions.min' => 'Minimal harus ada 1 pertanyaan.',
+            'questions.*.question.required' => 'Pertanyaan wajib diisi.',
+            'questions.*.options.required' => 'Pilihan jawaban wajib diisi.',
+            'questions.*.options.min' => 'Minimal harus ada 2 pilihan jawaban.',
+            'questions.*.options.*.required' => 'Semua pilihan jawaban wajib diisi.',
+            'questions.*.correct_answer.required' => 'Jawaban yang benar wajib dipilih.',
+            'questions.*.points.required' => 'Poin pertanyaan wajib diisi.',
+            'questions.*.points.min' => 'Poin pertanyaan minimal 1.',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            // Update post test basic information
+            $postTest->update([
+                'title' => $request->title,
+                'description' => $request->description,
+                'time_limit' => $request->time_limit,
+                'passing_score' => $request->passing_score,
+            ]);
+
+            // Delete existing questions
+            $postTest->questions()->delete();
+
+            // Create new questions
+            foreach ($request->questions as $index => $questionData) {
+                // Validate correct_answer index
+                $correctAnswerIndex = (int)$questionData['correct_answer'];
+                if ($correctAnswerIndex >= count($questionData['options'])) {
+                    throw new \Exception("Invalid correct answer index for question " . ($index + 1));
+                }
+
+                PostTestQuestion::create([
+                    'post_test_id' => $postTest->id,
+                    'question' => $questionData['question'],
+                    'options' => $questionData['options'],
+                    'correct_answer' => $correctAnswerIndex,
+                    'points' => (int)$questionData['points'],
+                    'order' => $index + 1
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('classes.show', $class)
+                ->with('success', 'Post Test berhasil diperbarui untuk kelas: ' . $class->name);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error updating post test: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat memperbarui post test: ' . $e->getMessage())
+                ->withInput();
+        }
+    }
+    public function destroy(ClassModel $class, PostTest $postTest)
+    {
+        // Check authorization
+        if (Auth::id() !== $class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        // Ensure the post test belongs to the class
+        if ($postTest->class_id !== $class->id) {
+            abort(404, 'Post test not found for this class');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Check if there are any attempts
+            $hasAttempts = $postTest->attempts()->exists();
+
+            if ($hasAttempts) {
+                // If there are attempts, just deactivate instead of deleting
+                $postTest->update(['is_active' => false]);
+                $message = 'Post Test berhasil dinonaktifkan karena sudah ada siswa yang mengerjakan.';
+            } else {
+                // If no attempts, safe to delete
+                $postTest->questions()->delete(); // Delete questions first
+                $postTest->delete(); // Then delete the post test
+                $message = 'Post Test berhasil dihapus.';
+            }
+
+            DB::commit();
+
+            return redirect()->route('classes.show', $class)
+                ->with('success', $message);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error deleting post test: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menghapus post test.');
+        }
+    }
+    public function toggleStatus(ClassModel $class, PostTest $postTest)
+    {
+        // Check authorization
+        if (Auth::id() !== $class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        // Ensure the post test belongs to the class
+        if ($postTest->class_id !== $class->id) {
+            abort(404, 'Post test not found for this class');
+        }
+
+        try {
+            if (!$postTest->is_active) {
+                // Activating this post test - deactivate others first
+                $class->postTests()->where('id', '!=', $postTest->id)->update(['is_active' => false]);
+            }
+
+            $postTest->update(['is_active' => !$postTest->is_active]);
+
+            $status = $postTest->is_active ? 'diaktifkan' : 'dinonaktifkan';
+
+            return redirect()->back()
+                ->with('success', "Post Test berhasil {$status}.");
+        } catch (\Exception $e) {
+            Log::error('Error toggling post test status: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat mengubah status post test.');
+        }
+    }
+
+    /**
+     * Duplicate an existing post test.
+     */
+    public function duplicate(ClassModel $class, PostTest $postTest)
+    {
+        // Check authorization
+        if (Auth::id() !== $class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        // Ensure the post test belongs to the class
+        if ($postTest->class_id !== $class->id) {
+            abort(404, 'Post test not found for this class');
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Deactivate all existing post tests
+            $class->postTests()->update(['is_active' => false]);
+
+            // Create duplicate post test
+            $duplicatePostTest = PostTest::create([
+                'title' => $postTest->title . ' (Copy)',
+                'description' => $postTest->description,
+                'class_id' => $class->id,
+                'mentor_id' => Auth::id(),
+                'time_limit' => $postTest->time_limit,
+                'passing_score' => $postTest->passing_score,
+                'is_active' => true
+            ]);
+
+            // Duplicate questions
+            $postTest->load(['questions' => function ($query) {
+                $query->orderBy('order');
+            }]);
+
+            foreach ($postTest->questions as $question) {
+                PostTestQuestion::create([
+                    'post_test_id' => $duplicatePostTest->id,
+                    'question' => $question->question,
+                    'options' => $question->options,
+                    'correct_answer' => $question->correct_answer,
+                    'points' => $question->points,
+                    'order' => $question->order
+                ]);
+            }
+
+            DB::commit();
+
+            return redirect()->route('post_tests.edit', [$class, $duplicatePostTest])
+                ->with('success', 'Post Test berhasil diduplikasi. Anda dapat mengeditnya sekarang.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error duplicating post test: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Terjadi kesalahan saat menduplikasi post test.');
+        }
     }
 }

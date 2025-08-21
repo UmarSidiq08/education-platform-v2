@@ -92,51 +92,66 @@ Route::get('/reports', function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware('auth')->group(function () {
-// Route::resource('post-tests', PostTestController::class)->only(['show', 'store']);
-Route::prefix('classes/{class}')->group(function () {
-    Route::get('/post-tests/create', [PostTestController::class, 'create'])->name('post_tests.create');
-    Route::post('/post-tests', [PostTestController::class, 'store'])->name('post_tests.store'); // INI YANG DITAMBAHKAN
-});
+    // Route untuk mentor melihat list approval requests - TARUH DI ATAS
 
-Route::prefix('post-tests')->group(function () {
-    Route::get('/{postTest}', [PostTestController::class, 'show'])->name('post_tests.show');
-    Route::post('/{postTest}/start', [PostTestController::class, 'start'])->name('post_tests.start');
-    Route::post('/{postTest}/submit', [PostTestController::class, 'submit'])->name('post_tests.submit');
-    Route::post('/{postTest}/activate', [PostTestController::class, 'activate'])->name('post_tests.activate');
-    Route::post('/{postTest}/update-timer', [PostTestController::class, 'updateTimer'])->name('post_tests.updateTimer');
-Route::post('/{postTest}/save-progress', [PostTestController::class, 'saveProgress'])->name('post_tests.saveProgress');
-});
+    Route::get('/post-tests/approval-requests', [PostTestController::class, 'approvalRequests'])
+        ->name('post_tests.approval_requests');
 
-
-
-
-
+    // Route classes
     Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/classes/{id}/learn', [ClassController::class, 'learn'])->name('classes.learn');
+
+    // Route materials
     Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');
+
+    // Route quizzes
     Route::get('materials/{material}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
     Route::get('materials/{material}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
-
     Route::post('materials/{material}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
     Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
-
-    // Tambahkan route edit dan update ini
     Route::get('materials/{material}/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
     Route::put('materials/{material}/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
-
     Route::patch('quizzes/{quiz}/activate', [QuizController::class, 'activate'])->name('quizzes.activate');
-
-    // FIXED: Route quiz yang diperbaiki
-    Route::get('/quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
     Route::post('/quizzes/{quiz}/start', [QuizController::class, 'start'])->name('quizzes.start');
     Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
-
-    // FIXED: Route untuk auto submit dan save progress - ubah method untuk konsistensi
     Route::post('/quizzes/{quiz}/submit-auto', [QuizController::class, 'autoSubmit'])->name('quizzes.auto-submit');
     Route::post('/quizzes/{quiz}/save-progress', [QuizController::class, 'saveProgress'])->name('quizzes.saveProgress');
     Route::get('/quizzes/{quiz}/check-timer', [QuizController::class, 'checkTimer'])->name('quizzes.check-timer');
     Route::post('/quizzes/{quiz}/update-timer', [QuizController::class, 'updateTimer'])->name('quizzes.update-timer');
+
+    // Route post-tests dengan prefix
+    Route::prefix('classes/{class}')->group(function () {
+        Route::get('/post-tests/create', [PostTestController::class, 'create'])->name('post_tests.create');
+        Route::post('/post-tests', [PostTestController::class, 'store'])->name('post_tests.store');
+        Route::get('/post-tests/{postTest}/edit', [PostTestController::class, 'edit'])->name('post_tests.edit');
+        Route::put('/post-tests/{postTest}', [PostTestController::class, 'update'])->name('post_tests.update');
+        Route::delete('/post-tests/{postTest}', [PostTestController::class, 'destroy'])->name('post_tests.destroy');
+        Route::patch('/post-tests/{postTest}/toggle-status', [PostTestController::class, 'toggleStatus'])->name('post_tests.toggle_status');
+        Route::post('/post-tests/{postTest}/duplicate', [PostTestController::class, 'duplicate'])->name('post_tests.duplicate');
+    });
+
+    // Route post-tests individual - TARUH SETELAH ROUTE TANPA PARAMETER
+    Route::prefix('post-tests')->group(function () {
+        // Route untuk request approval
+        Route::get('/{postTest}/request-approval', [PostTestController::class, 'showRequestApprovalForm'])
+            ->name('post_tests.request_approval.form');
+        Route::post('/{postTest}/request-approval', [PostTestController::class, 'requestApproval'])
+            ->name('post_tests.request_approval.submit');
+
+        // Route untuk mentor approve attempt
+        Route::post('/{postTest}/approve/{attemptId}', [PostTestController::class, 'approveAttempt'])
+            ->name('post_tests.approve_attempt');
+
+        // Route post-tests lainnya
+
+        Route::get('/{postTest}', [PostTestController::class, 'show'])->name('post_tests.show');
+        Route::post('/{postTest}/start', [PostTestController::class, 'start'])->name('post_tests.start');
+        Route::post('/{postTest}/submit', [PostTestController::class, 'submit'])->name('post_tests.submit');
+        Route::post('/{postTest}/activate', [PostTestController::class, 'activate'])->name('post_tests.activate');
+        Route::post('/{postTest}/update-timer', [PostTestController::class, 'updateTimer'])->name('post_tests.updateTimer');
+        Route::post('/{postTest}/save-progress', [PostTestController::class, 'saveProgress'])->name('post_tests.saveProgress');
+    });
 });
 
 /*
