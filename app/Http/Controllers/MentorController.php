@@ -147,7 +147,7 @@ class MentorController extends Controller
 public function show($id)
 {
     $mentor = User::mentors()->findOrFail($id);
-    return view('profile', compact('mentor'));
+    return view('user.mentor', compact('mentor'));
 }
 
 }

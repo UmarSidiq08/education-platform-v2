@@ -104,7 +104,7 @@
 
       <!-- 1st Place -->
       <div class="text-center hover:-translate-y-2 transition-all relative">
-        <div class="absolute -top-3 left-1/2 transform -translate-x-1/2 text-2xl float">👑</div>
+        <div class="absolute -top-7 left-1/2 transform -translate-x-1/2 text-2xl float">👑</div>
         <div
           class="w-24 h-24 rounded-full bg-gradient-to-br from-yellow-300 to-yellow-500 flex items-center justify-center text-5xl mb-3 border-2 border-yellow-400 shadow-xl relative">
           🥇

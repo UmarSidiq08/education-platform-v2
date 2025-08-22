@@ -2,7 +2,7 @@
     <div class="nav-container">
         <div class="nav-left">
             <div class="logo">
-                <div class="logo-icon">📚</div>
+                <div class="logo-icon">😹</div>
             </div>
             <ul class="nav-links">
                 <li><a href="{{ route('dashboard') }}"
@@ -20,7 +20,26 @@
 
                 <li><a href="{{ route('navbar.leaderboard') }}"
                         class="{{ request()->routeIs('leaderboard') ? 'active' : '' }}">Leaderboard</a></li>
-              
+                @if (auth()->user()->role === 'mentor')
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('post_tests.approval_requests') }}">
+                            <i class="fas fa-clipboard-check me-1"></i>Approval Requests
+                            @php
+                                $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function (
+                                    $query,
+                                ) {
+                                    $query->where('mentor_id', auth()->id());
+                                })
+                                    ->where('requires_approval', true)
+                                    ->where('mentor_approved', false)
+                                    ->count();
+                            @endphp
+                            @if ($pendingCount > 0)
+                                <span class="badge bg-danger">{{ $pendingCount }}</span>
+                            @endif
+                        </a>
+                    </li>
+                @endif
             </ul>
         </div>
         <div class="user-dropdown" id="userDropdown">
