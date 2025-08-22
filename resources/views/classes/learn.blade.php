@@ -270,18 +270,19 @@
                                         @php
                                             $postTest = $class->activePostTest;
 
-                                            // HANYA HITUNG ATTEMPT ASLI (bukan approval request)
-                                            $finishedAttempts = $postTest
+                                            // HITUNG SEMUA ATTEMPT ASLI YANG SUDAH SELESAI (normal + approval attempts)
+                                            $totalFinishedAttempts = $postTest
                                                 ->attempts()
                                                 ->where('user_id', auth()->id())
                                                 ->whereNotNull('finished_at')
                                                 ->where(function ($query) {
                                                     $query
-                                                        ->whereNull('requires_approval')
-                                                        ->orWhere('requires_approval', false);
+                                                        ->where('requires_approval', false)
+                                                        ->orWhere('is_approval_attempt', true);
                                                 })
                                                 ->count();
 
+                                            // Cek pending approval (yang belum di-approve)
                                             $pendingApproval = $postTest
                                                 ->attempts()
                                                 ->where('user_id', auth()->id())
@@ -289,29 +290,56 @@
                                                 ->where('mentor_approved', false)
                                                 ->exists();
 
-                                            $approved = $postTest
-                                                ->attempts()
-                                                ->where('user_id', auth()->id())
-                                                ->where('requires_approval', true)
-                                                ->where('mentor_approved', true)
-                                                ->exists();
-
-                                            // HANYA AMBIL ATTEMPT ASLI TERAKHIR (bukan approval request)
-                                            $lastAttempt = $postTest
+                                            // Cek approval yang tersedia (approved tapi belum digunakan, dan dibuat setelah attempt terakhir)
+                                            $lastFinishedAttempt = $postTest
                                                 ->attempts()
                                                 ->where('user_id', auth()->id())
                                                 ->whereNotNull('finished_at')
                                                 ->where(function ($query) {
                                                     $query
-                                                        ->whereNull('requires_approval')
-                                                        ->orWhere('requires_approval', false);
+                                                        ->where('requires_approval', false)
+                                                        ->orWhere('is_approval_attempt', true);
                                                 })
-                                                ->latest()
+                                                ->latest('finished_at')
                                                 ->first();
 
-                                            $lastScore = $lastAttempt ? $lastAttempt->getPercentageAttribute() : 0;
+                                            $hasAvailableApproval = false;
+                                            if ($totalFinishedAttempts >= 2) {
+                                                $availableApprovalQuery = $postTest
+                                                    ->attempts()
+                                                    ->where('user_id', auth()->id())
+                                                    ->where('requires_approval', true)
+                                                    ->where('mentor_approved', true)
+                                                    ->where('is_used', false);
+
+                                                if ($lastFinishedAttempt) {
+                                                    $availableApprovalQuery = $availableApprovalQuery->where(
+                                                        'approved_at',
+                                                        '>',
+                                                        $lastFinishedAttempt->finished_at,
+                                                    );
+                                                }
+
+                                                $hasAvailableApproval = $availableApprovalQuery->exists();
+                                            }
+
+                                            // Ambil attempt terakhir untuk nilai
+                                            $lastScore = $lastFinishedAttempt
+                                                ? $lastFinishedAttempt->getPercentageAttribute()
+                                                : 0;
                                             $hasPassed = $lastScore >= 80;
+
+                                            // Tentukan apakah bisa mengerjakan test
+                                            $canTakeTest = false;
+                                            if ($totalFinishedAttempts < 2) {
+                                                // Attempt 1-2: boleh langsung
+                                                $canTakeTest = true;
+                                            } elseif ($totalFinishedAttempts >= 2 && $hasAvailableApproval) {
+                                                // Attempt 3+: hanya jika ada approval yang tersedia
+                                                $canTakeTest = true;
+                                            }
                                         @endphp
+
                                         @if (auth()->user()->role === 'mentor' && auth()->id() === $class->mentor_id)
                                             <!-- Mentor View -->
                                             <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -372,11 +400,16 @@
                                                                 <h5 class="font-semibold text-gray-800">Status Attempt</h5>
                                                                 <span
                                                                     class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                                                                    {{ $finishedAttempts }}/2 Percobaan
+                                                                    @if ($totalFinishedAttempts <= 2)
+                                                                        {{ $totalFinishedAttempts }}/2 Percobaan
+                                                                    @else
+                                                                        {{ $totalFinishedAttempts }} Percobaan
+                                                                        ({{ $totalFinishedAttempts - 2 }} dengan Approval)
+                                                                    @endif
                                                                 </span>
                                                             </div>
 
-                                                            @if ($lastAttempt)
+                                                            @if ($lastFinishedAttempt)
                                                                 <div class="space-y-2">
                                                                     <div class="flex justify-between items-center">
                                                                         <span class="text-gray-600">Nilai Terakhir:</span>
@@ -411,9 +444,10 @@
                                                             </h5>
                                                             <ul class="text-blue-700 text-sm space-y-1">
                                                                 <li>• Nilai minimum untuk lulus adalah 80%</li>
-                                                                <li>• Anda memiliki maksimal 2 percobaan</li>
+                                                                <li>• Anda memiliki 2 percobaan gratis</li>
                                                                 <li>• Setelah 2 percobaan dengan nilai < 80%, perlu approval
-                                                                        mentor</li>
+                                                                        mentor untuk setiap percobaan tambahan</li>
+                                                                <li>• Satu approval hanya berlaku untuk satu percobaan</li>
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -440,20 +474,28 @@
                                                             </div>
                                                         @else
                                                             <!-- Can Take Test -->
-                                                            @if ($finishedAttempts < 2 || ($finishedAttempts >= 2 && $approved))
+                                                            @if ($canTakeTest)
                                                                 <div class="text-center p-6">
                                                                     <div class="text-5xl text-indigo-500 mb-4">
                                                                         <i class="fas fa-play-circle"></i>
                                                                     </div>
                                                                     <h5 class="text-xl font-bold text-gray-800 mb-2">
-                                                                        @if ($finishedAttempts > 0)
-                                                                            Coba Lagi Post Test
+                                                                        @if ($totalFinishedAttempts > 0)
+                                                                            @if ($totalFinishedAttempts < 2)
+                                                                                Percobaan
+                                                                                ke-{{ $totalFinishedAttempts + 1 }}
+                                                                                (Gratis)
+                                                                            @else
+                                                                                Percobaan
+                                                                                ke-{{ $totalFinishedAttempts + 1 }} (Dengan
+                                                                                Approval)
+                                                                            @endif
                                                                         @else
                                                                             Mulai Post Test
                                                                         @endif
                                                                     </h5>
                                                                     <p class="text-gray-600 mb-6">
-                                                                        @if ($finishedAttempts > 0)
+                                                                        @if ($totalFinishedAttempts > 0)
                                                                             Tingkatkan nilai Anda untuk mencapai 80%
                                                                         @else
                                                                             Uji pemahaman Anda terhadap materi yang telah
@@ -463,19 +505,15 @@
                                                                     <a href="{{ route('post_tests.show', $class->activePostTest) }}"
                                                                         class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-8 py-3 rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg">
                                                                         <i class="fas fa-eye mr-2"></i>
-                                                                        @if ($finishedAttempts > 0)
-                                                                            Attempt ke-{{ $finishedAttempts + 1 }}
+                                                                        @if ($totalFinishedAttempts >= 2)
+                                                                            Gunakan Approval
                                                                         @else
                                                                             Mulai Sekarang
                                                                         @endif
                                                                     </a>
-
-
                                                                 </div>
-                                                            @endif
-
-                                                            <!-- Approval Section -->
-                                                            @if ($finishedAttempts >= 2 && !$approved)
+                                                            @else
+                                                                <!-- Need Approval -->
                                                                 <div
                                                                     class="p-6 bg-orange-50 rounded-lg border border-orange-200">
                                                                     @if ($pendingApproval)
@@ -505,10 +543,18 @@
                                                                                 class="text-lg font-bold text-orange-800 mb-2">
                                                                                 Butuh Approval Mentor</h5>
                                                                             <p class="text-orange-700 mb-6">
-                                                                                Anda telah menggunakan 2 percobaan dengan
-                                                                                nilai di bawah 80%.
-                                                                                Silakan minta approval dari mentor untuk
-                                                                                percobaan tambahan.
+                                                                                @if ($totalFinishedAttempts >= 2)
+                                                                                    Anda telah menggunakan
+                                                                                    {{ $totalFinishedAttempts }} percobaan
+                                                                                    dengan nilai di bawah 80%.
+                                                                                    Silakan minta approval dari mentor untuk
+                                                                                    percobaan tambahan.
+                                                                                @else
+                                                                                    Anda telah menggunakan 2 percobaan
+                                                                                    gratis dengan nilai di bawah 80%.
+                                                                                    Silakan minta approval dari mentor untuk
+                                                                                    percobaan tambahan.
+                                                                                @endif
                                                                             </p>
                                                                             <a href="{{ route('post_tests.request_approval.form', $postTest) }}"
                                                                                 class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-6 py-3 rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg">
@@ -565,7 +611,6 @@
                                 </div>
                             </div>
                         @endif
-
                         @if ($class->materials->count() > 0)
                             <!-- Stats Bar -->
                             <div class="bg-gray-50 p-5 rounded-xl mb-6 border border-gray-200">

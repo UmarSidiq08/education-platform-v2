@@ -83,157 +83,273 @@ class PostTestController extends Controller
         }
     }
 
-    public function show(PostTest $postTest)
-    {
-        $user = Auth::user();
-        $class = $postTest->class;
+ public function show(PostTest $postTest)
+{
+    $user = Auth::user();
+    $class = $postTest->class;
 
-        // Cek apakah user berhak mengakses post test
-        if ($user->role === 'siswa') {
-            if (!$this->hasCompletedAllPreTests($class->id, $user->id)) {
-                abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
-            }
-        } elseif ($user->role === 'mentor') {
-            if ($class->mentor_id !== $user->id) {
-                abort(403, 'Unauthorized');
-            }
-        } else {
+    // Cek apakah user berhak mengakses post test
+    if ($user->role === 'siswa') {
+        if (!$this->hasCompletedAllPreTests($class->id, $user->id)) {
+            abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
+        }
+    } elseif ($user->role === 'mentor') {
+        if ($class->mentor_id !== $user->id) {
             abort(403, 'Unauthorized');
         }
+    } else {
+        abort(403, 'Unauthorized');
+    }
 
-        // CEK APAKAH ADA ATTEMPT YANG SEDANG BERJALAN
+    // CEK APAKAH ADA ATTEMPT YANG SEDANG BERJALAN
+    $ongoingAttempt = $postTest->attempts()
+        ->where('user_id', $user->id)
+        ->whereNull('finished_at')
+        ->first();
+
+    if ($ongoingAttempt) {
+        $timeRemaining = $ongoingAttempt->time_remaining;
+
+        if ($timeRemaining <= 0) {
+            $this->autoSubmitPostTest($postTest, $ongoingAttempt);
+            return redirect()->route('post_tests.show', $postTest)
+                ->with('warning', 'Waktu post test telah habis. Jawaban Anda telah otomatis terkirim.');
+        }
+
+        $postTest->load(['questions', 'class']);
+        return view('post_tests.take', [
+            'postTest' => $postTest,
+            'attempt' => $ongoingAttempt,
+            'timeRemaining' => $timeRemaining,
+            'class' => $class
+        ]);
+    }
+
+    // JIKA TIDAK ADA ATTEMPT YANG SEDANG BERJALAN
+    if ($user->role === 'siswa') {
+        // HITUNG SEMUA ATTEMPT YANG SUDAH SELESAI (normal + approval attempts)
+        $totalFinishedAttempts = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->where(function ($query) {
+                $query->where('requires_approval', false)
+                    ->orWhere('is_approval_attempt', true);
+            })
+            ->count();
+
+        // Cek apakah ada pending approval (yang belum di-approve)
+        $pendingApproval = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->where('requires_approval', true)
+            ->where('mentor_approved', false)
+            ->exists();
+
+        // Ambil attempt terakhir untuk cek nilai
+        $lastFinishedAttempt = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->where(function ($query) {
+                $query->where('requires_approval', false)
+                    ->orWhere('is_approval_attempt', true);
+            })
+            ->latest('finished_at')
+            ->first();
+
+        // Cek apakah sudah lulus (nilai >= 80%)
+        $lastScore = $lastFinishedAttempt ? $lastFinishedAttempt->getPercentageAttribute() : 0;
+        $hasPassed = $lastScore >= 80;
+
+        if ($hasPassed) {
+            // Sudah lulus, tampilkan hasil
+            $postTest->load(['questions', 'class']);
+            return view('post_tests.result', [
+                'postTest' => $postTest,
+                'attempt' => $lastFinishedAttempt,
+                'class' => $class
+            ]);
+        }
+
+        // BELUM LULUS - TENTUKAN APAKAH BISA MENGERJAKAN TEST
+        $canTakeTest = false;
+        $hasAvailableApproval = false;
+
+        if ($totalFinishedAttempts < 2) {
+            // Attempt 1-2: boleh langsung
+            $canTakeTest = true;
+        } else {
+            // Attempt 3+: perlu cek approval yang tersedia
+            $availableApprovalQuery = $postTest->attempts()
+                ->where('user_id', $user->id)
+                ->where('requires_approval', true)
+                ->where('mentor_approved', true)
+                ->where('is_used', false);
+
+            // Jika ada attempt terakhir, approval harus dibuat setelah attempt terakhir selesai
+            if ($lastFinishedAttempt) {
+                $availableApprovalQuery = $availableApprovalQuery->where('approved_at', '>', $lastFinishedAttempt->finished_at);
+            }
+
+            $hasAvailableApproval = $availableApprovalQuery->exists();
+            $canTakeTest = $hasAvailableApproval;
+        }
+
+        // LOGIKA TAMPILAN BERDASARKAN STATUS
+        if ($canTakeTest) {
+            // Boleh mengerjakan, tampilkan form
+            $postTest->load(['questions', 'class']);
+            return view('post_tests.take', [
+                'postTest' => $postTest,
+                'class' => $class
+            ]);
+        } else {
+            // Tidak boleh mengerjakan
+            if ($pendingApproval) {
+                // Ada pending approval, tunggu persetujuan
+                $message = 'Anda sudah meminta approval mentor. Tunggu persetujuan.';
+            } else {
+                // Perlu request approval baru
+                if ($totalFinishedAttempts >= 2) {
+                    $message = 'Anda sudah mencapai batas maksimal attempt. Silakan request approval mentor untuk percobaan ke-' . ($totalFinishedAttempts + 1) . '.';
+                } else {
+                    $message = 'Anda perlu approval mentor untuk melanjutkan.';
+                }
+            }
+
+            return view('post_tests.blocked', [
+                'postTest' => $postTest,
+                'class' => $class,
+                'message' => $message,
+                'canRequestApproval' => !$pendingApproval, // Tambahan flag
+                'attempts' => $postTest->attempts()
+                    ->where('user_id', $user->id)
+                    ->whereNotNull('finished_at')
+                    ->where(function ($query) {
+                        $query->where('requires_approval', false)
+                            ->orWhere('is_approval_attempt', true);
+                    })
+                    ->orderBy('attempt_number')
+                    ->get()
+            ]);
+        }
+    }
+
+    // JIKA MENTOR, tampilkan detail post test
+    $postTest->load(['questions', 'class']);
+    return view('post_tests.show', [
+        'postTest' => $postTest,
+        'class' => $class
+    ]);
+}
+
+
+
+   public function start(PostTest $postTest)
+{
+    $user = Auth::user();
+    $class = $postTest->class;
+
+    // Validasi untuk siswa
+    if ($user->role === 'siswa') {
+        if (!$this->hasCompletedAllPreTests($class->id, $user->id)) {
+            abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
+        }
+
+        // Cek apakah ada attempt yang sedang berjalan
         $ongoingAttempt = $postTest->attempts()
             ->where('user_id', $user->id)
             ->whereNull('finished_at')
             ->first();
 
         if ($ongoingAttempt) {
-            $timeRemaining = $ongoingAttempt->time_remaining;
-
-            if ($timeRemaining <= 0) {
-                $this->autoSubmitPostTest($postTest, $ongoingAttempt);
-                return redirect()->route('post_tests.show', $postTest)
-                    ->with('warning', 'Waktu post test telah habis. Jawaban Anda telah otomatis terkirim.');
-            }
-
-            $postTest->load(['questions', 'class']);
-            return view('post_tests.take', [
-                'postTest' => $postTest,
-                'attempt' => $ongoingAttempt,
-                'timeRemaining' => $timeRemaining,
-                'class' => $class
-            ]);
+            return redirect()->route('post_tests.show', $postTest);
         }
 
-        // CEK JIKA SISWA INGIN MEMULAI ATTEMPT BARU (DARI TOMBOL "KERJAKAN LAGI")
-        $finishedAttempts = $postTest->attempts()
+        // HITUNG SEMUA ATTEMPT YANG SUDAH SELESAI (normal + approval attempts)
+        $totalFinishedAttempts = $postTest->attempts()
             ->where('user_id', $user->id)
             ->whereNotNull('finished_at')
-            ->count();
-
-        // Jika siswa mengakses langsung dan belum mencapai batas attempt, tampilkan halaman take
-        if ($user->role === 'siswa' && $finishedAttempts < 2) {
-            $postTest->load(['questions', 'class']);
-            return view('post_tests.take', [
-                'postTest' => $postTest,
-                'class' => $class
-            ]);
-        }
-
-        // JIKA SUDAH ADA ATTEMPT YANG SELESAI, TAMPILKAN HASIL TERAKHIR
-        $completedAttempt = $postTest->attempts()
-            ->where('user_id', $user->id)
-            ->whereNotNull('finished_at')
-            ->latest()
-            ->first();
-
-
-        // JIKA BELUM ADA ATTEMPT SAMA SEKALI
-        $postTest->load(['questions', 'class']);
-        return view('post_tests.take', [
-            'postTest' => $postTest,
-            'class' => $class
-        ]);
-    }
-
-    public function start(PostTest $postTest)
-    {
-        $user = Auth::user();
-        $class = $postTest->class;
-
-        // Validasi untuk siswa
-        if ($user->role === 'siswa') {
-            if (!$this->hasCompletedAllPreTests($class->id, $user->id)) {
-                abort(403, 'Anda harus menyelesaikan semua pre test terlebih dahulu.');
-            }
-
-            // Cek jumlah attempt yang sudah FINISHED (bukan yang approval request)
-            $finishedAttempts = $postTest->attempts()
-                ->where('user_id', $user->id)
-                ->whereNotNull('finished_at')
-                ->where(function ($query) {
-                    $query->whereNull('requires_approval')
-                        ->orWhere('requires_approval', false);
-                })
-                ->count();
-
-            // Jika sudah 2 attempt dan belum mencapai passing score
-            if ($finishedAttempts >= 2) {
-                $lastAttempt = $postTest->attempts()
-                    ->where('user_id', $user->id)
-                    ->whereNotNull('finished_at')
-                    ->where(function ($query) {
-                        $query->whereNull('requires_approval')
-                            ->orWhere('requires_approval', false);
-                    })
-                    ->latest()
-                    ->first();
-
-                if ($lastAttempt && $lastAttempt->getPercentageAttribute() < 80) {
-                    // Cek apakah sudah request approval
-                    $pendingApproval = $postTest->attempts()
-                        ->where('user_id', $user->id)
-                        ->where('requires_approval', true)
-                        ->where('mentor_approved', false)
-                        ->exists();
-
-                    if ($pendingApproval) {
-                        return redirect()->route('post_tests.show', $postTest)
-                            ->with('error', 'Anda sudah meminta approval mentor. Tunggu persetujuan.');
-                    }
-
-                    // Cek apakah sudah disetujui
-                    $approved = $postTest->attempts()
-                        ->where('user_id', $user->id)
-                        ->where('requires_approval', true)
-                        ->where('mentor_approved', true)
-                        ->exists();
-
-                    if (!$approved) {
-                        return redirect()->route('post_tests.request_approval', $postTest);
-                    }
-                }
-
-                if ($lastAttempt && $lastAttempt->getPercentageAttribute() >= 80) {
-                    return redirect()->route('post_tests.show', $postTest)
-                        ->with('error', 'Anda sudah mencapai nilai passing score. Tidak dapat mengerjakan lagi.');
-                }
-            }
-        }
-
-        // HITUNG ATTEMPT NUMBER BERDASARKAN TOTAL ATTEMPT ASLI (termasuk yang sedang berjalan)
-        $totalRealAttempts = $postTest->attempts()
-            ->where('user_id', $user->id)
             ->where(function ($query) {
-                $query->whereNull('requires_approval')
-                    ->orWhere('requires_approval', false);
+                $query->where('requires_approval', false)
+                    ->orWhere('is_approval_attempt', true);
             })
             ->count();
 
-        $attemptNumber = $totalRealAttempts + 1;
+        // Cek nilai attempt terakhir
+        $lastAttempt = $postTest->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->where(function ($query) {
+                $query->where('requires_approval', false)
+                    ->orWhere('is_approval_attempt', true);
+            })
+            ->latest('finished_at')
+            ->first();
 
-        // CREATE NEW ATTEMPT
-        $attempt = PostTestAttempt::create([
+        // Jika sudah lulus, tidak boleh mengerjakan lagi
+        if ($lastAttempt && $lastAttempt->getPercentageAttribute() >= 80) {
+            return redirect()->route('post_tests.show', $postTest)
+                ->with('error', 'Anda sudah mencapai nilai passing score. Tidak dapat mengerjakan lagi.');
+        }
+
+        // LOGIKA ATTEMPT:
+        if ($totalFinishedAttempts < 2) {
+            // Attempt 1 dan 2: Tanpa approval
+            $attemptNumber = $totalFinishedAttempts + 1;
+            $this->createNewAttempt($postTest, $user, $attemptNumber, false);
+            return redirect()->route('post_tests.show', $postTest);
+        } else {
+            // Attempt 3+: Perlu approval
+            // Cek apakah ada approval yang tersedia dan belum digunakan
+            $availableApprovalQuery = $postTest->attempts()
+                ->where('user_id', $user->id)
+                ->where('requires_approval', true)
+                ->where('mentor_approved', true)
+                ->where('is_used', false);
+
+            // Jika ada attempt terakhir, approval harus dibuat setelah attempt terakhir selesai
+            if ($lastAttempt) {
+                $availableApprovalQuery = $availableApprovalQuery->where('approved_at', '>', $lastAttempt->finished_at);
+            }
+
+            $approval = $availableApprovalQuery->orderBy('approved_at', 'asc')->first();
+
+            if ($approval) {
+                // Gunakan approval dan tandai sebagai used
+                $approval->update(['is_used' => true]);
+                $attemptNumber = $totalFinishedAttempts + 1;
+                $this->createNewAttempt($postTest, $user, $attemptNumber, true);
+                return redirect()->route('post_tests.show', $postTest);
+            } else {
+                // Tidak ada approval yang tersedia
+                // Cek apakah sudah ada pending approval
+                $pendingApproval = $postTest->attempts()
+                    ->where('user_id', $user->id)
+                    ->where('requires_approval', true)
+                    ->where('mentor_approved', false)
+                    ->exists();
+
+                if ($pendingApproval) {
+                    return redirect()->route('post_tests.show', $postTest)
+                        ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
+                } else {
+                    // Redirect ke form request approval
+                    return redirect()->route('post_tests.request_approval.form', $postTest)
+                        ->with('info', 'Anda perlu approval mentor untuk percobaan ke-' . ($totalFinishedAttempts + 1) . '.');
+                }
+            }
+        }
+    }
+
+    // Fallback - untuk mentor atau role lain
+    return redirect()->route('post_tests.show', $postTest);
+}
+
+    /**
+     * Helper method untuk membuat attempt baru
+     */
+    private function createNewAttempt($postTest, $user, $attemptNumber, $isApprovalAttempt)
+    {
+        return PostTestAttempt::create([
             'post_test_id' => $postTest->id,
             'user_id' => $user->id,
             'answers' => [],
@@ -244,11 +360,11 @@ class PostTestController extends Controller
             'time_remaining' => $postTest->time_limit * 60,
             'finished_at' => null,
             'attempt_number' => $attemptNumber,
-            'requires_approval' => false // INI ATTEMPT ASLI, BUKAN APPROVAL REQUEST
+            'requires_approval' => false,
+            'mentor_approved' => false,
+            'is_approval_attempt' => $isApprovalAttempt,
+            'is_used' => false
         ]);
-
-        // REDIRECT KE HALAMAN TAKE BUKAN SHOW
-        return redirect()->route('post_tests.show', $postTest);
     }
 
     public function activate(PostTest $postTest)
@@ -331,6 +447,7 @@ class PostTestController extends Controller
             return $attempt;
         }
     }
+
     public function updateTimer(Request $request, PostTest $postTest)
     {
         $user = Auth::user();
@@ -424,6 +541,7 @@ class PostTestController extends Controller
             return response()->json(['error' => 'Failed to save progress: ' . $e->getMessage()], 500);
         }
     }
+
     public function submit(Request $request, PostTest $postTest)
     {
         $user = Auth::user();
@@ -456,14 +574,10 @@ class PostTestController extends Controller
             }
         }
 
-        // Cari attempt yang sedang berjalan (BUKAN approval request)
+        // Cari attempt yang sedang berjalan
         $attempt = $postTest->attempts()
             ->where('user_id', $user->id)
             ->whereNull('finished_at')
-            ->where(function ($query) {
-                $query->whereNull('requires_approval')
-                    ->orWhere('requires_approval', false);
-            })
             ->first();
 
         if ($attempt) {
@@ -477,15 +591,20 @@ class PostTestController extends Controller
             ]);
         } else {
             // Jika tidak ada attempt yang sedang berjalan, buat baru
-            // Hitung attempt number berdasarkan attempt asli yang sudah finished
-            $attemptNumber = $postTest->attempts()
+            // Hitung attempt number berdasarkan total attempt yang sudah finished
+            $totalFinishedAttempts = $postTest->attempts()
                 ->where('user_id', $user->id)
                 ->whereNotNull('finished_at')
-                ->where(function ($query) {
-                    $query->whereNull('requires_approval')
-                        ->orWhere('requires_approval', false);
-                })
-                ->count() + 1;
+                ->count();
+
+            $finishedNormalAttempts = $postTest->attempts()
+                ->where('user_id', $user->id)
+                ->whereNotNull('finished_at')
+                ->where('requires_approval', false)
+                ->count();
+
+            $attemptNumber = $totalFinishedAttempts + 1;
+            $isApprovalAttempt = $finishedNormalAttempts >= 2;
 
             $attempt = PostTestAttempt::create([
                 'post_test_id' => $postTest->id,
@@ -497,13 +616,17 @@ class PostTestController extends Controller
                 'started_at' => $request->started_at,
                 'finished_at' => now(),
                 'attempt_number' => $attemptNumber,
-                'requires_approval' => false
+                'requires_approval' => false,
+                'mentor_approved' => false,
+                'is_approval_attempt' => $isApprovalAttempt,
+                'is_used' => false
             ]);
         }
 
         return redirect()->route('classes.learn', $postTest->class_id)
             ->with('success', 'Post Test berhasil diselesaikan!');
     }
+
     public function requestApproval(Request $request, PostTest $postTest)
     {
         $user = Auth::user();
@@ -512,20 +635,16 @@ class PostTestController extends Controller
             abort(403, 'Hanya siswa yang dapat meminta approval.');
         }
 
-        // Cek apakah sudah meminta approval
-        $existingRequest = $postTest->attempts()
+        // Cek apakah sudah meminta approval yang belum di-approve
+        $pendingApproval = $postTest->attempts()
             ->where('user_id', $user->id)
             ->where('requires_approval', true)
+            ->where('mentor_approved', false)
             ->first();
 
-        if ($existingRequest) {
-            if ($existingRequest->mentor_approved) {
-                return redirect()->route('post_tests.start', $postTest)
-                    ->with('success', 'Approval sudah diberikan. Anda dapat mengerjakan lagi.');
-            } else {
-                return redirect()->route('post_tests.show', $postTest)
-                    ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
-            }
+        if ($pendingApproval) {
+            return redirect()->route('post_tests.show', $postTest)
+                ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
         }
 
         // Buat record untuk request approval (BUKAN attempt asli)
@@ -535,16 +654,20 @@ class PostTestController extends Controller
             'requires_approval' => true,
             'approval_requested_at' => now(),
             'mentor_approved' => false,
+            'is_used' => false, // Menandakan approval belum digunakan
             'answers' => [],
             'score' => 0,
             'total_questions' => 0,
             'correct_answers' => 0,
-            // JANGAN SET attempt_number untuk approval request
+            'is_approval_attempt' => false,
+            'attempt_number' => 0, // Tidak dihitung sebagai attempt
+            'approval_reason' => $request->input('approval_reason')
         ]);
 
         return redirect()->route('classes.learn', $postTest->class_id)
             ->with('success', 'Permintaan approval telah dikirim ke mentor.');
     }
+
     public function approveAttempt(Request $request, PostTest $postTest, $attemptId)
     {
         $user = Auth::user();
@@ -558,44 +681,92 @@ class PostTestController extends Controller
 
         $attempt->update([
             'mentor_approved' => true,
-            'approved_at' => now()
+            'approved_at' => now(),
+            'is_used' => false // Marking as available to be used
         ]);
 
         return redirect()->route('post_tests.approval_requests')
             ->with('success', 'Approval berhasil diberikan untuk ' . $attempt->user->name . '.');
     }
-    public function showRequestApprovalForm(PostTest $postTest)
-    {
-        $user = Auth::user();
 
-        if ($user->role !== 'siswa') {
-            abort(403, 'Hanya siswa yang dapat meminta approval.');
-        }
+ public function showRequestApprovalForm(PostTest $postTest)
+{
+    $user = Auth::user();
 
-        // Cek apakah sudah meminta approval
-        $existingRequest = $postTest->attempts()
-            ->where('user_id', $user->id)
-            ->where('requires_approval', true)
-            ->first();
-
-        if ($existingRequest) {
-            if ($existingRequest->mentor_approved) {
-                return redirect()->route('post_tests.start', $postTest)
-                    ->with('success', 'Approval sudah diberikan. Anda dapat mengerjakan lagi.');
-            } else {
-                return redirect()->route('post_tests.show', $postTest)
-                    ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
-            }
-        }
-
-        $attempts = $postTest->attempts()
-            ->where('user_id', $user->id)
-            ->whereNotNull('finished_at')
-            ->orderBy('attempt_number')
-            ->get();
-
-        return view('post_tests.request_approval', compact('postTest', 'attempts'));
+    if ($user->role !== 'siswa') {
+        abort(403, 'Hanya siswa yang dapat meminta approval.');
     }
+
+    // Cek apakah sudah meminta approval yang pending
+    $pendingApproval = $postTest->attempts()
+        ->where('user_id', $user->id)
+        ->where('requires_approval', true)
+        ->where('mentor_approved', false)
+        ->exists();
+
+    if ($pendingApproval) {
+        return redirect()->route('post_tests.show', $postTest)
+            ->with('info', 'Permintaan approval sudah dikirim. Tunggu persetujuan mentor.');
+    }
+
+    // Hitung semua attempt yang sudah selesai
+    $totalFinishedAttempts = $postTest->attempts()
+        ->where('user_id', $user->id)
+        ->whereNotNull('finished_at')
+        ->where(function ($query) {
+            $query->where('requires_approval', false)
+                ->orWhere('is_approval_attempt', true);
+        })
+        ->count();
+
+    // Cek apakah ada approval yang belum digunakan
+    $lastAttempt = $postTest->attempts()
+        ->where('user_id', $user->id)
+        ->whereNotNull('finished_at')
+        ->where(function ($query) {
+            $query->where('requires_approval', false)
+                ->orWhere('is_approval_attempt', true);
+        })
+        ->latest('finished_at')
+        ->first();
+
+    $availableApprovalQuery = $postTest->attempts()
+        ->where('user_id', $user->id)
+        ->where('requires_approval', true)
+        ->where('mentor_approved', true)
+        ->where('is_used', false);
+
+    if ($lastAttempt) {
+        $availableApprovalQuery = $availableApprovalQuery->where('approved_at', '>', $lastAttempt->finished_at);
+    }
+
+    $availableApproval = $availableApprovalQuery->first();
+
+    if ($availableApproval) {
+        return redirect()->route('post_tests.show', $postTest)
+            ->with('success', 'Approval sudah tersedia. Anda dapat mengerjakan sekarang.');
+    }
+
+    // Cek apakah sudah memenuhi syarat untuk request approval
+    if ($totalFinishedAttempts < 2) {
+        return redirect()->route('post_tests.show', $postTest)
+            ->with('error', 'Anda masih memiliki kesempatan attempt gratis. Silakan kerjakan terlebih dahulu.');
+    }
+
+    $attempts = $postTest->attempts()
+        ->where('user_id', $user->id)
+        ->whereNotNull('finished_at')
+        ->where(function ($query) {
+            $query->where('requires_approval', false)
+                ->orWhere('is_approval_attempt', true);
+        })
+        ->orderBy('attempt_number')
+        ->get();
+
+    $nextAttemptNumber = $totalFinishedAttempts + 1;
+
+    return view('post_tests.request_approval', compact('postTest', 'attempts', 'nextAttemptNumber'));
+}
     public function approvalRequests()
     {
         $user = Auth::user();
@@ -619,6 +790,8 @@ class PostTestController extends Controller
 
         return view('post_tests.approval_requests', compact('requests'));
     }
+
+    // Rest of the methods remain the same...
     public function edit(ClassModel $class, PostTest $postTest)
     {
         // Check authorization
@@ -639,9 +812,6 @@ class PostTestController extends Controller
         return view('post_tests.edit', compact('class', 'postTest'));
     }
 
-    /**
-     * Update the specified post test in storage.
-     */
     public function update(Request $request, ClassModel $class, PostTest $postTest)
     {
         // Check authorization
@@ -730,6 +900,7 @@ class PostTestController extends Controller
                 ->withInput();
         }
     }
+
     public function destroy(ClassModel $class, PostTest $postTest)
     {
         // Check authorization
@@ -771,6 +942,7 @@ class PostTestController extends Controller
                 ->with('error', 'Terjadi kesalahan saat menghapus post test.');
         }
     }
+
     public function toggleStatus(ClassModel $class, PostTest $postTest)
     {
         // Check authorization
