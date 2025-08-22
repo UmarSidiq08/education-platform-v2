@@ -17,7 +17,8 @@ class QuizAttempt extends Model
         'total_questions',
         'correct_answers',
         'started_at',
-        'finished_at'
+        'finished_at',
+        'time_remaining' // TAMBAHAN untuk mendukung persistent timer
     ];
 
     protected $casts = [
@@ -26,7 +27,8 @@ class QuizAttempt extends Model
         'finished_at' => 'datetime',
         'score' => 'integer',
         'total_questions' => 'integer',
-        'correct_answers' => 'integer'
+        'correct_answers' => 'integer',
+        'time_remaining' => 'integer' // TAMBAHAN
     ];
 
     public function quiz()
@@ -59,5 +61,97 @@ class QuizAttempt extends Model
             }
         }
         return 'N/A';
+    }
+
+    // TAMBAHAN: Helper methods untuk multiple attempts
+    public function isCompleted()
+    {
+        return !is_null($this->finished_at);
+    }
+
+    public function isOngoing()
+    {
+        return is_null($this->finished_at);
+    }
+
+    public function getGradeAttribute()
+    {
+        $percentage = $this->percentage;
+
+        if ($percentage >= 90) return 'A';
+        if ($percentage >= 80) return 'B';
+        if ($percentage >= 70) return 'C';
+        if ($percentage >= 60) return 'D';
+        return 'E';
+    }
+
+    public function getGradeColorAttribute()
+    {
+        switch ($this->grade) {
+            case 'A': return 'text-purple-600 bg-purple-100';
+            case 'B': return 'text-blue-600 bg-blue-100';
+            case 'C': return 'text-teal-600 bg-teal-100';
+            case 'D': return 'text-yellow-600 bg-yellow-100';
+            case 'E': return 'text-red-600 bg-red-100';
+            default: return 'text-gray-600 bg-gray-100';
+        }
+    }
+
+    // NEW: Check if this attempt is passing (≥80%)
+    public function isPassingAttribute()
+    {
+        return $this->percentage >= 80;
+    }
+
+    // NEW: Get status description
+    public function getStatusAttribute()
+    {
+        if (!$this->isCompleted()) {
+            return 'ongoing';
+        }
+
+        return $this->percentage >= 80 ? 'passed' : 'failed';
+    }
+
+    // NEW: Get status description in Indonesian
+    public function getStatusTextAttribute()
+    {
+        switch ($this->status) {
+            case 'ongoing':
+                return 'Sedang Berlangsung';
+            case 'passed':
+                return 'Lulus';
+            case 'failed':
+                return 'Belum Lulus';
+            default:
+                return 'Unknown';
+        }
+    }
+
+    // NEW: Get detailed status with color
+    public function getStatusBadgeAttribute()
+    {
+        switch ($this->status) {
+            case 'ongoing':
+                return [
+                    'text' => 'Sedang Berlangsung',
+                    'class' => 'bg-blue-100 text-blue-800'
+                ];
+            case 'passed':
+                return [
+                    'text' => 'Lulus (' . $this->percentage . '%)',
+                    'class' => 'bg-green-100 text-green-800'
+                ];
+            case 'failed':
+                return [
+                    'text' => 'Belum Lulus (' . $this->percentage . '%)',
+                    'class' => 'bg-red-100 text-red-800'
+                ];
+            default:
+                return [
+                    'text' => 'Unknown',
+                    'class' => 'bg-gray-100 text-gray-800'
+                ];
+        }
     }
 }

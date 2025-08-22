@@ -3,819 +3,252 @@
 @section('title', 'Kuis: ' . $quiz->title)
 
 @section('content')
-    <div class="quiz-container">
-        <div class="container">
-            <!-- Background Elements -->
-            <div class="bg-decoration">
-                <div class="circle circle-1"></div>
-                <div class="circle circle-2"></div>
-                <div class="circle circle-3"></div>
-            </div>
+    <!-- Background Decorations -->
+    <div class="fixed inset-0 pointer-events-none z-0">
+        <div class="absolute top-[15%] left-[5%] w-32 h-32 lg:w-40 lg:h-40 bg-white bg-opacity-10 rounded-full animate-float"></div>
+        <div class="absolute top-[60%] right-[8%] w-20 h-20 lg:w-25 lg:h-25 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 3s;"></div>
+        <div class="absolute bottom-[25%] left-[15%] w-16 h-16 lg:w-20 lg:h-20 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 6s;"></div>
+    </div>
 
-            <div class="row justify-content-center">
-                <div class="col-12 col-md-10 col-lg-10 col-xl-9">
+    <!-- Main Container -->
+    <div class="relative z-10 min-h-screen py-8 px-5 bg-quiz-gradient">
+        <div class="max-w-6xl mx-auto">
+            <div class="flex justify-center">
+                <div class="w-full max-w-none md:max-w-5xl lg:max-w-5xl xl:max-w-6xl">
+
                     <!-- Quiz Header Card -->
-                    <div class="quiz-header-card">
-                        <div class="quiz-header-content">
-                            <div class="quiz-info">
-                                <h1 class="quiz-title">{{ $quiz->title }}</h1>
-                                <div class="quiz-subtitle">
+                    <div class="bg-primary-gradient rounded-2xl p-8 mb-8 shadow-2xl text-white">
+                        <div class="flex flex-col lg:flex-row justify-between items-center gap-8">
+                            <!-- Quiz Info -->
+                            <div class="text-center lg:text-left">
+                                <h1 class="text-3xl lg:text-4xl font-bold mb-2 leading-tight">{{ $quiz->title }}</h1>
+                                <div class="flex items-center justify-center lg:justify-start gap-2 text-lg opacity-90">
                                     <i class="fas fa-book-open"></i>
                                     <span>{{ $quiz->material->title }}</span>
                                 </div>
                             </div>
-                            <div class="timer-section">
-                                <div class="timer-container">
-                                    <div id="timer" class="timer-display">
-                                        {{ $quiz->time_limit }}:00
-                                    </div>
-                                    <div class="timer-label">Waktu Tersisa</div>
+
+                            <!-- Timer Section -->
+                            <div class="text-center">
+                                <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 min-w-[150px]">
+                                    <div id="timer" class="text-4xl font-bold font-mono mb-2">{{ $quiz->time_limit }}:00</div>
+                                    <div class="text-sm opacity-80">Waktu Tersisa</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Quiz Info Stats -->
-                    <div class="quiz-stats">
+                    <!-- Quiz Stats -->
+                    <div class="bg-white rounded-2xl p-8 mb-8 shadow-2xl">
+                        <!-- Quiz Description -->
                         @if ($quiz->description)
-                            <div class="quiz-description">
-                                <i class="fas fa-info-circle"></i>
+                            <div class="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl mb-6 text-slate-700">
+                                <i class="fas fa-info-circle text-blue-500"></i>
                                 <span>{{ $quiz->description }}</span>
                             </div>
                         @endif
 
-                        <div class="stats-grid">
-                            <div class="stat-item">
-                                <div class="stat-icon">
+                        <!-- Stats Grid -->
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Questions Stat -->
+                            <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+                                <div class="w-10 h-10 bg-primary-gradient rounded-xl flex items-center justify-center text-white">
                                     <i class="fas fa-list-ol"></i>
                                 </div>
-                                <div class="stat-content">
-                                    <div class="stat-number">{{ $quiz->total_questions }}</div>
-                                    <div class="stat-label">Soal</div>
+                                <div>
+                                    <div class="text-2xl font-bold text-slate-800">{{ $quiz->total_questions }}</div>
+                                    <div class="text-sm text-gray-500">Soal</div>
                                 </div>
                             </div>
-                            <div class="stat-item">
-                                <div class="stat-icon">
+
+                            <!-- Time Stat -->
+                            <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-pink-50 rounded-xl border-l-4 border-pink-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+                                <div class="w-10 h-10 bg-secondary-gradient rounded-xl flex items-center justify-center text-white">
                                     <i class="fas fa-clock"></i>
                                 </div>
-                                <div class="stat-content">
-                                    <div class="stat-number">{{ $quiz->time_limit }}</div>
-                                    <div class="stat-label">Menit</div>
+                                <div>
+                                    <div class="text-2xl font-bold text-slate-800">{{ $quiz->time_limit }}</div>
+                                    <div class="text-sm text-gray-500">Menit</div>
                                 </div>
                             </div>
-                            <div class="stat-item">
-                                <div class="stat-icon">
+
+                            <!-- Points Stat -->
+                            <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl border-l-4 border-cyan-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+                                <div class="w-10 h-10 bg-success-gradient rounded-xl flex items-center justify-center text-white">
                                     <i class="fas fa-star"></i>
                                 </div>
-                                <div class="stat-content">
-                                    <div class="stat-number">{{ $quiz->questions->sum('points') }}</div>
-                                    <div class="stat-label">Poin</div>
+                                <div>
+                                    <div class="text-2xl font-bold text-slate-800">{{ $quiz->questions->sum('points') }}</div>
+                                    <div class="text-sm text-gray-500">Poin</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Quiz Form -->
-                    <form id="quiz-form" action="{{ route('quizzes.submit', $quiz) }}" method="POST">
+                    <form id="quiz-form" action="{{ route('quizzes.submit', $quiz) }}" method="POST" class="space-y-8 mb-8">
                         @csrf
                         <input type="hidden" name="started_at" value="{{ now() }}">
 
-                        <div class="questions-container">
-                            @foreach ($quiz->questions as $index => $question)
-                                <div class="question-card" data-question="{{ $index + 1 }}">
-                                    <div class="question-header">
-                                        <div class="question-number">
-                                            <span>{{ $index + 1 }}</span>
-                                        </div>
-                                        <div class="question-info">
-                                            <h3 class="question-title">Soal {{ $index + 1 }}</h3>
-                                            <div class="question-points">
-                                                <i class="fas fa-gem"></i>
-                                                {{ $question->points }} poin
-                                            </div>
-                                        </div>
+                        <!-- Questions Container -->
+                        @foreach ($quiz->questions as $index => $question)
+                            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl hover:transform hover:-translate-y-1 transition-all duration-300" data-question="{{ $index + 1 }}">
+                                <!-- Question Header -->
+                                <div class="bg-primary-gradient p-6 text-white flex items-center gap-4">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 backdrop-blur-lg rounded-full flex items-center justify-center text-lg font-bold">
+                                        {{ $index + 1 }}
                                     </div>
-
-                                    <div class="question-body">
-                                        <div class="question-text">{{ $question->question }}</div>
-
-                                        <div class="options-container">
-                                            @foreach ($question->options as $optionIndex => $option)
-                                                <div class="option-item">
-                                                    <input class="option-input" type="radio"
-                                                        name="answers[{{ $question->id }}]"
-                                                        id="q{{ $question->id }}_option{{ $optionIndex }}"
-                                                        value="{{ $optionIndex }}" required>
-                                                    <label class="option-label"
-                                                        for="q{{ $question->id }}_option{{ $optionIndex }}">
-                                                        <div class="option-marker">{{ chr(65 + $optionIndex) }}</div>
-                                                        <div class="option-content">{{ $option }}</div>
-                                                        <div class="option-check">
-                                                            <i class="fas fa-check"></i>
-                                                        </div>
-                                                    </label>
-                                                </div>
-                                            @endforeach
-                                        </div>
+                                    <div class="flex-1">
+                                        <h3 class="text-xl font-semibold">Soal {{ $index + 1 }}</h3>
+                                    </div>
+                                    <div class="flex items-center gap-2 bg-white bg-opacity-20 backdrop-blur-lg px-4 py-2 rounded-full">
+                                        <i class="fas fa-gem"></i>
+                                        <span>{{ $question->points }} poin</span>
                                     </div>
                                 </div>
-                            @endforeach
-                        </div>
 
-                        <!-- Action Buttons - FIXED: Hapus semua atribut Bootstrap modal -->
-                        <div class="quiz-actions">
-                            <a href="{{ route('materials.show', $quiz->material) }}" class="btn btn-secondary-custom">
-                                <i class="fas fa-arrow-left"></i>
-                                <span>Kembali ke Materi</span>
-                            </a>
+                                <!-- Question Body -->
+                                <div class="p-8">
+                                    <div class="text-lg font-medium text-slate-800 mb-6 leading-relaxed">
+                                        {{ $question->question }}
+                                    </div>
 
-                            <!-- PENTING: Hanya ID, tidak ada data-bs-* apapun -->
-                            <button type="button" class="btn btn-primary-custom" id="submit-quiz-btn">
-                                <i class="fas fa-paper-plane"></i>
-                                <span>Selesai & Submit</span>
-                            </button>
-                        </div>
+                                    <!-- Options -->
+                                    <div class="space-y-4">
+                                        @foreach ($question->options as $optionIndex => $option)
+                                            <div class="relative">
+                                                <input class="absolute opacity-0 cursor-pointer"
+                                                       type="radio"
+                                                       name="answers[{{ $question->id }}]"
+                                                       id="q{{ $question->id }}_option{{ $optionIndex }}"
+                                                       value="{{ $optionIndex }}"
+                                                       required>
+                                                <label class="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl cursor-pointer bg-gray-50 hover:border-blue-400 hover:bg-white hover:shadow-lg transition-all duration-300 relative overflow-hidden group"
+                                                       for="q{{ $question->id }}_option{{ $optionIndex }}">
+                                                    <div class="absolute inset-0 bg-primary-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                                                    <div class="w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-600 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 z-10">
+                                                        {{ chr(65 + $optionIndex) }}
+                                                    </div>
+                                                    <div class="flex-1 text-slate-700 z-10">{{ $option }}</div>
+                                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+                                                        <i class="fas fa-check text-white text-xs"></i>
+                                                    </div>
+                                                </label>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                        @endforeach
                     </form>
+
+                    <!-- Action Buttons -->
+                    <div class="flex flex-col-reverse lg:flex-row justify-between items-center gap-4 py-8">
+                        <a href="{{ route('materials.show', $quiz->material) }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-gray-600 text-white rounded-xl font-semibold shadow-lg hover:bg-gray-700 hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                            <i class="fas fa-arrow-left"></i>
+                            <span>Kembali ke Materi</span>
+                        </a>
+
+                        <button type="button" id="submit-quiz-btn" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary-gradient text-white rounded-xl font-semibold shadow-lg hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                            <i class="fas fa-paper-plane"></i>
+                            <span>Selesai & Submit</span>
+                        </button>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- FIXED Submit Confirmation Modal - Hapus semua auto-trigger -->
-    <div class="modal" id="confirmationModal" style="display: none;">
-        <div class="modal-backdrop"></div>
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content custom-modal">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="fas fa-exclamation-triangle text-warning me-2"></i>
+    <!-- Confirmation Modal -->
+    <div id="confirmationModal" class="fixed inset-0 z-50 opacity-0 invisible transition-all duration-300">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black bg-opacity-50 modal-backdrop"></div>
+
+        <!-- Modal Dialog -->
+        <div class="relative flex items-center justify-center min-h-screen p-4">
+            <div class="bg-white rounded-2xl shadow-3xl max-w-md w-full transform scale-95 transition-transform duration-300">
+                <!-- Modal Header -->
+                <div class="bg-primary-gradient text-white p-6 rounded-t-2xl flex items-center justify-between">
+                    <h5 class="text-lg font-semibold flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle text-yellow-300"></i>
                         Konfirmasi Submit
                     </h5>
-                    <button type="button" class="btn-close" id="close-modal-btn">×</button>
+                    <button type="button" id="close-modal-btn" class="w-8 h-8 flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors">
+                        <span class="text-xl">&times;</span>
+                    </button>
                 </div>
-                <div class="modal-body">
-                    <p class="modal-description">
+
+                <!-- Modal Body -->
+                <div class="p-6">
+                    <p class="text-gray-700 mb-4">
                         Apakah Anda yakin ingin mengirim jawaban?
                         <strong>Setelah dikirim, Anda tidak dapat mengubah jawaban lagi.</strong>
                     </p>
-                    <div id="unanswered-alert" class="alert alert-warning custom-alert" style="display: none;">
-                        <i class="fas fa-exclamation-circle me-2"></i>
-                        <strong>Perhatian:</strong> Masih ada <span id="unanswered-count">0</span> soal yang belum dijawab.
+
+                    <div id="unanswered-alert" class="hidden bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 rounded-xl">
+                        <div class="flex items-center text-yellow-800">
+                            <i class="fas fa-exclamation-circle mr-2"></i>
+                            <strong>Perhatian:</strong> Masih ada <span id="unanswered-count">0</span> soal yang belum dijawab.
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary-custom" id="cancel-submit-btn">
-                        <i class="fas fa-times me-2"></i>Batal
+
+                <!-- Modal Footer -->
+                <div class="flex gap-3 p-6 border-t border-gray-100">
+                    <button type="button" id="cancel-submit-btn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-700 transition-colors">
+                        <i class="fas fa-times"></i>
+                        Batal
                     </button>
-                    <button type="button" class="btn btn-primary-custom" id="confirm-submit-btn">
-                        <i class="fas fa-check me-2"></i>Ya, Kirim Jawaban
+                    <button type="button" id="confirm-submit-btn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary-gradient text-white rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                        <i class="fas fa-check"></i>
+                        Ya, Kirim Jawaban
                     </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Custom Styles -->
     <style>
-        /* Existing CSS styles remain the same... */
-        /* Root Variables */
-        :root {
-            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            --success-gradient: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            --warning-gradient: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.15);
-            --border-radius: 16px;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        /* Custom Modal Styles - FIXED */
-        .modal {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 9999;
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-
-        .modal.show {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        .modal-backdrop {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-        }
-
-        .modal-dialog {
-            position: relative;
-            margin: 0 auto;
-            top: 50%;
-            transform: translateY(-50%);
-            max-width: 500px;
-            width: 90%;
-        }
-
-        .custom-modal {
-            border-radius: var(--border-radius);
-            border: none;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
-            background: white;
-        }
-
-        .custom-modal .modal-header {
-            background: var(--primary-gradient);
-            color: white;
-            border-bottom: none;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            padding: 1.5rem;
-        }
-
-        .custom-modal .modal-body {
-            padding: 2rem;
-        }
-
-        .custom-modal .modal-footer {
-            border-top: 1px solid #e9ecef;
-            padding: 1.5rem;
-        }
-
-        .btn-close {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            padding: 0;
-            width: 30px;
-            height: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .alert.custom-alert {
-            border-radius: 10px;
-            border: none;
-            background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
-            color: #856404;
-            margin-top: 1rem;
-        }
-
-        /* Rest of your existing CSS... */
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        .quiz-container {
-            min-height: 100vh;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            padding: 2rem 0;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        .bg-decoration {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .circle-1 {
-            width: 150px;
-            height: 150px;
-            top: 15%;
-            left: 5%;
-            animation-delay: 0s;
-        }
-
-        .circle-2 {
-            width: 100px;
-            height: 100px;
-            top: 60%;
-            right: 8%;
-            animation-delay: 3s;
-        }
-
-        .circle-3 {
-            width: 80px;
-            height: 80px;
-            bottom: 25%;
-            left: 15%;
-            animation-delay: 6s;
-        }
-
+        /* Custom animations and gradients */
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-15px);
-            }
-        }
-
-        /* Quiz Header */
-        .quiz-header-card {
-            background: var(--primary-gradient);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
-            color: white;
-        }
-
-        .quiz-header-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 2rem;
-        }
-
-        .quiz-title {
-            font-size: 2rem;
-            font-weight: 700;
-            margin: 0;
-            line-height: 1.2;
-        }
-
-        .quiz-subtitle {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
-            opacity: 0.9;
-        }
-
-        .timer-section {
-            text-align: center;
-        }
-
-        .timer-container {
-            background: rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(10px);
-            border-radius: 12px;
-            padding: 1.5rem;
-            min-width: 150px;
-        }
-
-        .timer-display {
-            font-size: 2.5rem;
-            font-weight: 700;
-            font-family: 'Courier New', monospace;
-            margin-bottom: 0.5rem;
-        }
-
-        .timer-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .timer-display.warning {
-            color: #ffc107 !important;
-            animation: pulse-warning 2s infinite;
-        }
-
-        .timer-display.danger {
-            color: #dc3545 !important;
-            animation: pulse-danger 1s infinite;
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
         @keyframes pulse-warning {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         @keyframes pulse-danger {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.1);
-                opacity: 0.7;
-            }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
         }
 
-        /* Quiz Stats */
-        .quiz-stats {
-            background: white;
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            margin-bottom: 2rem;
-            box-shadow: var(--card-shadow);
+        .bg-primary-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg-secondary-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .bg-success-gradient { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .bg-quiz-gradient { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
+
+        .animate-float { animation: float 8s ease-in-out infinite; }
+        .animate-pulse-warning { animation: pulse-warning 2s infinite; }
+        .animate-pulse-danger { animation: pulse-danger 1s infinite; }
+
+        /* Modal show state */
+        .modal.show {
+            opacity: 1 !important;
+            visibility: visible !important;
         }
 
-        .quiz-description {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 1rem 1.5rem;
-            background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            font-size: 1rem;
-            color: #2c3e50;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .stat-item {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1rem;
-            background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
-            border-radius: 12px;
-            border-left: 4px solid;
-            transition: var(--transition);
-        }
-
-        .stat-item:nth-child(1) {
-            border-left-color: #667eea;
-        }
-
-        .stat-item:nth-child(2) {
-            border-left-color: #f093fb;
-        }
-
-        .stat-item:nth-child(3) {
-            border-left-color: #4facfe;
-        }
-
-        .stat-item:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-        }
-
-        .stat-icon {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            color: white;
-        }
-
-        .stat-item:nth-child(1) .stat-icon {
-            background: var(--primary-gradient);
-        }
-
-        .stat-item:nth-child(2) .stat-icon {
-            background: var(--secondary-gradient);
-        }
-
-        .stat-item:nth-child(3) .stat-icon {
-            background: var(--success-gradient);
-        }
-
-        .stat-number {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2c3e50;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            color: #6c757d;
-        }
-
-        /* Questions Container */
-        .questions-container {
-            display: flex;
-            flex-direction: column;
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        /* Question Card */
-        .question-card {
-            background: white;
-            border-radius: var(--border-radius);
-            box-shadow: var(--card-shadow);
-            overflow: hidden;
-            transition: var(--transition);
-        }
-
-        .question-card:hover {
-            box-shadow: var(--card-shadow-hover);
-            transform: translateY(-2px);
-        }
-
-        .question-header {
-            background: var(--primary-gradient);
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            color: white;
-        }
-
-        .question-number {
-            width: 50px;
-            height: 50px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2rem;
-            font-weight: 700;
-            backdrop-filter: blur(10px);
-        }
-
-        .question-title {
-            font-size: 1.3rem;
-            font-weight: 600;
-            margin: 0;
-        }
-
-        .question-points {
-            margin-left: auto;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(255, 255, 255, 0.2);
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            backdrop-filter: blur(10px);
-        }
-
-        .question-body {
-            padding: 2rem;
-        }
-
-        .question-text {
-            font-size: 1.1rem;
-            font-weight: 500;
-            margin-bottom: 1.5rem;
-            color: #2c3e50;
-            line-height: 1.6;
-        }
-
-        /* Options */
-        .options-container {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-
-        .option-item {
-            position: relative;
-        }
-
-        .option-input {
-            position: absolute;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        .option-label {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            padding: 1.2rem;
-            border: 2px solid #e9ecef;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: var(--transition);
-            background: #f8f9fa;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .option-label::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 0;
-            height: 100%;
-            background: var(--primary-gradient);
-            transition: width 0.3s ease;
-            z-index: -1;
-            opacity: 0.1;
-        }
-
-        .option-label:hover {
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 3px 10px rgba(102, 126, 234, 0.08);
-        }
-
-        .option-label:hover::before {
-            width: 100%;
-        }
-
-        .option-input:checked+.option-label {
-            border-color: #667eea;
-            background: white;
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.2);
-        }
-
-        .option-input:checked+.option-label::before {
-            width: 100%;
-            opacity: 0.15;
-        }
-
-        .option-marker {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            color: #6c757d;
-            transition: var(--transition);
-            flex-shrink: 0;
-        }
-
-        .option-input:checked+.option-label .option-marker {
-            background: var(--primary-gradient);
-            color: white;
-            transform: scale(1.05);
-        }
-
-        .option-content {
-            flex: 1;
-            font-size: 1rem;
-            color: #2c3e50;
-            line-height: 1.5;
-        }
-
-        .option-check {
-            width: 25px;
-            height: 25px;
-            border-radius: 50%;
-            background: #e9ecef;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: var(--transition);
-            opacity: 0;
-        }
-
-        .option-input:checked+.option-label .option-check {
-            background: var(--success-gradient);
-            color: white;
-            opacity: 1;
-            transform: scale(1.1);
-        }
-
-        /* Action Buttons */
-        .quiz-actions {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            padding: 2rem 0;
-        }
-
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 2rem;
-            border-radius: 10px;
-            font-weight: 600;
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 1rem;
-        }
-
-        .btn-primary-custom {
-            background: var(--primary-gradient);
-            color: white;
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-        }
-
-        .btn-primary-custom:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
-            color: white;
-        }
-
-        .btn-secondary-custom {
-            background: #6c757d;
-            color: white;
-            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
-        }
-
-        .btn-secondary-custom:hover {
-            background: #5a6268;
-            transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.35);
-            color: white;
-            text-decoration: none;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .quiz-header-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 1.5rem;
-            }
-
-            .quiz-title {
-                font-size: 1.5rem;
-            }
-
-            .timer-display {
-                font-size: 2rem;
-            }
-
-            .stats-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .quiz-actions {
-                flex-direction: column-reverse;
-                gap: 1rem;
-            }
-
-            .btn {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .option-label {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 0.75rem;
-                text-align: left;
-            }
-
-            .option-marker {
-                align-self: flex-start;
-            }
-        }
-
-        @media (max-width: 576px) {
-            .quiz-container {
-                padding: 1rem 0;
-            }
-
-            .quiz-header-card,
-            .quiz-stats,
-            .question-body {
-                padding: 1.5rem;
-            }
-
-            .question-header {
-                padding: 1rem 1.5rem;
-            }
+        .modal.show .bg-white {
+            transform: scale(1) !important;
         }
     </style>
 
     <script>
-        // Fixed JavaScript untuk Quiz - Konfirmasi hanya muncul saat klik Submit
-
         document.addEventListener('DOMContentLoaded', function() {
             // Timer functionality
             const timeLimit = {{ $quiz->time_limit }};
@@ -823,10 +256,8 @@
             const timerElement = document.getElementById('timer');
             const quizForm = document.getElementById('quiz-form');
             const updateTimerUrl = "{{ route('quizzes.update-timer', $quiz) }}";
-            const quizId = "{{ $quiz->id }}";
-            const userId = "{{ Auth::id() }}";
 
-            // Modal elements - menggunakan custom modal, BUKAN Bootstrap
+            // Modal elements
             const confirmationModal = document.getElementById('confirmationModal');
             const submitQuizBtn = document.getElementById('submit-quiz-btn');
             const confirmSubmitBtn = document.getElementById('confirm-submit-btn');
@@ -843,19 +274,16 @@
                 const minutes = Math.floor(timeRemaining / 60);
                 const seconds = timeRemaining % 60;
 
-                timerElement.textContent =
-                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
                 // Warning when 5 minutes left
                 if (timeRemaining <= 300 && timeRemaining > 60) {
-                    timerElement.classList.add('warning');
-                    timerElement.classList.remove('danger');
+                    timerElement.className = 'text-4xl font-bold font-mono mb-2 text-yellow-400 animate-pulse-warning';
                 }
 
                 // Danger when 1 minute left
                 if (timeRemaining <= 60) {
-                    timerElement.classList.remove('warning');
-                    timerElement.classList.add('danger');
+                    timerElement.className = 'text-4xl font-bold font-mono mb-2 text-red-400 animate-pulse-danger';
                 }
 
                 // Auto submit when time is up
@@ -868,7 +296,7 @@
 
                 timeRemaining--;
 
-                // Simpan waktu tersisa ke server setiap 10 detik
+                // Save time to server every 10 seconds
                 if (timeRemaining % 10 === 0) {
                     saveTimeToServer(timeRemaining);
                 }
@@ -876,30 +304,30 @@
 
             function saveTimeToServer(timeRemaining) {
                 fetch(updateTimerUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            time_remaining: timeRemaining
-                        })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        time_remaining: timeRemaining
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.time_up) {
-                            clearInterval(timerInterval);
-                            submitQuizDirectly();
-                        }
-                    })
-                    .catch(error => console.error('Error saving time:', error));
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.time_up) {
+                        clearInterval(timerInterval);
+                        submitQuizDirectly();
+                    }
+                })
+                .catch(error => console.error('Error saving time:', error));
             }
 
-            // Simpan waktu ketika user meninggalkan halaman
+            // Save time when user leaves page
             window.addEventListener('beforeunload', function(e) {
                 const isSubmitting = quizForm.classList.contains('submitting');
                 if (!isSubmitting && timeRemaining > 0) {
-                    // Synchronous request untuk memastikan waktu tersimpan
+                    // Synchronous request to ensure time is saved
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', updateTimerUrl, false);
                     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -909,117 +337,146 @@
                     }));
                 }
             });
-            // Function to show custom modal
+
+            // Function to show modal
             function showConfirmationModal() {
-                confirmationModal.classList.add('show');
-                confirmationModal.style.display = 'block';
-                document.body.style.overflow = 'hidden'; // Prevent background scrolling
+                confirmationModal.classList.remove('opacity-0', 'invisible');
+                confirmationModal.classList.add('opacity-100', 'visible');
+                const modalDialog = confirmationModal.querySelector('.bg-white');
+                modalDialog.classList.remove('scale-95');
+                modalDialog.classList.add('scale-100');
+                document.body.style.overflow = 'hidden';
             }
 
-            // Function to hide custom modal
+            // Function to hide modal
             function hideConfirmationModal() {
-                confirmationModal.classList.remove('show');
-                setTimeout(() => {
-                    confirmationModal.style.display = 'none';
-                    document.body.style.overflow = 'auto'; // Restore scrolling
-                }, 300);
+                confirmationModal.classList.add('opacity-0', 'invisible');
+                confirmationModal.classList.remove('opacity-100', 'visible');
+                const modalDialog = confirmationModal.querySelector('.bg-white');
+                modalDialog.classList.add('scale-95');
+                modalDialog.classList.remove('scale-100');
+                document.body.style.overflow = 'auto';
             }
 
-            // Function to submit quiz directly (bypassing confirmation)
+            // Function to submit quiz directly
             function submitQuizDirectly() {
                 clearInterval(timerInterval);
-                quizForm.classList.add('submitting'); // Prevent beforeunload warning
+                quizForm.classList.add('submitting');
                 quizForm.submit();
             }
 
-            // Function to check and update unanswered questions
+            // Check unanswered questions
             function checkUnansweredQuestions() {
                 const totalQuestions = {{ $quiz->questions->count() }};
                 const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
                 const unansweredCount = totalQuestions - answeredQuestions;
 
                 if (unansweredCount > 0) {
-                    unansweredAlert.style.display = 'block';
+                    unansweredAlert.classList.remove('hidden');
                     unansweredCountSpan.textContent = unansweredCount;
                 } else {
-                    unansweredAlert.style.display = 'none';
+                    unansweredAlert.classList.add('hidden');
                 }
 
                 return unansweredCount;
             }
 
-            // Event listener untuk submit button - SHOW MODAL
+            // Event listeners
             submitQuizBtn.addEventListener('click', function(e) {
                 e.preventDefault();
                 e.stopPropagation();
-
-                console.log('Submit button clicked - showing confirmation modal');
-
-                // Check unanswered questions
                 checkUnansweredQuestions();
-
-                // Show confirmation modal
                 showConfirmationModal();
             });
 
-            // Event listener untuk CONFIRM SUBMIT - ACTUAL SUBMIT
             confirmSubmitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-
-                console.log('Confirmed submit - submitting form');
-
-                // Hide modal first
                 hideConfirmationModal();
-
-                // Submit form
                 submitQuizDirectly();
             });
 
-            // Event listeners untuk CANCEL/CLOSE modal
             cancelSubmitBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Submit cancelled');
                 hideConfirmationModal();
             });
 
             closeModalBtn.addEventListener('click', function(e) {
                 e.preventDefault();
-                console.log('Modal closed');
                 hideConfirmationModal();
             });
 
             // Close modal when clicking backdrop
-            modalBackdrop.addEventListener('click', function(e) {
+            modalBackdrop?.addEventListener('click', function(e) {
                 if (e.target === modalBackdrop) {
-                    console.log('Modal closed via backdrop');
                     hideConfirmationModal();
                 }
             });
 
             // Close modal with ESC key
             document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && confirmationModal.classList.contains('show')) {
-                    console.log('Modal closed via ESC key');
+                if (e.key === 'Escape' && !confirmationModal.classList.contains('invisible')) {
                     hideConfirmationModal();
                 }
             });
 
-            // Radio button change handlers
+            // Radio button change handlers with animations
             const radioButtons = document.querySelectorAll('input[type="radio"]');
             radioButtons.forEach(radio => {
                 radio.addEventListener('change', function() {
-                    console.log('Answer changed for question:', this.name, 'value:', this.value);
+                    // Remove previous selection styling from all options of the same question
+                    const questionName = this.name;
+                    const allOptionsForQuestion = document.querySelectorAll(`input[name="${questionName}"]`);
 
-                    // Add smooth animation when option is selected
-                    const label = this.nextElementSibling;
-                    if (label) {
-                        label.style.transform = 'scale(0.98)';
+                    allOptionsForQuestion.forEach(option => {
+                        const label = option.nextElementSibling;
+                        if (label) {
+                            // Reset all labels
+                            label.classList.remove('border-blue-500', 'bg-white', 'shadow-lg');
+                            label.classList.add('border-gray-200', 'bg-gray-50');
+
+                            // Reset marker and check
+                            const marker = label.querySelector('.w-9.h-9');
+                            const check = label.querySelector('.w-6.h-6');
+
+                            if (marker) {
+                                marker.classList.remove('bg-blue-500', 'text-white', 'transform', 'scale-105');
+                                marker.classList.add('bg-gray-300', 'text-gray-600');
+                            }
+
+                            if (check) {
+                                check.classList.remove('bg-green-500', 'opacity-100', 'transform', 'scale-110');
+                                check.classList.add('bg-gray-300', 'opacity-0');
+                            }
+                        }
+                    });
+
+                    // Style the selected option
+                    const selectedLabel = this.nextElementSibling;
+                    if (selectedLabel) {
+                        selectedLabel.classList.remove('border-gray-200', 'bg-gray-50');
+                        selectedLabel.classList.add('border-blue-500', 'bg-white', 'shadow-lg');
+
+                        // Style marker
+                        const marker = selectedLabel.querySelector('.w-9.h-9');
+                        if (marker) {
+                            marker.classList.remove('bg-gray-300', 'text-gray-600');
+                            marker.classList.add('bg-blue-500', 'text-white', 'transform', 'scale-105');
+                        }
+
+                        // Style check
+                        const check = selectedLabel.querySelector('.w-6.h-6');
+                        if (check) {
+                            check.classList.remove('bg-gray-300', 'opacity-0');
+                            check.classList.add('bg-green-500', 'opacity-100', 'transform', 'scale-110');
+                        }
+
+                        // Smooth animation effect
+                        selectedLabel.style.transform = 'scale(0.98)';
                         setTimeout(() => {
-                            label.style.transform = 'scale(1)';
+                            selectedLabel.style.transform = 'scale(1)';
                         }, 150);
                     }
 
-                    // Update progress
                     updateProgress();
                 });
             });
@@ -1028,76 +485,33 @@
             function updateProgress() {
                 const totalQuestions = {{ $quiz->questions->count() }};
                 const answeredQuestions = document.querySelectorAll('input[type="radio"]:checked').length;
-                const progress = (answeredQuestions / totalQuestions) * 100;
-
-                console.log(`Progress: ${answeredQuestions}/${totalQuestions} (${progress.toFixed(1)}%)`);
 
                 // Update submit button text and style based on progress
                 const submitText = submitQuizBtn.querySelector('span');
                 if (answeredQuestions === totalQuestions) {
                     submitText.textContent = 'Selesai & Submit';
-                    submitQuizBtn.classList.add('btn-success');
-                    submitQuizBtn.classList.remove('btn-primary-custom');
+                    submitQuizBtn.classList.add('bg-green-600');
+                    submitQuizBtn.classList.remove('bg-primary-gradient');
                 } else {
                     submitText.textContent = `Submit (${answeredQuestions}/${totalQuestions})`;
-                    submitQuizBtn.classList.remove('btn-success');
-                    submitQuizBtn.classList.add('btn-primary-custom');
+                    submitQuizBtn.classList.remove('bg-green-600');
+                    submitQuizBtn.classList.add('bg-primary-gradient');
                 }
             }
 
-            // Prevent page refresh/back dengan konfirmasi
+            // Prevent page refresh/back with confirmation
             window.addEventListener('beforeunload', function(e) {
-                // Hanya tampilkan peringatan jika quiz belum selesai dan tidak sedang submit
                 const isSubmitting = quizForm.classList.contains('submitting');
                 if (!isSubmitting) {
                     e.preventDefault();
-                    e.returnValue =
-                        'Apakah Anda yakin ingin meninggalkan halaman? Progress quiz akan hilang.';
+                    e.returnValue = 'Apakah Anda yakin ingin meninggalkan halaman? Progress quiz akan hilang.';
                 }
             });
 
-            // Smooth scroll untuk question cards
-            document.querySelectorAll('.question-card').forEach((card, index) => {
-                card.addEventListener('click', function(e) {
-                    // Hanya scroll jika yang diklik bukan radio button atau label
-                    if (e.target.type !== 'radio' && !e.target.closest('.option-label')) {
-                        const firstUnanswered = card.querySelector(
-                            'input[type="radio"]:not(:checked)');
-                        if (firstUnanswered && !card.querySelector('input[type="radio"]:checked')) {
-                            card.scrollIntoView({
-                                behavior: 'smooth',
-                                block: 'center'
-                            });
-                        }
-                    }
-                });
-            });
-
-            // Prevent form submission via Enter key tanpa konfirmasi
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && e.target.type !== 'submit') {
-                    // Jangan prevent Enter di radio buttons
-                    if (e.target.type === 'radio') {
-                        return; // Allow normal behavior
-                    }
-
-                    // Prevent Enter dari accidentally submit form
-                    const activeElement = document.activeElement;
-                    if (activeElement && activeElement.form && activeElement.form.id === 'quiz-form') {
-                        e.preventDefault();
-                    }
-                }
-            });
-
-            // Initial progress update
+            // Initialize progress
             updateProgress();
 
-            // Debug logs
-            console.log('Quiz JavaScript initialized');
-            console.log('Submit button:', submitQuizBtn);
-            console.log('Confirm button:', confirmSubmitBtn);
-            console.log('Modal element:', confirmationModal);
-            console.log('Quiz form:', quizForm);
+            console.log('Quiz JavaScript initialized with Tailwind CSS and Laravel Blade');
         });
     </script>
 @endsection

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->timestamps();
 
             // User hanya bisa attempt sekali per quiz
-            $table->unique(['quiz_id', 'user_id']);
+           
         });
     }
 

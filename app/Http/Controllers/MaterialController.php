@@ -72,7 +72,8 @@ class MaterialController extends Controller
         return redirect()->route('classes.show', $class->id)
             ->with('success', 'Materi berhasil dibuat!');
     }
-    // Menampilkan detail materi
+
+    // UPDATED: Menampilkan detail materi dengan status completion 80%
     public function show(Material $material)
     {
         $material->load(['class.mentor', 'activeQuiz.questions']);
@@ -92,15 +93,20 @@ class MaterialController extends Controller
             abort(403, 'Akses ditolak.');
         }
 
-        // Jika ada quiz aktif, cek status attempt user
+        // UPDATED: Jika ada quiz aktif, ambil completion status dengan 80% logic
         $quizAttempt = null;
         $activeQuiz = $material->quizzes()->where('is_active', true)->first();
-        if ($material->activeQuiz && $user->role === 'siswa') {
-            $quizAttempt = $material->activeQuiz->getAttemptByUser($user->id);
+        $completionStatus = null;
+
+        if ($activeQuiz && $user->role === 'siswa') {
+            // Gunakan best attempt untuk menentukan status
+            $quizAttempt = $activeQuiz->getBestAttemptByUser($user->id);
+            $completionStatus = $activeQuiz->getCompletionStatusByUser($user->id);
         }
 
-        return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz'));
+        return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz', 'completionStatus'));
     }
+
     // Form edit materi
     public function edit(Material $material)
     {
@@ -168,7 +174,7 @@ class MaterialController extends Controller
             ->with('success', 'Materi berhasil diperbarui!');
     }
 
-    // Hapus materiii
+    // Hapus materi
     public function destroy(Material $material)
     {
         if ($material->class->mentor_id !== auth()->id()) {

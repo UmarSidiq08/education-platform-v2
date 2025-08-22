@@ -69,98 +69,168 @@ class QuizController extends Controller
             ->with('success', 'Kuis berhasil ditambahkan untuk materi: ' . $material->title);
     }
 
-  public function edit(Material $material, Quiz $quiz)
-{
-    $material = $quiz->material;
-
-    // Pastikan hanya mentor yang bisa edit quiz untuk materialnya
-    if (Auth::id() !== $material->class->mentor_id || Auth::user()->role !== 'mentor') {
-        abort(403, 'Unauthorized');
-    }
-
-    // HAPUS PENGEECEKAN INI ↓
-    // if ($quiz->attempts()->exists()) {
-    //     return redirect()->route('materials.show', $material)
-    //         ->with('error', 'Tidak dapat mengedit kuis yang sudah pernah dikerjakan oleh peserta.');
-    // }
-
-    // Load questions dengan urutan yang benar
-    $quiz->load(['questions' => function ($query) {
-        $query->orderBy('order');
-    }]);
-
-    return view('quizzes.edit', compact('quiz', 'material'));
-}
-
-public function update(Request $request, Material $material, Quiz $quiz)
-{
-    $material = $quiz->material;
-
-    if (Auth::id() !== $material->class->mentor_id || Auth::user()->role !== 'mentor') {
-        abort(403, 'Unauthorized');
-    }
-
-    // HAPUS PENGEECEKAN INI ↓
-    // if ($quiz->attempts()->exists()) {
-    //     return redirect()->route('materials.show', $material)
-    //         ->with('error', 'Tidak dapat mengubah kuis yang sudah pernah dikerjakan oleh peserta.');
-    // }
-
-    $request->validate([
-        'title' => 'required|string|max:255',
-        'description' => 'nullable|string',
-        'time_limit' => 'required|integer|min:1',
-        'questions' => 'required|array|min:1',
-        'questions.*.question' => 'required|string',
-        'questions.*.options' => 'required|array|min:2',
-        'questions.*.correct_answer' => 'required|integer|min:0',
-        'questions.*.points' => 'required|integer|min:1'
-    ]);
-
-    // Update quiz data
-    $quiz->update([
-        'title' => $request->title,
-        'description' => $request->description,
-        'time_limit' => $request->time_limit,
-        'total_questions' => count($request->questions),
-    ]);
-
-    // Hapus semua pertanyaan lama
-    $quiz->questions()->delete();
-
-    // Tambahkan pertanyaan baru
-    foreach ($request->questions as $index => $questionData) {
-        Question::create([
-            'quiz_id' => $quiz->id,
-            'question' => $questionData['question'],
-            'options' => $questionData['options'],
-            'correct_answer' => (int)$questionData['correct_answer'],
-            'points' => (int)$questionData['points'],
-            'order' => $index + 1
-        ]);
-    }
-
-    return redirect()->route('materials.show', $material)
-        ->with('success', 'Kuis berhasil diperbarui untuk materi: ' . $material->title);
-}
-
-    // UPDATED: Show quiz dengan logic untuk handle timer persistent
-    public function show(Quiz $quiz)
+    public function edit(Material $material, Quiz $quiz)
     {
-        $user = Auth::user();
+        $material = $quiz->material;
 
-        // Cek apakah user sudah pernah selesai mengerjakan quiz ini
-        $completedAttempt = $quiz->attempts()
+        // Pastikan hanya mentor yang bisa edit quiz untuk materialnya
+        if (Auth::id() !== $material->class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        // Load questions dengan urutan yang benar
+        $quiz->load(['questions' => function ($query) {
+            $query->orderBy('order');
+        }]);
+
+        return view('quizzes.edit', compact('quiz', 'material'));
+    }
+
+    public function update(Request $request, Material $material, Quiz $quiz)
+    {
+        $material = $quiz->material;
+
+        if (Auth::id() !== $material->class->mentor_id || Auth::user()->role !== 'mentor') {
+            abort(403, 'Unauthorized');
+        }
+
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'time_limit' => 'required|integer|min:1',
+            'questions' => 'required|array|min:1',
+            'questions.*.question' => 'required|string',
+            'questions.*.options' => 'required|array|min:2',
+            'questions.*.correct_answer' => 'required|integer|min:0',
+            'questions.*.points' => 'required|integer|min:1'
+        ]);
+
+        // Update quiz data
+        $quiz->update([
+            'title' => $request->title,
+            'description' => $request->description,
+            'time_limit' => $request->time_limit,
+            'total_questions' => count($request->questions),
+        ]);
+
+        // Hapus semua pertanyaan lama
+        $quiz->questions()->delete();
+
+        // Tambahkan pertanyaan baru
+        foreach ($request->questions as $index => $questionData) {
+            Question::create([
+                'quiz_id' => $quiz->id,
+                'question' => $questionData['question'],
+                'options' => $questionData['options'],
+                'correct_answer' => (int)$questionData['correct_answer'],
+                'points' => (int)$questionData['points'],
+                'order' => $index + 1
+            ]);
+        }
+
+        return redirect()->route('materials.show', $material)
+            ->with('success', 'Kuis berhasil diperbarui untuk materi: ' . $material->title);
+    }
+
+    // UPDATED: Show quiz dengan logic untuk handle multiple attempts
+    // UPDATED: Show quiz dengan logic untuk handle multiple attempts
+public function show(Request $request, Quiz $quiz)
+{
+    $user = Auth::user();
+
+    // Jika ada attempt_id di parameter (untuk melihat attempt tertentu)
+    if ($request->has('attempt_id')) {
+        $attempt = QuizAttempt::where('quiz_id', $quiz->id)
             ->where('user_id', $user->id)
+            ->where('id', $request->attempt_id)
             ->whereNotNull('finished_at')
             ->first();
 
-        if ($completedAttempt) {
-            return view('quizzes.result', [
-                'quiz' => $quiz,
-                'attempt' => $completedAttempt
-            ]);
+        if (!$attempt) {
+            return redirect()->route('quizzes.show', $quiz)
+                ->with('error', 'Attempt tidak ditemukan.');
         }
+
+        // Get all attempts dan best attempt untuk view
+        $allAttempts = $quiz->attempts()
+            ->where('user_id', $user->id)
+            ->whereNotNull('finished_at')
+            ->orderBy('finished_at', 'desc')
+            ->get();
+
+        // Add attempt numbers
+        foreach ($allAttempts as $index => $att) {
+            $att->attempt_number = $allAttempts->count() - $index;
+        }
+
+        $bestAttempt = $quiz->getBestAttemptByUser($user->id);
+
+        return view('quizzes.result', [
+            'quiz' => $quiz,
+            'attempt' => $attempt,
+            'allAttempts' => $allAttempts,
+            'bestAttempt' => $bestAttempt
+        ]);
+    }
+
+    // Cek apakah ada attempt yang sedang berjalan
+    $ongoingAttempt = $quiz->attempts()
+        ->where('user_id', $user->id)
+        ->whereNull('finished_at')
+        ->first();
+
+    if ($ongoingAttempt) {
+        // Hitung waktu tersisa berdasarkan waktu yang disimpan di database
+        $timeRemaining = $ongoingAttempt->time_remaining;
+
+        // Jika waktu habis, auto submit
+        if ($timeRemaining <= 0) {
+            $this->autoSubmitQuiz($quiz, $ongoingAttempt);
+            return redirect()->route('quizzes.show', $quiz)
+                ->with('warning', 'Waktu quiz telah habis. Jawaban Anda telah otomatis terkirim.');
+        }
+
+        $quiz->load(['questions', 'material.class']);
+        return view('quizzes.take', [
+            'quiz' => $quiz,
+            'attempt' => $ongoingAttempt,
+            'timeRemaining' => $timeRemaining
+        ]);
+    }
+
+    // User sudah pernah mengerjakan, tampilkan hasil dengan opsi mengerjakan lagi
+    $allAttempts = $quiz->attempts()
+        ->where('user_id', $user->id)
+        ->whereNotNull('finished_at')
+        ->orderBy('finished_at', 'desc')
+        ->get();
+
+    if ($allAttempts->count() > 0) {
+        // Add attempt numbers
+        foreach ($allAttempts as $index => $attempt) {
+            $attempt->attempt_number = $allAttempts->count() - $index;
+        }
+
+        $bestAttempt = $quiz->getBestAttemptByUser($user->id);
+        $latestAttempt = $allAttempts->first(); // Yang paling baru
+
+        return view('quizzes.result', [
+            'quiz' => $quiz,
+            'attempt' => $latestAttempt,
+            'allAttempts' => $allAttempts,
+            'bestAttempt' => $bestAttempt
+        ]);
+    }
+
+    // Belum ada attempt sama sekali, load questions untuk mulai quiz baru
+    $quiz->load(['questions', 'material.class']);
+    return view('quizzes.take', compact('quiz'));
+}
+
+    // UPDATED: Method untuk start quiz dan create attempt (allow multiple attempts)
+    public function start(Quiz $quiz)
+    {
+        $user = Auth::user();
 
         // Cek apakah ada attempt yang sedang berjalan
         $ongoingAttempt = $quiz->attempts()
@@ -169,41 +239,11 @@ public function update(Request $request, Material $material, Quiz $quiz)
             ->first();
 
         if ($ongoingAttempt) {
-            // Hitung waktu tersisa berdasarkan waktu yang disimpan di database
-            $timeRemaining = $ongoingAttempt->time_remaining;
-
-            // Jika waktu habis, auto submit
-            if ($timeRemaining <= 0) {
-                $this->autoSubmitQuiz($quiz, $ongoingAttempt);
-                return redirect()->route('quizzes.show', $quiz)
-                    ->with('warning', 'Waktu quiz telah habis. Jawaban Anda telah otomatis terkirim.');
-            }
-
-            $quiz->load(['questions', 'material.class']);
-            return view('quizzes.take', [
-                'quiz' => $quiz,
-                'attempt' => $ongoingAttempt,
-                'timeRemaining' => $timeRemaining
-            ]);
-        }
-
-        // Belum ada attempt, load questions untuk mulai quiz baru
-        $quiz->load(['questions', 'material.class']);
-        return view('quizzes.take', compact('quiz'));
-    }
-
-    // NEW: Method untuk start quiz dan create attempt
-    public function start(Quiz $quiz)
-    {
-        $user = Auth::user();
-
-        // Cek apakah user sudah pernah mengerjakan
-        if ($quiz->hasBeenAttemptedBy($user->id)) {
             return redirect()->route('quizzes.show', $quiz)
-                ->with('error', 'Anda sudah mengerjakan kuis ini sebelumnya.');
+                ->with('info', 'Anda masih memiliki sesi quiz yang aktif.');
         }
 
-        // Create new attempt dengan status started
+        // Create new attempt - tidak perlu cek apakah sudah pernah mengerjakan
         $attempt = QuizAttempt::create([
             'quiz_id' => $quiz->id,
             'user_id' => $user->id,
@@ -337,7 +377,6 @@ public function update(Request $request, Material $material, Quiz $quiz)
         }
     }
 
-
     // FIXED: API endpoint untuk cek status timer
     public function checkTimer(Quiz $quiz)
     {
@@ -399,31 +438,47 @@ public function update(Request $request, Material $material, Quiz $quiz)
         return redirect()->route('quizzes.show', $quiz)
             ->with('warning', 'Waktu quiz telah habis. Jawaban terakhir Anda telah otomatis terkirim.');
     }
+    // FIXED: Submit method untuk multiple attempts
+   public function submit(Request $request, Quiz $quiz)
+{
+    $user = Auth::user();
 
-    // UPDATED: Submit jawaban quiz dengan validasi waktu
-    public function submit(Request $request, Quiz $quiz)
-    {
-        $user = Auth::user();
+    DB::beginTransaction();
+    try {
+        // Cari attempt yang sedang berjalan
+        $attempt = $quiz->attempts()
+            ->where('user_id', $user->id)
+            ->whereNull('finished_at')
+            ->lockForUpdate()
+            ->first();
 
-        // Cek apakah user sudah pernah mengerjakan
-        if ($quiz->hasBeenAttemptedBy($user->id)) {
+        if (!$attempt) {
+            DB::rollBack();
             return redirect()->route('quizzes.show', $quiz)
-                ->with('error', 'Anda sudah mengerjakan kuis ini sebelumnya.');
+                ->with('error', 'Tidak ada sesi quiz yang aktif.');
         }
 
-        $request->validate([
-            'answers' => 'required|array',
-            'started_at' => 'required|date'
-        ]);
+        // Ambil jawaban dari form
+        $userAnswers = [];
+        if ($request->has('answers') && is_array($request->answers)) {
+            foreach ($request->answers as $questionId => $answerIndex) {
+                $userAnswers[(string)$questionId] = (int)$answerIndex;
+            }
+        }
 
+        // Jika tidak ada jawaban dari form, gunakan yang sudah tersimpan
+        if (empty($userAnswers)) {
+            $userAnswers = $attempt->answers ?? [];
+        }
+
+        // Hitung skor
         $questions = $quiz->questions;
-        $userAnswers = $request->answers;
         $correctAnswers = 0;
         $totalScore = 0;
 
-        // Hitung skor
         foreach ($questions as $question) {
-            $userAnswer = isset($userAnswers[$question->id]) ? (int)$userAnswers[$question->id] : null;
+            $questionId = (string)$question->id;
+            $userAnswer = isset($userAnswers[$questionId]) ? (int)$userAnswers[$questionId] : null;
             $correctAnswer = (int)$question->correct_answer;
 
             if ($userAnswer === $correctAnswer) {
@@ -432,21 +487,38 @@ public function update(Request $request, Material $material, Quiz $quiz)
             }
         }
 
-        // Simpan attempt
-        $attempt = QuizAttempt::create([
-            'quiz_id' => $quiz->id,
-            'user_id' => $user->id,
+        // Update attempt dengan hasil final
+        $attempt->update([
             'answers' => $userAnswers,
             'score' => $totalScore,
-            'total_questions' => $questions->count(),
             'correct_answers' => $correctAnswers,
-            'started_at' => $request->started_at,
+            'time_remaining' => 0,
             'finished_at' => now()
         ]);
 
+        DB::commit();
+
+        Log::info('Quiz submitted successfully', [
+            'user_id' => $user->id,
+            'quiz_id' => $quiz->id,
+            'final_score' => $totalScore,
+            'correct_answers' => $correctAnswers,
+            'total_answers' => count($userAnswers)
+        ]);
+
+        return redirect()->route('quizzes.show', ['quiz' => $quiz, 'attempt_id' => $attempt->id])
+            ->with('success', 'Quiz berhasil diselesaikan! Skor: ' . $totalScore);
+
+    } catch (\Exception $e) {
+        DB::rollBack();
+        Log::error('Error submitting quiz: ' . $e->getMessage());
+
         return redirect()->route('quizzes.show', $quiz)
-            ->with('success', 'Quiz berhasil diselesaikan!');
+            ->with('error', 'Terjadi kesalahan saat mengirim jawaban.');
     }
+}
+    // REMOVED: Submit method karena sudah tidak digunakan untuk multiple attempts
+    // User sekarang hanya menggunakan start -> auto submit system
 
     // FIXED: Private method untuk auto submit ketika waktu habis
     private function autoSubmitQuiz(Quiz $quiz, QuizAttempt $attempt)
@@ -504,13 +576,13 @@ public function update(Request $request, Material $material, Quiz $quiz)
                 'total_score' => $totalScore
             ]);
 
-           $freshAttempt->update([
-            'answers' => $userAnswers,
-            'score' => $totalScore,
-            'correct_answers' => $correctAnswers,
-            'time_remaining' => 0, // Set waktu tersisa menjadi 0
-            'finished_at' => now()
-        ]);
+            $freshAttempt->update([
+                'answers' => $userAnswers,
+                'score' => $totalScore,
+                'correct_answers' => $correctAnswers,
+                'time_remaining' => 0, // Set waktu tersisa menjadi 0
+                'finished_at' => now()
+            ]);
 
             DB::commit();
 
@@ -567,6 +639,7 @@ public function update(Request $request, Material $material, Quiz $quiz)
         return redirect()->back()
             ->with('success', 'Quiz "' . $quiz->title . '" berhasil diaktifkan.');
     }
+
     public function updateTimer(Request $request, Quiz $quiz)
     {
         $user = Auth::user();
@@ -593,5 +666,4 @@ public function update(Request $request, Material $material, Quiz $quiz)
 
         return response()->json(['success' => true]);
     }
-
 }
