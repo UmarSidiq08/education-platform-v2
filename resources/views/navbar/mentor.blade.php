@@ -38,7 +38,8 @@
 
                         <!-- Photo Section -->
                         <div class="relative overflow-hidden bg-gradient-to-br from-gray-100 to-gray-200">
-                            <img src="{{ $mentor->photo ?? 'https://via.placeholder.com/400x400' }}" alt="{{ $mentor->name }}"
+                            <img src="{{ $mentor->avatar ? asset('storage/' . $mentor->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($mentor->name) }}"
+                                alt="{{ $mentor->name }}"
                                 class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-500">
                             <div class="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent"></div>
                         </div>

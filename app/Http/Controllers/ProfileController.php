@@ -33,33 +33,50 @@ class ProfileController extends Controller
     /**
      * Update profil user (versi Laravel Breeze default).
      */
-    public function update(ProfileUpdateRequest $request): RedirectResponse
-    {
-        $user = $request->user();
+ public function update(ProfileUpdateRequest $request): RedirectResponse
+{
+    $user = $request->user();
 
-        // Handle skills - convert array to JSON if needed
-        $validatedData = $request->validated();
-        if (isset($validatedData['skills']) && is_array($validatedData['skills'])) {
-            $validatedData['skills'] = json_encode($validatedData['skills']);
+    // Handle avatar upload first
+    if ($request->hasFile('avatar')) {
+        // Delete old avatar if exists
+        if ($user->avatar) {
+            Storage::delete('public/' . $user->avatar);
         }
 
-        $user->fill($validatedData);
-
-        if ($user->isDirty('email')) {
-            $user->email_verified_at = null;
-        }
-
-        $user->save();
-
-        // Log activity
-        Activity::create([
-            'user_id' => $user->id,
-            'action' => 'Updated profile information',
-            'type' => 'info'
-        ]);
-
-        return Redirect::route('profile.edit')->with('status', 'profile-updated');
+        // Store new avatar
+        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        $user->avatar = $avatarPath;
     }
+
+    // Handle other fields
+    $validatedData = $request->validated();
+
+    // Remove avatar from validated data since we handled it separately
+    unset($validatedData['avatar']);
+
+    // Handle skills - convert array to JSON if needed
+    if (isset($validatedData['skills']) && is_array($validatedData['skills'])) {
+        $validatedData['skills'] = json_encode($validatedData['skills']);
+    }
+
+    $user->fill($validatedData);
+
+    if ($user->isDirty('email')) {
+        $user->email_verified_at = null;
+    }
+
+    $user->save();
+
+    // Log activity
+    Activity::create([
+        'user_id' => $user->id,
+        'action' => 'Updated profile information',
+        'type' => 'info'
+    ]);
+
+    return Redirect::route('profile.edit')->with('status', 'profile-updated');
+}
 
     /**
      * Hapus akun user.

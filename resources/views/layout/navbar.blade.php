@@ -11,7 +11,6 @@
             <ul class="nav-links flex gap-2 list-none items-center m-0 p-2 rounded-[15px] shadow-xl"
                 style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);">
 
-
                 <li class="m-0 p-0">
                     <a href="{{ route('dashboard') }}"
                         class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 active:text-white {{ request()->routeIs('dashboard') ? 'text-white shadow-lg' : 'text-gray-700' }}"
@@ -65,9 +64,31 @@
                 onclick="toggleDropdown()">
                 @if (auth()->check())
                     <span class="user-name font-semibold text-gray-700 text-sm">{{ auth()->user()->name }}</span>
-                    <div class="user-avatar w-[38px] h-[38px] rounded-full flex items-center justify-center text-white font-bold text-sm"
-                        style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); box-shadow: 0 2px 10px rgba(79, 195, 247, 0.3);">
-                        {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+
+                    {{-- Updated Avatar Section --}}
+                    <div class="user-avatar w-[38px] h-[38px] rounded-full overflow-hidden shadow-lg border-2 border-white/30">
+                        @if(auth()->user()->avatar)
+                            <img src="{{ asset('storage/' . auth()->user()->avatar) }}"
+                                 alt="{{ auth()->user()->name }}"
+                                 class="w-full h-full object-cover"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            {{-- Fallback if image fails to load --}}
+                            <div class="w-full h-full flex items-center justify-center text-white font-bold text-sm"
+                                 style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); display: none;">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </div>
+                        @else
+                            {{-- Fallback to UI Avatars if no avatar uploaded --}}
+                            <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->user()->name) }}&size=38&background=4fc3f7&color=ffffff&font-size=0.6"
+                                 alt="{{ auth()->user()->name }}"
+                                 class="w-full h-full object-cover"
+                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                            {{-- Final fallback --}}
+                            <div class="w-full h-full flex items-center justify-center text-white font-bold text-sm"
+                                 style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); display: none;">
+                                {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
+                            </div>
+                        @endif
                     </div>
                 @else
                     <span class="user-name font-semibold text-gray-700 text-sm">Guest</span>
@@ -155,6 +176,16 @@
         backdrop-filter: blur(20px);
         height: 85px;
         margin: 0;
+    }
+
+    /* User Avatar Styles */
+    .user-avatar {
+        transition: all 0.3s ease;
+    }
+
+    .user-avatar:hover {
+        transform: scale(1.05);
+        box-shadow: 0 4px 15px rgba(79, 195, 247, 0.4) !important;
     }
 
     /* User Dropdown Active State */
@@ -251,6 +282,11 @@
             height: 40px;
             font-size: 1.4rem;
         }
+
+        .user-avatar {
+            width: 35px !important;
+            height: 35px !important;
+        }
     }
 
     @media (max-width: 480px) {
@@ -278,6 +314,11 @@
         .dropdown-item {
             padding: 0.8rem 1.2rem;
             font-size: 0.85rem;
+        }
+
+        .user-avatar {
+            width: 32px !important;
+            height: 32px !important;
         }
     }
 </style>
