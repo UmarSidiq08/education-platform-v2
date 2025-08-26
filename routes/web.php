@@ -72,6 +72,8 @@ Route::middleware('auth')->group(function () {
     // Profile routes tambahan (dari File 1)
     Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update.custom');
     Route::post('/profile/upload-avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.upload-avatar');
+ Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile'])
+        ->name('profile.updateProfile');   
 
     // User show route
     Route::get('/user/{id}', [ProfileController::class, 'show'])->name('user.show');

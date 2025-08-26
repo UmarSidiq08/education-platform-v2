@@ -25,7 +25,7 @@
                         <div class="logo-icon">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
-                        <h3>EduBuddy</h3>
+                        <h3>Lumina</h3>
                     </div>
                     <p class="company-description">
                         Teman setia waktu kamu belajar. Bergabunglah dengan ribuan siswa yang telah merasakan pengalaman

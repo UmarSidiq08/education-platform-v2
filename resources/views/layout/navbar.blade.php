@@ -22,12 +22,12 @@
                         class="{{ request()->routeIs('leaderboard') ? 'active' : '' }}">Leaderboard</a></li>
                 @if (auth()->user()->role === 'mentor')
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ route('post_tests.approval_requests') }}">
-                            <i class="fas fa-clipboard-check me-1"></i>Approval Requests
+                        <a href="{{ route('post_tests.approval_requests') }}"
+                            class="nav-link px-4 py-2 rounded-xl font-semibold text-gray-700 transition-all duration-300 transform hover:-translate-y-1 hover:scale-105 hover:bg-sky-50 hover:text-blue-600 hover:shadow-lg relative overflow-hidden group flex items-center space-x-2">
+                            <i class="fas fa-clipboard-check"></i>
+                            <span class="relative z-10">Approval Requests</span>
                             @php
-                                $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function (
-                                    $query,
-                                ) {
+                                $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function ($query, ) {
                                     $query->where('mentor_id', auth()->id());
                                 })
                                     ->where('requires_approval', true)
@@ -35,8 +35,11 @@
                                     ->count();
                             @endphp
                             @if ($pendingCount > 0)
-                                <span class="badge bg-danger">{{ $pendingCount }}</span>
+                                <span class="bg-red-500 text-white text-xs px-2 py-1 rounded-full animate-pulse">{{ $pendingCount }}</span>
                             @endif
+                            <div
+                                class="absolute inset-0 bg-gradient-to-r from-blue-400 to-sky-400 opacity-0 group-hover:opacity-10 transition-opacity duration-300">
+                            </div>
                         </a>
                     </li>
                 @endif
@@ -538,6 +541,39 @@
                     navbar.style.transform = 'translateY(0)';
                 }
                 lastScrollY = window.scrollY;
+            }
+
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        animation: {
+                            'bounce-gentle': 'bounce 2s infinite',
+                            'pulse-gentle': 'pulse 3s infinite',
+                            'fade-in': 'fadeIn 0.3s ease-in-out',
+                            'slide-down': 'slideDown 0.3s ease-out',
+                            'shimmer': 'shimmer 2s infinite',
+                            'glow': 'glow 2s ease-in-out infinite alternate',
+                        },
+                        keyframes: {
+                            fadeIn: {
+                                '0%': { opacity: '0', transform: 'translateY(-10px)' },
+                                '100%': { opacity: '1', transform: 'translateY(0)' }
+                            },
+                            slideDown: {
+                                '0%': { opacity: '0', transform: 'translateY(-20px) scale(0.95)' },
+                                '100%': { opacity: '1', transform: 'translateY(0) scale(1)' }
+                            },
+                            shimmer: {
+                                '0%': { backgroundPosition: '200% 0' },
+                                '100%': { backgroundPosition: '-200% 0' }
+                            },
+                            glow: {
+                                '0%': { boxShadow: '0 0 20px rgba(79, 195, 247, 0.3)' },
+                                '100%': { boxShadow: '0 0 30px rgba(79, 195, 247, 0.6)' }
+                            }
+                        }
+                    }
+                }
             }
         });
     });
