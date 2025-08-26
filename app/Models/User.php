@@ -222,16 +222,16 @@ class User extends Authenticatable
 
         $totalClasses = ClassModel::whereHas('materials.quizzes.attempts', function ($query) {
             $query->where('user_id', $this->id)
-                  ->whereNotNull('finished_at');
+                ->whereNotNull('finished_at');
         })->distinct()->count();
 
         $completedClasses = ClassModel::whereHas('materials', function ($query) {
             $query->whereHas('quizzes', function ($subQuery) {
                 $subQuery->where('is_active', true)
-                        ->whereHas('attempts', function ($attemptQuery) {
-                            $attemptQuery->where('user_id', $this->id)
-                                       ->whereNotNull('finished_at');
-                        });
+                    ->whereHas('attempts', function ($attemptQuery) {
+                        $attemptQuery->where('user_id', $this->id)
+                            ->whereNotNull('finished_at');
+                    });
             });
         })->get()->filter(function ($class) {
             return $this->hasCompletedAllMaterials($class->id);
@@ -245,6 +245,164 @@ class User extends Authenticatable
             'completion_rate' => $totalClasses > 0
                 ? round(($completedClasses / $totalClasses) * 100)
                 : 0
+        ];
+    }
+
+    /**
+     * Get completed classes with post test score >= 80%
+     * Using Data Transfer Object approach (returns array structure)
+     */
+    public function getCompletedClassesWithPostTest()
+    {
+        return ClassModel::with(['mentor', 'postTests', 'materials'])
+            ->whereHas('postTests.attempts', function ($query) {
+                $query->where('user_id', $this->id)
+                    ->whereNotNull('finished_at')
+                    ->where(function ($subQuery) {
+                        $subQuery->where('requires_approval', false)
+                            ->orWhere('is_approval_attempt', true);
+                    });
+            })
+            ->get()
+            ->map(function ($class) {
+                $bestAttempt = $this->getBestPostTestAttemptForClass($class);
+
+                if ($bestAttempt && $bestAttempt->getPercentageAttribute() >= 80) {
+                    return [
+                        'class' => $class,
+                        'best_attempt' => $bestAttempt,
+                        'completion_date' => $bestAttempt->finished_at,
+                        'score' => $bestAttempt->score,
+                        'percentage' => $bestAttempt->getPercentageAttribute(),
+                        'total_materials' => $class->materials->count()
+                    ];
+                }
+
+                return null;
+            })
+            ->filter()
+            ->sortByDesc('completion_date');
+    }
+
+    /**
+     * Alternative: Get completed classes with dynamic properties (original approach)
+     * Keep this for backward compatibility if needed
+     */
+    public function getCompletedClassesWithDynamicProps()
+    {
+        return ClassModel::with(['mentor', 'postTests', 'materials'])
+            ->whereHas('postTests.attempts', function ($query) {
+                $query->where('user_id', $this->id)
+                    ->whereNotNull('finished_at')
+                    ->where(function ($subQuery) {
+                        $subQuery->where('requires_approval', false)
+                            ->orWhere('is_approval_attempt', true);
+                    });
+            })
+            ->get()
+            ->map(function ($class) {
+                $bestAttempt = $this->getBestPostTestAttemptForClass($class);
+
+                if ($bestAttempt && $bestAttempt->getPercentageAttribute() >= 80) {
+                    // Use helper method instead of direct assignment
+                    $this->addAchievementPropertiesToClass($class, $bestAttempt);
+                    return $class;
+                }
+
+                return null;
+            })
+            ->filter()
+            ->sortByDesc('completion_date');
+    }
+
+    /**
+     * Helper method to add achievement properties to class model
+     * This helps with IDE recognition and makes code more maintainable
+     *
+     * @param ClassModel $class
+     * @param PostTestAttempt $bestAttempt
+     * @return ClassModel
+     */
+    private function addAchievementPropertiesToClass($class, $bestAttempt)
+    {
+        $class->best_attempt = $bestAttempt;
+        $class->completion_date = $bestAttempt->finished_at;
+        $class->score = $bestAttempt->score;
+        $class->percentage = $bestAttempt->getPercentageAttribute();
+        $class->total_materials = $class->materials->count();
+
+        return $class;
+    }
+
+    /**
+     * Get best post test attempt for a specific class
+     */
+    public function getBestPostTestAttemptForClass($class)
+    {
+        $activePostTest = $class->postTests()->where('is_active', true)->first();
+
+        if (!$activePostTest) {
+            return null;
+        }
+
+        return $activePostTest->attempts()
+            ->where('user_id', $this->id)
+            ->whereNotNull('finished_at')
+            ->where(function ($query) {
+                $query->where('requires_approval', false)
+                    ->orWhere('is_approval_attempt', true);
+            })
+            ->orderBy('score', 'desc')
+            ->first();
+    }
+
+    /**
+     * Check if user has completed post test for a specific class with score >= 80%
+     */
+    public function hasCompletedPostTestForClass($classId)
+    {
+        $class = ClassModel::with('postTests')->find($classId);
+
+        if (!$class) {
+            return false;
+        }
+
+        $attempt = $this->getBestPostTestAttemptForClass($class);
+
+        return $attempt && $attempt->getPercentageAttribute() >= 80;
+    }
+
+    /**
+     * Get post test achievement statistics
+     * Updated to work with Data Transfer Object approach
+     */
+    public function getPostTestAchievementStats()
+    {
+        $completedClasses = $this->getCompletedClassesWithPostTest();
+
+        $totalCompleted = $completedClasses->count();
+        $averageScore = $completedClasses->avg('percentage') ?? 0;
+        $perfectScores = $completedClasses->where('percentage', 100)->count();
+        $highScores = $completedClasses->where('percentage', '>=', 90)->count();
+
+        // Get total post test attempts
+        $totalAttempts = PostTestAttempt::where('user_id', $this->id)
+            ->whereNotNull('finished_at')
+            ->where(function ($query) {
+                $query->where('requires_approval', false)
+                    ->orWhere('is_approval_attempt', true);
+            })
+            ->count();
+
+        $successRate = $totalAttempts > 0 ? round(($totalCompleted / $totalAttempts) * 100, 1) : 0;
+
+        return [
+            'total_completed' => $totalCompleted,
+            'average_score' => round($averageScore, 1),
+            'perfect_scores' => $perfectScores,
+            'high_scores' => $highScores,
+            'total_attempts' => $totalAttempts,
+            'success_rate' => $successRate
         ];
     }
 

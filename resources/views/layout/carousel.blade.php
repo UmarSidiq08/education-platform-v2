@@ -1,3 +1,32 @@
+<style>
+/* ===== SOLUSI UNTUK MENGHILANGKAN GAP NAVBAR ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+.carousel-wrapper {
+    margin: 0 !important;
+    padding: 0;
+}
+
+nav, .navbar {
+    margin-bottom: 0 !important;
+}
+/* ===== END SOLUSI GAP NAVBAR ===== */
+
+/* CSS carousel Anda yang sudah ada di sini */
+.carousel-wrapper {
+    /* styling carousel existing */
+}
+</style>
 <section class="carousel-wrapper">
     <div class="carousel-container">
         <!-- Background Elements -->
@@ -8,7 +37,7 @@
             <div class="bg-particle particle-4"></div>
             <div class="bg-gradient-overlay"></div>
         </div>
-        
+
         <!-- Main Carousel -->
         <div class="carousel">
             <!-- Slide 1 -->
