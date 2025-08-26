@@ -97,4 +97,63 @@ class PostTestAttempt extends Model
         // Bisa retake jika attempt < 2 atau sudah disetujui mentor
         return $this->attempt_number < 3 || $this->isApproved();
     }
+    /**
+     * Check if this attempt is an achievement (score >= 80%)
+     */
+    public function isAchievement()
+    {
+        return $this->finished_at && $this->getPercentageAttribute() >= 80;
+    }
+
+    /**
+     * Get achievement level based on percentage
+     */
+    public function getAchievementLevel()
+    {
+        $percentage = $this->getPercentageAttribute();
+
+        if ($percentage == 100) {
+            return 'perfect';
+        } elseif ($percentage >= 90) {
+            return 'excellent';
+        } elseif ($percentage >= 80) {
+            return 'good';
+        }
+
+        return 'failed';
+    }
+
+    /**
+     * Get achievement color based on level
+     */
+    public function getAchievementColor()
+    {
+        switch ($this->getAchievementLevel()) {
+            case 'perfect':
+                return 'yellow';
+            case 'excellent':
+                return 'green';
+            case 'good':
+                return 'blue';
+            default:
+                return 'red';
+        }
+    }
+
+    /**
+     * Get achievement badge text
+     */
+    public function getAchievementBadge()
+    {
+        switch ($this->getAchievementLevel()) {
+            case 'perfect':
+                return 'Perfect Score';
+            case 'excellent':
+                return 'Excellent';
+            case 'good':
+                return 'Achievement Unlocked';
+            default:
+                return 'Try Again';
+        }
+    }
 }

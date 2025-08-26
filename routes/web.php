@@ -10,6 +10,7 @@ use App\Http\Controllers\ClassController;
 use App\Http\Controllers\MaterialController;
 use App\Http\Controllers\QuizController;
 use App\Http\Controllers\PostTestController;
+use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\NavbarMentorController;
 
 // Redirect root ke dashboard
@@ -43,9 +44,7 @@ Route::get('/navbar/achievement', function () {
     return view('navbar.achievement');
 })->name('navbar.achievement')->middleware('auth');
 
-Route::get('/navbar/leaderboard', function () {
-    return view('navbar.leaderboard');
-})->name('navbar.leaderboard')->middleware('auth');
+
 
 // Logout
 Route::post('/logout', function () {
@@ -62,6 +61,9 @@ Route::post('/logout', function () {
 */
 Route::middleware('auth')->group(function () {
     // Profile routes - HANYA SATU DEFINISI untuk setiap route
+     Route::get('/achievements/{class}', [AchievementController::class, 'show'])
+        ->name('achievements.show');
+
     Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
 
@@ -101,6 +103,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
     Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
     Route::get('/classes/{id}/learn', [ClassController::class, 'learn'])->name('classes.learn');
+    Route::get('/achievements', [AchievementController::class, 'index'])
+        ->name('achievements.index');
 
     // Route materials
     Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');

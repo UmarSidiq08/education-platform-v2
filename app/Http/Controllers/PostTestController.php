@@ -71,7 +71,7 @@ class PostTestController extends Controller
 
             DB::commit();
 
-            return redirect()->route('classes.show', $class)
+            return redirect()->route('classes.learn', $class)
                 ->with('success', 'Post Test berhasil ditambahkan untuk kelas: ' . $class->name);
         } catch (\Exception $e) {
             DB::rollBack();
@@ -857,6 +857,7 @@ class PostTestController extends Controller
 
         DB::beginTransaction();
 
+
         try {
             // Update post test basic information
             $postTest->update([
@@ -889,7 +890,7 @@ class PostTestController extends Controller
 
             DB::commit();
 
-            return redirect()->route('classes.show', $class)
+            return redirect()->route('classes.learn', $class)
                 ->with('success', 'Post Test berhasil diperbarui untuk kelas: ' . $class->name);
         } catch (\Exception $e) {
             DB::rollBack();

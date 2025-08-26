@@ -69,7 +69,7 @@ class MaterialController extends Controller
 
         $material = Material::create($materialData);
 
-        return redirect()->route('classes.show', $class->id)
+        return redirect()->route('classes.learn', $class->id)
             ->with('success', 'Materi berhasil dibuat!');
     }
 
@@ -170,7 +170,7 @@ class MaterialController extends Controller
 
         $material->update($materialData);
 
-        return redirect()->route('classes.show', $material->class_id)
+        return redirect()->route('classes.learn', $material->class_id)
             ->with('success', 'Materi berhasil diperbarui!');
     }
 
@@ -188,7 +188,7 @@ class MaterialController extends Controller
 
         $material->delete();
 
-        return redirect()->route('classes.show', $material->class_id)
+        return redirect()->route('classes.learn', $material->class_id)
             ->with('success', 'Materi berhasil dihapus!');
     }
 

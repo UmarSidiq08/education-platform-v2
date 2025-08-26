@@ -1,29 +1,47 @@
-<nav class="navbar">
-    <div class="nav-container">
-        <div class="nav-left">
+<nav class="fixed top-0 left-0 right-0 z-[1000] h-[85px] m-0 p-0 shadow-lg"
+    style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); backdrop-filter: blur(20px);">
+    <div class="flex justify-between items-center max-w-[1400px] mx-auto w-full h-full px-8">
+        <div class="flex items-center gap-8">
             <div class="logo">
-                <div class="logo-icon">😹</div>
+                <div
+                    class="logo-icon w-[45px] h-[45px] bg-white rounded-xl flex items-center justify-center text-[1.6rem] shadow-lg transition-transform duration-300 ease-in-out hover:scale-105">
+                    😹
+                </div>
             </div>
-            <ul class="nav-links">
-                <li><a href="{{ route('dashboard') }}"
-                        class="{{ request()->routeIs('dashboard') ? 'active' : '' }}">Home</a></li>
+            <ul class="nav-links flex gap-2 list-none items-center m-0 p-2 rounded-[15px] shadow-xl"
+                style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);">
 
-                <li><a href="{{ route('navbar.achievement') }}"
-                        class="{{ request()->routeIs('navbar.achievement') ? 'active' : '' }}">Achievement</a></li>
 
-                <li><a href="{{ route('classes.index') }}"
-                        class="{{ request()->routeIs('classes.index') || request()->routeIs('classes.*') ? 'active' : '' }}">Classes</a>
+                <li class="m-0 p-0">
+                    <a href="{{ route('dashboard') }}"
+                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 active:text-white {{ request()->routeIs('dashboard') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                        style="{{ request()->routeIs('dashboard') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Dashboard</a>
+                </li>
+                <li class="m-0 p-0">
+                    <a href="{{ route('classes.index') }}"
+                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('classes.index') || request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                        style="{{ request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Classes</a>
                 </li>
 
-                <li><a href="{{ route('navbar.mentor') }}"
-                        class="{{ request()->routeIs('navbar.mentor') ? 'active' : '' }}">Mentor</a></li>
+                <li class="m-0 p-0">
+                    <a href="{{ route('navbar.mentor') }}"
+                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('navbar.mentor') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                        style="{{ request()->routeIs('navbar.mentor') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Mentor</a>
+                </li>
+                @if (auth()->user()->role === 'siswa')
+                    <li class="m-0 p-0">
+                        <a href="{{ route('achievements.index') }}"
+                            class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('achievements.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                            style="{{ request()->routeIs('achievements.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Achievement</a>
+                    </li>
+                @endif
 
-                <li><a href="{{ route('navbar.leaderboard') }}"
-                        class="{{ request()->routeIs('leaderboard') ? 'active' : '' }}">Leaderboard</a></li>
                 @if (auth()->user()->role === 'mentor')
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('post_tests.approval_requests') }}">
-                            <i class="fas fa-clipboard-check me-1"></i>Approval Requests
+                    <li class="nav-item m-0 p-0">
+                        <a class="nav-link no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('post_tests.approval_requests') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                            href="{{ route('post_tests.approval_requests') }}"
+                            style="{{ request()->routeIs('post_tests.approval_requests') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">
+                            <i class="fas fa-clipboard-check mr-1"></i>Approval Requests
                             @php
                                 $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function (
                                     $query,
@@ -35,76 +53,73 @@
                                     ->count();
                             @endphp
                             @if ($pendingCount > 0)
-                                <span class="badge bg-danger">{{ $pendingCount }}</span>
+                                <span
+                                    class="badge bg-red-500 absolute -top-1 -right-1 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center">{{ $pendingCount }}</span>
                             @endif
                         </a>
                     </li>
                 @endif
             </ul>
         </div>
-        <div class="user-dropdown" id="userDropdown">
-            <div class="user-info" onclick="toggleDropdown()">
+        <div class="user-dropdown relative" id="userDropdown">
+            <div class="user-info flex items-center gap-3 px-5 py-2.5 rounded-[30px] cursor-pointer transition-all duration-300 ease-in-out border-0 m-0 hover:-translate-y-px hover:bg-white"
+                style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);"
+                onclick="toggleDropdown()">
                 @if (auth()->check())
-                    <span class="user-name">{{ auth()->user()->name }}</span>
-                    <div class="user-avatar">
+                    <span class="user-name font-semibold text-gray-700 text-sm">{{ auth()->user()->name }}</span>
+                    <div class="user-avatar w-[38px] h-[38px] rounded-full flex items-center justify-center text-white font-bold text-sm"
+                        style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); box-shadow: 0 2px 10px rgba(79, 195, 247, 0.3);">
                         {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
                     </div>
                 @else
-                    <span class="user-name">Guest</span>
-                    <div class="user-avatar">👤</div>
+                    <span class="user-name font-semibold text-gray-700 text-sm">Guest</span>
+                    <div class="user-avatar w-[38px] h-[38px] rounded-full flex items-center justify-center text-white font-bold text-sm"
+                        style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); box-shadow: 0 2px 10px rgba(79, 195, 247, 0.3);">
+                        👤</div>
                 @endif
-                <span class="dropdown-arrow">▼</span>
+                <span
+                    class="dropdown-arrow text-xs text-gray-500 transition-transform duration-300 ease-in-out">▼</span>
             </div>
 
-            <div class="dropdown-menu">
-                {{-- Profile Link --}}
-
-
-
-
-                <a href="{{ route('profile.index') }}" class="dropdown-item">
-                    <span class="dropdown-icon">👤</span>
+            <div class="dropdown-menu absolute top-full mt-4 right-0 bg-white rounded-[20px] min-w-[200px] opacity-0 invisible -translate-y-4 scale-95 z-[1000] overflow-hidden border border-black border-opacity-5"
+                style="box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2); transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);">
+                <a href="{{ route('profile.index') }}"
+                    class="dropdown-item flex items-center gap-4 px-6 py-4 text-gray-700 no-underline transition-all duration-300 ease-in-out font-medium text-sm hover:text-blue-600"
+                    style="hover:background: rgba(79, 195, 247, 0.1);">
+                    <span class="dropdown-icon text-lg">👤</span>
                     Profile
                 </a>
 
-
                 @if (auth()->check())
-                    {{-- Logout --}}
-                    <form action="{{ route('logout') }}" method="POST" style="margin: 0;">
+                    <form action="{{ route('logout') }}" method="POST" class="m-0">
                         @csrf
-                        <button type="submit" class="dropdown-item logout">
-                            <span class="dropdown-icon">🚪</span>
+                        <button type="submit"
+                            class="dropdown-item logout flex items-center gap-4 px-6 py-4 text-gray-700 transition-all duration-300 ease-in-out font-medium border-0 bg-transparent w-full cursor-pointer text-sm hover:text-red-500"
+                            style="font-family: inherit; hover:background: rgba(239, 68, 68, 0.1);">
+                            <span class="dropdown-icon text-lg">🚪</span>
                             Logout
                         </button>
                     </form>
                 @else
-                    {{-- Login & Sign Up --}}
-                    <a href="{{ route('login') }}" class="dropdown-item">
-                        <span class="dropdown-icon">👤</span>
+                    <a href="{{ route('login') }}"
+                        class="dropdown-item flex items-center gap-4 px-6 py-4 text-gray-700 no-underline transition-all duration-300 ease-in-out font-medium text-sm hover:text-blue-600"
+                        style="hover:background: rgba(79, 195, 247, 0.1);">
+                        <span class="dropdown-icon text-lg">👤</span>
                         Login
                     </a>
-                    <a href="{{ route('register') }}" class="dropdown-item">
-                        <span class="dropdown-icon">📝</span>
+                    <a href="{{ route('register') }}"
+                        class="dropdown-item flex items-center gap-4 px-6 py-4 text-gray-700 no-underline transition-all duration-300 ease-in-out font-medium text-sm hover:text-blue-600"
+                        style="hover:background: rgba(79, 195, 247, 0.1);">
+                        <span class="dropdown-icon text-lg">📝</span>
                         Sign Up
                     </a>
                 @endif
             </div>
         </div>
-
     </div>
 </nav>
 
-<!-- Page Heading (opsional) -->
-
-
-<!-- Additional scripts -->
-
-
 <style>
-    /* ===================
-               CRITICAL FIXES FOR INCLUDE
-               =================== */
-
     /* RESET GLOBAL - PENTING UNTUK INCLUDE */
     * {
         margin: 0;
@@ -123,7 +138,6 @@
         margin: 0 !important;
         padding: 0 !important;
         padding-top: 85px !important;
-        /* KOMPENSASI NAVBAR FIXED */
         font-family: 'Figtree', sans-serif;
         background: #f8fafc;
         line-height: 1.6;
@@ -134,7 +148,6 @@
     .navbar {
         background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
         padding: 0;
-        /* HAPUS PADDING DARI NAVBAR */
         box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
         position: fixed;
         top: 0;
@@ -143,162 +156,12 @@
         z-index: 1000;
         backdrop-filter: blur(20px);
         height: 85px;
-        /* TINGGI NAVBAR YANG PASTI */
-        margin: 0;
-        /* PASTIKAN TIDAK ADA MARGIN */
-    }
-
-    .nav-container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        max-width: 1400px;
-        margin: 0 auto;
-        width: 100%;
-        height: 100%;
-        /* GUNAKAN FULL HEIGHT */
-        padding: 0 2rem;
-        /* PADDING PINDAH KE CONTAINER */
-    }
-
-    .nav-left {
-        display: flex;
-        align-items: center;
-        gap: 2rem;
-    }
-
-    .logo-icon {
-        width: 45px;
-        height: 45px;
-        background: white;
-        border-radius: 12px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.6rem;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        transition: transform 0.3s ease;
-    }
-
-    .logo-icon:hover {
-        transform: scale(1.05);
-    }
-
-    .nav-links {
-        display: flex;
-        gap: 0.5rem;
-        list-style: none;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 0.4rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-        margin: 0;
-        /* HAPUS DEFAULT MARGIN UL */
-    }
-
-    .nav-links li {
-        margin: 0;
-        padding: 0;
-    }
-
-    .nav-links li a {
-        text-decoration: none;
-        color: #374151;
-        font-weight: 600;
-        padding: 0.8rem 1.3rem;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-        position: relative;
-        white-space: nowrap;
-        font-size: 0.9rem;
-        display: block;
-    }
-
-    .nav-links li a:hover {
-        background: rgba(79, 195, 247, 0.15);
-        color: #1976d2;
-        transform: translateY(-2px);
-    }
-
-    .nav-links li a.active {
-        background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
-    }
-
-    /* User Dropdown */
-    .user-dropdown {
-        position: relative;
-    }
-
-    .user-info {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 0.6rem 1.2rem;
-        border-radius: 30px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        backdrop-filter: blur(15px);
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        border: none;
         margin: 0;
     }
 
-    .user-info:hover {
-        background: white;
-        transform: translateY(-1px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-    }
-
-    .user-avatar {
-        width: 38px;
-        height: 38px;
-        border-radius: 50%;
-        background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: white;
-        font-weight: bold;
-        box-shadow: 0 2px 10px rgba(79, 195, 247, 0.3);
-        font-size: 0.9rem;
-    }
-
-    .user-name {
-        font-weight: 600;
-        color: #374151;
-        font-size: 0.9rem;
-    }
-
-    .dropdown-arrow {
-        font-size: 0.7rem;
-        color: #6b7280;
-        transition: transform 0.3s ease;
-    }
-
+    /* User Dropdown Active State */
     .user-dropdown.active .dropdown-arrow {
         transform: rotate(180deg);
-    }
-
-    .dropdown-menu {
-        position: absolute;
-        top: calc(100% + 15px);
-        right: 0;
-        background: white;
-        border-radius: 20px;
-        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
-        min-width: 200px;
-        opacity: 0;
-        visibility: hidden;
-        transform: translateY(-15px) scale(0.95);
-        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-        z-index: 1000;
-        overflow: hidden;
-        border: 1px solid rgba(0, 0, 0, 0.05);
     }
 
     .user-dropdown.active .dropdown-menu {
@@ -307,82 +170,35 @@
         transform: translateY(0) scale(1);
     }
 
-    .dropdown-item {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        padding: 1rem 1.5rem;
-        color: #374151;
-        text-decoration: none;
-        transition: all 0.3s ease;
-        font-weight: 500;
-        border: none;
-        background: none;
-        width: 100%;
-        cursor: pointer;
-        font-family: inherit;
-        font-size: 0.9rem;
+    /* Hover Effects */
+    .nav-links li a:hover {
+        background: rgba(79, 195, 247, 0.15) !important;
+        color: #1976d2 !important;
+    }
+
+    .user-info:hover {
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
     }
 
     .dropdown-item:hover {
-        background: rgba(79, 195, 247, 0.1);
-        color: #1976d2;
+        background: rgba(79, 195, 247, 0.1) !important;
+        color: #1976d2 !important;
     }
 
     .dropdown-item.logout:hover {
-        background: rgba(239, 68, 68, 0.1);
-        color: #ef4444;
+        background: rgba(239, 68, 68, 0.1) !important;
+        color: #ef4444 !important;
     }
 
-    .dropdown-icon {
-        font-size: 1.2rem;
+    /* Focus untuk accessibility */
+    .nav-links li a:focus,
+    .user-info:focus,
+    .dropdown-item:focus {
+        outline: 2px solid #1976d2;
+        outline-offset: 2px;
     }
 
-    /* ===================
-               FIXES FOR CONTAINERS
-               =================== */
-
-    /* PASTIKAN CONTAINER UTAMA TIDAK ADA MARGIN/PADDING BERLEBIH */
-    .min-h-screen {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* HEADER SECTION */
-    header.bg-white {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* MAIN CONTENT */
-    main {
-        margin: 0 !important;
-        padding: 0 !important;
-    }
-
-    /* CAROUSEL WRAPPER ADJUSTMENT */
-    .carousel-wrapper {
-        margin-top: 0 !important;
-        /* HAPUS MARGIN-TOP KARENA BODY SUDAH ADA PADDING-TOP */
-        padding: 2rem;
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        min-height: calc(100vh - 85px);
-        /* SESUAIKAN DENGAN TINGGI NAVBAR */
-        display: flex;
-        align-items: center;
-        position: relative;
-        overflow: hidden;
-    }
-
-    /* BOTTOM SECTION ADJUSTMENT */
-    .bottom-section {
-        margin: 0 !important;
-        padding: 6rem 2rem !important;
-    }
-
-    /* ===================
-               RESPONSIVE DESIGN
-               =================== */
+    /* Responsive Design */
     @media (max-width: 1024px) {
         .nav-left {
             gap: 1.5rem;
@@ -401,12 +217,10 @@
     @media (max-width: 768px) {
         body {
             padding-top: 75px !important;
-            /* SESUAIKAN UNTUK MOBILE */
         }
 
-        .navbar {
+        nav {
             height: 75px;
-            /* TINGGI NAVBAR MOBILE */
         }
 
         .nav-container {
@@ -415,7 +229,6 @@
 
         .nav-links {
             display: none;
-            /* SEMBUNYIKAN MENU DI MOBILE */
         }
 
         .nav-left {
@@ -428,7 +241,6 @@
 
         .user-name {
             display: none;
-            /* SEMBUNYIKAN NAMA USER DI MOBILE */
         }
 
         .dropdown-menu {
@@ -441,10 +253,6 @@
             height: 40px;
             font-size: 1.4rem;
         }
-
-        .carousel-wrapper {
-            min-height: calc(100vh - 75px);
-        }
     }
 
     @media (max-width: 480px) {
@@ -452,7 +260,7 @@
             padding-top: 70px !important;
         }
 
-        .navbar {
+        nav {
             height: 70px;
         }
 
@@ -473,20 +281,6 @@
             padding: 0.8rem 1.2rem;
             font-size: 0.85rem;
         }
-
-        .carousel-wrapper {
-            min-height: calc(100vh - 70px);
-        }
-    }
-
-    /* ===================
-               ACCESSIBILITY
-               =================== */
-    .nav-links li a:focus,
-    .user-info:focus,
-    .dropdown-item:focus {
-        outline: 2px solid #1976d2;
-        outline-offset: 2px;
     }
 </style>
 
@@ -508,7 +302,7 @@
     document.addEventListener('DOMContentLoaded', function() {
         // Smooth navbar scroll effect
         window.addEventListener('scroll', function() {
-            const navbar = document.querySelector('.navbar');
+            const navbar = document.querySelector('nav');
             if (window.scrollY > 50) {
                 navbar.style.background = 'rgba(79, 195, 247, 0.95)';
                 navbar.style.boxShadow = '0 8px 32px rgba(0, 0, 0, 0.15)';
@@ -527,7 +321,7 @@
         });
 
         // Enhanced mobile menu handling
-        const navbar = document.querySelector('.navbar');
+        const navbar = document.querySelector('nav');
         let lastScrollY = window.scrollY;
 
         window.addEventListener('scroll', () => {
@@ -542,6 +336,3 @@
         });
     });
 </script>
-</body>
-
-</html>
