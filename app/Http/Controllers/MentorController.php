@@ -35,7 +35,6 @@ class MentorController extends Controller
                     })
                     ->rawColumns(['aksi'])
                     ->make(true);
-
             } catch (\Exception $e) {
                 Log::error('DataTables Error: ' . $e->getMessage());
 
@@ -74,7 +73,6 @@ class MentorController extends Controller
             }
 
             return back()->with('success', 'Mentor berhasil diverifikasi.');
-
         } catch (\Exception $e) {
             Log::error('Mentor Approve Error: ' . $e->getMessage());
 
@@ -123,7 +121,6 @@ class MentorController extends Controller
             }
 
             return back()->with('success', 'Permintaan mentor ditolak dan diubah menjadi siswa.');
-
         } catch (\Exception $e) {
             Log::error('Mentor Reject Error: ' . $e->getMessage());
 
@@ -139,15 +136,14 @@ class MentorController extends Controller
     }
 
     public function index()
-{
-    $mentors = User::mentors()->get();
-    return view('mentor', compact('mentors'));
-}
+    {
+        $mentors = User::mentors()->get();
+        return view('mentor', compact('mentors'));
+    }
 
-public function show($id)
-{
-    $mentor = User::mentors()->findOrFail($id);
-    return view('user.mentor', compact('mentor'));
-}
-
+    public function show($id)
+    {
+        $mentor = User::mentors()->findOrFail($id);
+        return view('user.mentor', compact('mentor'));
+    }
 }

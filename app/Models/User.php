@@ -406,7 +406,22 @@ class User extends Authenticatable
         ];
     }
 
-    /**
-     * Relationship: User has many classes as mentor (alias).
-     */
+    public function teacherClasses()
+    {
+        return $this->hasMany(TeacherClass::class, 'teacher_id');
+    }
+
+    // Relasi MentorRequest untuk mentor
+    public function mentorRequests()
+    {
+        return $this->hasMany(MentorRequest::class, 'mentor_id');
+    }
+
+    // Relasi approved teacher classes untuk mentor
+    public function approvedTeacherClasses()
+    {
+        return $this->belongsToMany(TeacherClass::class, 'mentor_requests', 'mentor_id', 'teacher_class_id')
+            ->wherePivot('status', 'approved')
+            ->withPivot(['status', 'requested_at', 'approved_at']);
+    }
 }

@@ -71,59 +71,121 @@
                         </div>
                     @endif
 
-                    <!-- Form -->
-                    <form action="{{ route('classes.store') }}" method="POST" class="space-y-6">
-                        @csrf
-
-                        <!-- Class Name Field -->
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center">
-                                <label for="name" class="block text-sm font-semibold text-gray-800">Class Name</label>
-                                <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-semibold">Required</span>
+                    <!-- Check if mentor has approved teacher class -->
+                    @if($approvedTeacherClasses->isEmpty())
+                        <div class="flex gap-4 p-4 bg-yellow-50 border-l-4 border-yellow-400 rounded mb-6">
+                            <div class="text-yellow-500 text-lg">
+                                <i class="fas fa-exclamation-triangle"></i>
                             </div>
-                            <div class="relative">
-                                <i class="fas fa-chalkboard-teacher absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
-                                <input type="text"
-                                       class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:outline-none @error('name') border-red-500 @enderror"
-                                       id="name" name="name" value="{{ old('name') }}" required>
-                            </div>
-                            @error('name')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
-                        </div>
-
-                        <!-- Description Field -->
-                        <div class="space-y-2">
-                            <div class="flex justify-between items-center">
-                                <label for="description" class="block text-sm font-semibold text-gray-800">Class Description</label>
-                                <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-semibold">Optional</span>
-                            </div>
-                            <div class="relative">
-                                <i class="fas fa-align-left absolute left-4 top-5 text-gray-400"></i>
-                                <textarea class="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-lg text-base min-h-32 transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:outline-none @error('description') border-red-500 @enderror"
-                                          id="description" name="description" rows="4">{{ old('description') }}</textarea>
-                            </div>
-                            @error('description')
-                                <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
-                            @enderror
-                            <div class="flex items-center gap-2 text-sm text-gray-600 mt-2">
-                                <i class="fas fa-lightbulb text-yellow-500"></i>
-                                <span>Tip: Include key topics and learning objectives</span>
+                            <div class="flex-1">
+                                <h4 class="text-base font-semibold text-yellow-700 mb-2">No Approved Teacher Class</h4>
+                                <p class="text-yellow-700">You don't have any approved mentor requests yet. Please wait for teacher approval before creating classes.</p>
+                                <a href="{{ route('classes.index') }}" class="inline-flex items-center gap-2 mt-3 px-4 py-2 bg-yellow-100 text-yellow-700 rounded-lg font-medium hover:bg-yellow-200 transition-colors">
+                                    <i class="fas fa-arrow-left"></i> Back to Dashboard
+                                </a>
                             </div>
                         </div>
+                    @else
+                        @php
+                            $teacherClass = $approvedTeacherClasses->first();
+                        @endphp
 
-                        <!-- Form Actions -->
-                        <div class="flex flex-col md:flex-row gap-4 pt-6 border-t border-gray-200">
-                            <button type="submit"
-                                    class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-btn-gradient text-white border-0 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5">
-                                <i class="fas fa-plus-circle"></i> Create Class
-                            </button>
-                            <a href="{{ route('classes.my') }}"
-                               class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium no-underline transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5">
-                                <i class="fas fa-times"></i> Cancel
-                            </a>
+                        <!-- Teacher Class Info Display -->
+                        <div class="mb-6 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 border-l-4 border-indigo-400 rounded-lg">
+                            <div class="flex items-start gap-4">
+                                <div class="w-12 h-12 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-xl flex items-center justify-center text-white font-bold shadow-lg flex-shrink-0">
+                                    {{ strtoupper(substr($teacherClass->teacher->name, 0, 2)) }}
+                                </div>
+                                <div class="flex-1">
+                                    <div class="flex items-center gap-2 mb-2">
+                                        <h3 class="text-lg font-bold text-gray-800">{{ $teacherClass->name }}</h3>
+                                        <span class="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs font-semibold">
+                                            <i class="fas fa-check-circle"></i> APPROVED
+                                        </span>
+                                    </div>
+                                    <div class="space-y-1">
+                                        <p class="text-sm text-gray-700">
+                                            <i class="fas fa-user-tie text-indigo-500 mr-2"></i>
+                                            <span class="font-semibold">Teacher:</span> {{ $teacherClass->teacher->name }}
+                                        </p>
+                                        @if($teacherClass->subject)
+                                            <p class="text-sm text-gray-700">
+                                                <i class="fas fa-book text-indigo-500 mr-2"></i>
+                                                <span class="font-semibold">Subject:</span> {{ $teacherClass->subject }}
+                                            </p>
+                                        @endif
+                                        @if($teacherClass->description)
+                                            <p class="text-sm text-gray-600">
+                                                <i class="fas fa-info-circle text-indigo-500 mr-2"></i>
+                                                {{ $teacherClass->description }}
+                                            </p>
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-3 pt-3 border-t border-indigo-200">
+                                <p class="text-xs text-indigo-600 flex items-center gap-2">
+                                    <i class="fas fa-lightbulb"></i>
+                                    Your new class will be created under this teacher class automatically
+                                </p>
+                            </div>
                         </div>
-                    </form>
+
+                        <!-- Form -->
+                        <form action="{{ route('classes.store.new') }}" method="POST" class="space-y-6">
+                            @csrf
+
+                            <!-- Hidden Teacher Class ID -->
+                            <input type="hidden" name="teacher_class_id" value="{{ $teacherClass->id }}">
+
+                            <!-- Class Name Field -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label for="name" class="block text-sm font-semibold text-gray-800">Nama Kelas</label>
+                                    <span class="bg-red-100 text-red-700 px-2 py-1 rounded text-xs font-semibold">Wajib</span>
+                                </div>
+                                <div class="relative">
+                                    <i class="fas fa-chalkboard-teacher absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                    <input type="text"
+                                           class="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-lg text-base transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:outline-none @error('name') border-red-500 @enderror"
+                                           id="name" name="name" value="{{ old('name') }}" required
+                                           placeholder="Masukkan nama kelas mentoring">
+                                </div>
+                                @error('name')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Description Field -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between items-center">
+                                    <label for="description" class="block text-sm font-semibold text-gray-800">Deskripsi Kelas</label>
+                                    <span class="bg-blue-100 text-blue-700 px-2 py-1 rounded text-xs font-semibold">Opsional</span>
+                                </div>
+                                <div class="relative">
+                                    <i class="fas fa-align-left absolute left-4 top-5 text-gray-400"></i>
+                                    <textarea class="w-full pl-12 pr-4 py-4 border border-gray-300 rounded-lg text-base min-h-32 transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:outline-none @error('description') border-red-500 @enderror"
+                                              id="description" name="description" rows="4"
+                                              placeholder="Jelaskan tujuan pembelajaran, topik yang akan dibahas, dan pendekatan mentoring yang akan digunakan">{{ old('description') }}</textarea>
+                                </div>
+                                @error('description')
+                                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <!-- Form Actions -->
+                            <div class="flex flex-col md:flex-row gap-4 pt-6 border-t border-gray-200">
+                                <button type="submit"
+                                        class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-btn-gradient text-white border-0 rounded-lg font-semibold cursor-pointer transition-all duration-300 hover:-translate-y-0.5">
+                                    <i class="fas fa-plus-circle"></i> Create Class
+                                </button>
+                                <a href="{{ route('classes.my') }}"
+                                   class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-white text-gray-700 border border-gray-300 rounded-lg font-medium no-underline transition-all duration-300 hover:bg-gray-50 hover:-translate-y-0.5">
+                                    <i class="fas fa-times"></i> Cancel
+                                </a>
+                            </div>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>

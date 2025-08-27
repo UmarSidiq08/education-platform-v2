@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\ClassModel;
+use App\Models\TeacherClass;
+use App\Models\MentorRequest;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -29,48 +31,61 @@ class ClassController extends Controller
     // Tampilkan classes milik mentor/guru yang login
     public function my()
     {
-        // Cek apakah user adalah mentor atau guru
-        // if (!Auth::user()->isMentor() && !Auth::user()->isGuru()) {
-        //     return redirect()->route('classes.index')
-        //         ->with('error', 'Only mentors and teachers can create classes.');
-        // }
+        $user = Auth::user();
+        $classes = ClassModel::where('mentor_id', $user->id)->with('teacherClass')->latest()->get();
 
-        $classes = ClassModel::where('mentor_id', Auth::id())->latest()->get();
-        return view('classes.my', compact('classes'));
+        // Get approved teacher classes untuk dropdown saat create class
+        $approvedTeacherClasses = $user->approvedTeacherClasses ?? collect();
+
+        return view('classes.my', compact('classes', 'approvedTeacherClasses'));
     }
 
     // Form create class
     public function create()
     {
         Log::info('Create method called');
-        return view('classes.create');
-    }
 
+        // Ambil TeacherClass yang mentor ini sudah di-approve
+        $approvedTeacherClasses = TeacherClass::whereHas('mentorRequests', function ($query) {
+            $query->where('mentor_id', Auth::id())
+                ->where('status', 'approved');
+        })
+            ->with('teacher:id,name')
+            ->get();
+
+        return view('classes.create', compact('approvedTeacherClasses'));
+    }
 
     // Store class baru
     public function store(Request $request)
     {
-        // // Cek role
-        // if (!Auth::user()->isMentor() && !Auth::user()->isGuru()) {
-        //     return redirect()->route('classes.index')
-        //         ->with('error', 'Only mentors and teachers can create classes.');
-        // }
-
         $validated = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'nullable|string|max:2000'
+            'description' => 'nullable|string|max:2000',
+            'teacher_class_id' => 'nullable|exists:teacher_classes,id'
         ]);
+
+        // Cek apakah mentor sudah di-approve untuk teacher_class_id ini
+        if ($validated['teacher_class_id']) {
+            $isApproved = MentorRequest::where('mentor_id', Auth::id())
+                ->where('teacher_class_id', $validated['teacher_class_id'])
+                ->where('status', 'approved')
+                ->exists();
+
+            if (!$isApproved) {
+                return back()->with('error', 'Anda belum disetujui untuk membuat kelas di bawah TeacherClass ini.');
+            }
+        }
 
         ClassModel::create([
             'name' => $validated['name'],
             'description' => $validated['description'],
             'mentor_id' => Auth::id(),
+            'teacher_class_id' => $validated['teacher_class_id'],
         ]);
 
-        return redirect()->route('classes.my')
-            ->with('success', 'Class created successfully!');
+        return redirect()->route('classes.my')->with('success', 'Class berhasil dibuat!');
     }
-
     // Show detail class
     public function show($id)
     {

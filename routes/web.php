@@ -12,41 +12,15 @@ use App\Http\Controllers\QuizController;
 use App\Http\Controllers\PostTestController;
 use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\NavbarMentorController;
+use App\Http\Controllers\TeacherClassController;
+use App\Http\Controllers\MentorRequestController;
+use Dom\Implementation;
 
-// Redirect root ke dashboard
+
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
 
-// Dashboard Routes
-Route::get('/dashboard', [DashboardController::class, 'index'])
-    ->middleware(['auth', 'verify.mentor'])
-    ->name('dashboard');
-
-Route::get('/admin/dashboard', [AdminDashboardController::class, 'index'])
-    ->middleware(['auth', 'role:guru'])
-    ->name('admin.dashboard');
-
-Route::get('/mentor/waiting', function () {
-    return view('mentor.waiting');
-})->name('mentor.waiting')->middleware('auth');
-
-// Navigation Routes
-Route::get('/navbar/classes', [ClassController::class, 'index'])
-    ->name('navbar.classes')
-    ->middleware('auth');
-
-Route::get('/navbar/mentor', function () {
-    return view('navbar.mentor');
-})->name('navbar.mentor')->middleware('auth');
-
-Route::get('/navbar/achievement', function () {
-    return view('navbar.achievement');
-})->name('navbar.achievement')->middleware('auth');
-
-
-
-// Logout
 Route::post('/logout', function () {
     Auth::logout();
     request()->session()->invalidate();
@@ -54,128 +28,124 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout')->middleware('auth');
 
-/*
-|--------------------------------------------------------------------------
-| Profile Routes - BERSIH (dari File 1 yang TIDAK ERROR)
-|--------------------------------------------------------------------------
-*/
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verify.mentor'])
+    ->name('dashboard');
+
+Route::get('/admin/dashboard', [TeacherClassController::class, 'index'])
+    ->middleware(['auth', 'role:guru'])
+    ->name('admin.dashboard');
+
+Route::get('/mentor/waiting', function () {
+    return view('mentor.waiting');
+})->name('mentor.waiting')->middleware('auth');
+
+
 Route::middleware('auth')->group(function () {
-    // Profile routes - HANYA SATU DEFINISI untuk setiap route
-     Route::get('/achievements/{class}', [AchievementController::class, 'show'])
-        ->name('achievements.show');
+    Route::get('/navbar/classes', [ClassController::class, 'index'])
+        ->name('navbar.classes');
 
-    Route::get('/profile', [ProfileController::class, 'index'])->name('profile.index');
-    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::get('/navbar/mentor', function () {
+        return view('navbar.mentor');
+    })->name('navbar.mentor');
 
-    // Support both PATCH and PUT methods for profile update
-    Route::match(['patch', 'put'], '/profile', [ProfileController::class, 'update'])->name('profile.update');
-    Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-
-    // Profile routes tambahan (dari File 1)
-    Route::post('/profile/update', [ProfileController::class, 'updateProfile'])->name('profile.update.custom');
-    Route::post('/profile/upload-avatar', [ProfileController::class, 'uploadAvatar'])->name('profile.upload-avatar');
- Route::put('/profile/update-profile', [ProfileController::class, 'updateProfile'])
-        ->name('profile.updateProfile');   
-
-    // User show route
-    Route::get('/user/{id}', [ProfileController::class, 'show'])->name('user.show');
+    Route::get('/navbar/achievement', function () {
+        return view('navbar.achievement');
+    })->name('navbar.achievement');
 });
 
-// Dummy routes - FIXED: redirect ke route yang benar
-Route::get('/projects/create', function () {
-    return redirect()->route('profile.index')->with('info', 'Fitur create project akan segera hadir!');
-})->name('projects.create')->middleware('auth');
 
-Route::get('/reports', function () {
-    return redirect()->route('profile.index')->with('info', 'Fitur reports akan segera hadir!');
-})->name('reports.index')->middleware('auth');
+Route::middleware('auth')->controller(ProfileController::class)->group(function () {
+    Route::get('/profile', 'index')->name('profile.index');
+    Route::get('/profile/edit', 'edit')->name('profile.edit');
+    Route::match(['patch', 'put'], '/profile', 'update')->name('profile.update');
+    Route::delete('/profile', 'destroy')->name('profile.destroy');
+    Route::post('/profile/update', 'updateProfile')->name('profile.update.custom');
+    Route::post('/profile/upload-avatar', 'uploadAvatar')->name('profile.upload-avatar');
+    Route::put('/profile/update-profile', 'updateProfile')->name('profile.updateProfile');
+    Route::get('/user/{id}', 'show')->name('user.show');
+});
 
-/*
-|--------------------------------------------------------------------------
-| Class Routes
-|--------------------------------------------------------------------------
-*/
-Route::middleware('auth')->group(function () {
-    // Route untuk mentor melihat list approval requests - TARUH DI ATAS
+Route::middleware('auth')->controller(AchievementController::class)->group(function () {
+    Route::get('/achievements', 'index')->name('achievements.index');
+    Route::get('/achievements/{class}', 'show')->name('achievements.show');
+});
 
-    Route::get('/post-tests/approval-requests', [PostTestController::class, 'approvalRequests'])
+Route::middleware('auth')->controller(MentorController::class)->group(function () {
+    Route::get('/mentor', 'index')->name('mentor.index');
+    Route::get('/mentor/{id}', 'show')->name('mentor.show');
+    Route::get('/navbar/mentor', 'index')->name('navbar.mentor');
+    Route::get('/navbar/mentor/{id}', 'show')->name('mentor.show');
+});
+
+Route::middleware('auth')->controller(ClassController::class)->group(function () {
+    Route::get('/classes', 'index')->name('classes.index');
+    Route::get('/classes/{id}', 'show')->name('classes.show');
+    Route::get('/classes/{id}/learn', 'learn')->name('classes.learn');
+});
+Route::middleware('auth')->controller(MaterialController::class)->group(function () {
+    Route::get('/materials/{material}', 'show')->name('materials.show');
+});
+Route::middleware('auth')->prefix('materials/{material}')->controller(QuizController::class)->group(function () {
+    Route::get('/quizzes', 'index')->name('quizzes.index');
+    Route::get('/quizzes/create', 'create')->name('quizzes.create');
+    Route::post('/quizzes', 'store')->name('quizzes.store');
+    Route::get('/quizzes/{quiz}/edit', 'edit')->name('quizzes.edit');
+    Route::put('/quizzes/{quiz}', 'update')->name('quizzes.update');
+});
+Route::middleware('auth')->prefix('quizzes')->controller(QuizController::class)->group(function () {
+    Route::get('/{quiz}', 'show')->name('quizzes.show');
+    Route::patch('/{quiz}/activate', 'activate')->name('quizzes.activate');
+    Route::post('/{quiz}/start', 'start')->name('quizzes.start');
+    Route::post('/{quiz}/submit', 'submit')->name('quizzes.submit');
+    Route::post('/{quiz}/submit-auto', 'autoSubmit')->name('quizzes.auto-submit');
+    Route::post('/{quiz}/save-progress', 'saveProgress')->name('quizzes.saveProgress');
+    Route::get('/{quiz}/check-timer', 'checkTimer')->name('quizzes.check-timer');
+    Route::post('/{quiz}/update-timer', 'updateTimer')->name('quizzes.update-timer');
+});
+
+Route::middleware('auth')->controller(PostTestController::class)->group(function () {
+    Route::get('/post-tests/approval-requests', 'approvalRequests')
         ->name('post_tests.approval_requests');
-
-    // Route classes
-    Route::get('/classes', [ClassController::class, 'index'])->name('classes.index');
-    Route::get('/classes/{id}', [ClassController::class, 'show'])->name('classes.show');
-    Route::get('/classes/{id}/learn', [ClassController::class, 'learn'])->name('classes.learn');
-    Route::get('/achievements', [AchievementController::class, 'index'])
-        ->name('achievements.index');
-
-    // Route materials
-    Route::get('/materials/{material}', [MaterialController::class, 'show'])->name('materials.show');
-
-    // Route quizzes
-    Route::get('materials/{material}/quizzes', [QuizController::class, 'index'])->name('quizzes.index');
-    Route::get('materials/{material}/quizzes/create', [QuizController::class, 'create'])->name('quizzes.create');
-    Route::post('materials/{material}/quizzes', [QuizController::class, 'store'])->name('quizzes.store');
-    Route::get('quizzes/{quiz}', [QuizController::class, 'show'])->name('quizzes.show');
-    Route::get('materials/{material}/quizzes/{quiz}/edit', [QuizController::class, 'edit'])->name('quizzes.edit');
-    Route::put('materials/{material}/quizzes/{quiz}', [QuizController::class, 'update'])->name('quizzes.update');
-    Route::patch('quizzes/{quiz}/activate', [QuizController::class, 'activate'])->name('quizzes.activate');
-    Route::post('/quizzes/{quiz}/start', [QuizController::class, 'start'])->name('quizzes.start');
-    Route::post('/quizzes/{quiz}/submit', [QuizController::class, 'submit'])->name('quizzes.submit');
-    Route::post('/quizzes/{quiz}/submit-auto', [QuizController::class, 'autoSubmit'])->name('quizzes.auto-submit');
-    Route::post('/quizzes/{quiz}/save-progress', [QuizController::class, 'saveProgress'])->name('quizzes.saveProgress');
-    Route::get('/quizzes/{quiz}/check-timer', [QuizController::class, 'checkTimer'])->name('quizzes.check-timer');
-    Route::post('/quizzes/{quiz}/update-timer', [QuizController::class, 'updateTimer'])->name('quizzes.update-timer');
-
-    // Route post-tests dengan prefix
-    Route::prefix('classes/{class}')->group(function () {
-        Route::get('/post-tests/create', [PostTestController::class, 'create'])->name('post_tests.create');
-        Route::post('/post-tests', [PostTestController::class, 'store'])->name('post_tests.store');
-        Route::get('/post-tests/{postTest}/edit', [PostTestController::class, 'edit'])->name('post_tests.edit');
-        Route::put('/post-tests/{postTest}', [PostTestController::class, 'update'])->name('post_tests.update');
-        Route::delete('/post-tests/{postTest}', [PostTestController::class, 'destroy'])->name('post_tests.destroy');
-        Route::patch('/post-tests/{postTest}/toggle-status', [PostTestController::class, 'toggleStatus'])->name('post_tests.toggle_status');
-        Route::post('/post-tests/{postTest}/duplicate', [PostTestController::class, 'duplicate'])->name('post_tests.duplicate');
-    });
-
-    // Route post-tests individual - TARUH SETELAH ROUTE TANPA PARAMETER
-    Route::prefix('post-tests')->group(function () {
-        // Route untuk request approval
-        Route::get('/{postTest}/request-approval', [PostTestController::class, 'showRequestApprovalForm'])
-            ->name('post_tests.request_approval.form');
-        Route::post('/{postTest}/request-approval', [PostTestController::class, 'requestApproval'])
-            ->name('post_tests.request_approval.submit');
-
-        // Route untuk mentor approve attempt
-        Route::post('/{postTest}/approve/{attemptId}', [PostTestController::class, 'approveAttempt'])
-            ->name('post_tests.approve_attempt');
-
-        // Route post-tests lainnya
-
-        Route::get('/{postTest}', [PostTestController::class, 'show'])->name('post_tests.show');
-        Route::post('/{postTest}/start', [PostTestController::class, 'start'])->name('post_tests.start');
-        Route::post('/{postTest}/submit', [PostTestController::class, 'submit'])->name('post_tests.submit');
-        Route::post('/{postTest}/activate', [PostTestController::class, 'activate'])->name('post_tests.activate');
-        Route::post('/{postTest}/update-timer', [PostTestController::class, 'updateTimer'])->name('post_tests.updateTimer');
-        Route::post('/{postTest}/save-progress', [PostTestController::class, 'saveProgress'])->name('post_tests.saveProgress');
-    });
+});
+Route::middleware('auth')->prefix('classes/{class}')->controller(PostTestController::class)->group(function () {
+    Route::get('/post-tests/create', 'create')->name('post_tests.create');
+    Route::post('/post-tests', 'store')->name('post_tests.store');
+    Route::get('/post-tests/{postTest}/edit', 'edit')->name('post_tests.edit');
+    Route::put('/post-tests/{postTest}', 'update')->name('post_tests.update');
+    Route::delete('/post-tests/{postTest}', 'destroy')->name('post_tests.destroy');
+    Route::patch('/post-tests/{postTest}/toggle-status', 'toggleStatus')->name('post_tests.toggle_status');
+    Route::post('/post-tests/{postTest}/duplicate', 'duplicate')->name('post_tests.duplicate');
+});
+Route::middleware('auth')->prefix('post-tests')->controller(PostTestController::class)->group(function () {
+    Route::get('/{postTest}/request-approval', 'showRequestApprovalForm')
+        ->name('post_tests.request_approval.form');
+    Route::post('/{postTest}/request-approval', 'requestApproval')
+        ->name('post_tests.request_approval.submit');
+    Route::post('/{postTest}/approve/{attemptId}', 'approveAttempt')
+        ->name('post_tests.approve_attempt');
+    Route::get('/{postTest}', 'show')->name('post_tests.show');
+    Route::post('/{postTest}/start', 'start')->name('post_tests.start');
+    Route::post('/{postTest}/submit', 'submit')->name('post_tests.submit');
+    Route::post('/{postTest}/activate', 'activate')->name('post_tests.activate');
+    Route::post('/{postTest}/update-timer', 'updateTimer')->name('post_tests.updateTimer');
+    Route::post('/{postTest}/save-progress', 'saveProgress')->name('post_tests.saveProgress');
 });
 
 /*
 |--------------------------------------------------------------------------
-| Mentor Routes (Role: mentor)
+| Mentor Role Routes (Role: mentor)
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:mentor'])->group(function () {
     Route::controller(ClassController::class)->group(function () {
         Route::get('/my-classes', 'my')->name('classes.my');
         Route::get('/create', 'create')->name('classes.create');
-        Route::post('/classes', 'store')->name('classes.store');
+        Route::post('/classes', 'store')->name('classes.store.new');
         Route::get('/classes/{id}/edit', 'edit')->name('classes.edit');
         Route::put('/classes/{id}', 'update')->name('classes.update');
         Route::delete('/classes/{id}', 'destroy')->name('classes.destroy');
-        Route::post('/quizzes/{quiz}/activate', [QuizController::class, 'activate'])->name('quizzes.activate');
     });
-
     Route::controller(MaterialController::class)->group(function () {
         Route::get('/materials/create/{class}', 'create')->name('materials.create');
         Route::get('/materials/{material}/edit', 'edit')->name('materials.edit');
@@ -183,6 +153,11 @@ Route::middleware(['auth', 'role:mentor'])->group(function () {
         Route::delete('/materials/{material}', 'destroy')->name('materials.destroy');
         Route::post('/materials', 'store')->name('materials.store');
     });
+
+    Route::post('/quizzes/{quiz}/activate', [QuizController::class, 'activate'])->name('quizzes.activate');
+
+    Route::post('/mentor-requests', [MentorRequestController::class, 'store'])
+        ->name('mentor-requests.store');
 });
 
 /*
@@ -191,23 +166,76 @@ Route::middleware(['auth', 'role:mentor'])->group(function () {
 |--------------------------------------------------------------------------
 */
 Route::middleware(['auth', 'role:guru'])->group(function () {
-    Route::get('/mentor/pending', [MentorController::class, 'pending'])->name('mentor.pending');
-    Route::post('/mentor/approve/{user}', [MentorController::class, 'approve'])->name('mentor.approve');
-    Route::post('/mentor/reject/{user}', [MentorController::class, 'reject'])->name('mentor.reject');
+    // Teacher Class Resource
+    Route::resource('teacher-classes', TeacherClassController::class);
+
+    // Additional Teacher Class Routes
+    Route::controller(TeacherClassController::class)->group(function () {
+        Route::get('teacher-classes/{id}', 'implementation')->name('teacher-classes.implementation');
+        Route::get('teacher-classes/{teacherClass}/implementation', 'implementation')
+            ->name('teacher-classes.implementation');
+    });
+
+    // Mentor Request Management
+    Route::controller(MentorRequestController::class)->group(function () {
+        Route::get('/mentor-requests/pending', 'pendingRequests')
+            ->name('mentor-requests.pending');
+        Route::post('/mentor-requests/{mentorRequest}/approve', 'approve')
+            ->name('mentor-requests.approve');
+        Route::post('/mentor-requests/{mentorRequest}/reject', 'reject')
+            ->name('mentor-requests.reject');
+        Route::get('/mentor-requests/class/{teacherClass}', 'byClass')
+            ->name('mentor-requests.by-class');
+    });
+
+    // Nested routes for teacher class management
+    Route::prefix('teacher-classes/{teacherClass}')->controller(TeacherClassController::class)->group(function () {
+        // Mentor Class Management
+        Route::get('/classes/{class}', 'showMentorClass')
+            ->name('teacher-classes.mentor-class.show');
+        Route::get('/classes/{class}/edit', 'editMentorClass')
+            ->name('teacher-classes.mentor-class.edit');
+        Route::put('/classes/{class}', 'updateMentorClass')
+            ->name('teacher-classes.mentor-class.update');
+        Route::delete('/classes/{class}', 'destroyMentorClass')
+            ->name('teacher-classes.mentor-class.destroy');
+        Route::patch('/classes/{class}/toggle-status', 'toggleClassStatus')
+            ->name('teacher-classes.mentor-class.toggle-status');
+
+        // Material Management
+        Route::get('/classes/{class}/materials/{material}', 'showMaterial')
+            ->name('teacher-classes.mentor-class.material.show');
+        Route::get('/classes/{class}/materials/{material}/edit', 'editMaterial')
+            ->name('teacher-classes.mentor-class.material.edit');
+        Route::put('/classes/{class}/materials/{material}', 'updateMaterial')
+            ->name('teacher-classes.mentor-class.material.update');
+        Route::delete('/classes/{class}/materials/{material}', 'destroyMaterial')
+            ->name('teacher-classes.mentor-class.material.destroy');
+    });
 });
 
-// Mentor profile
-Route::get('/mentor/{id}', function ($id) {
-    return "Profile mentor ID: " . $id;
-})->name('mentor.profile')->middleware('auth');
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+*/
+Route::get('/api/teacher-classes', [TeacherClassController::class, 'getForDropdown'])
+    ->name('api.teacher-classes');
 
-Route::get('/mentor', [MentorController::class, 'index'])->name('mentor.index');
-Route::get('/mentor/{id}', [MentorController::class, 'show'])->name('mentor.show');
+/*
+|--------------------------------------------------------------------------
+| Dummy/Placeholder Routes
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+    Route::get('/projects/create', function () {
+        return redirect()->route('profile.index')->with('info', 'Fitur create project akan segera hadir!');
+    })->name('projects.create');
 
-Route::get('/navbar/mentor', [MentorController::class, 'index'])->name('mentor.index');
-Route::get('/navbar/mentor/{id}', [MentorController::class, 'show'])->name('mentor.show');
-
-Route::get('/mentor', [MentorController::class, 'index'])->name('navbar.mentor');
+    Route::get('/reports', function () {
+        return redirect()->route('profile.index')->with('info', 'Fitur reports akan segera hadir!');
+    })->name('reports.index');
+});
 
 // Auth routes
 require __DIR__ . '/auth.php';

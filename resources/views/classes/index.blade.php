@@ -51,11 +51,22 @@
         opacity: 1;
         transform: translateY(0);
     }
+
+    /* Simplified card styles */
+    .compact-info-badge {
+        background: linear-gradient(135deg, rgba(79, 70, 229, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+        border: 1px solid rgba(79, 70, 229, 0.2);
+    }
+
+    .mentor-badge {
+        background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
+        border: 1px solid rgba(34, 197, 94, 0.2);
+    }
 </style>
 
 <div class="bg-main-gradient min-h-screen -mx-4 -mt-5 px-6">
     <div class="max-w-6xl mx-auto">
-        <!-- Hero Header Section with proper top spacing -->
+        <!-- Hero Header Section -->
         <div class="relative text-center mb-20 px-4 pt-20 md:pt-24 lg:pt-10">
             <!-- Floating Decorative Elements -->
             <div class="hero-decoration w-24 h-24 absolute -top-2 -left-6 floating-animation" style="animation-delay: 0s;"></div>
@@ -115,7 +126,7 @@
             </div>
         @endif
 
-        <!-- Classes Content with bottom spacing -->
+        <!-- Classes Content -->
         <div class="pb-16 md:pb-20 lg:pb-24">
             @if($classes->isEmpty())
                 <!-- Empty State -->
@@ -146,53 +157,153 @@
                 <!-- Classes Grid -->
                 <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 px-2">
                     @foreach($classes as $index => $class)
-                        <div class="scroll-fade-in group relative" style="animation-delay: {{ $index * 100 }}ms;">
-                            <div class="bg-card-gradient glass-effect rounded-2xl lg:rounded-3xl shadow-xl border border-white/20 p-6 lg:p-8 h-full flex flex-col relative overflow-hidden gradient-border transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.02]">
+                        <div class="scroll-fade-in group relative h-full" style="animation-delay: {{ $index * 100 }}ms;">
+                            <div class="bg-card-gradient glass-effect rounded-3xl shadow-xl border border-white/20 h-full flex flex-col relative overflow-hidden gradient-border transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.02]">
                                 <!-- Hover Glow Effect -->
-                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-2xl lg:rounded-3xl"></div>
+                                <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
 
-                                <div class="relative z-10">
+                                <div class="relative z-10 p-6 flex flex-col h-full">
                                     <!-- Class Title -->
-                                    <h3 class="text-xl lg:text-2xl font-bold text-gray-800 mb-4 group-hover:text-indigo-700 transition-colors duration-300 leading-tight">
-                                        {{ $class->name }}
-                                    </h3>
-
-                                    <!-- Description -->
-                                    @if($class->description)
-                                        <p class="text-gray-600 leading-relaxed mb-6 flex-grow text-sm lg:text-base">
-                                            {{ Str::limit($class->description, 120) }}
-                                        </p>
-                                    @else
-                                        <div class="mb-6 flex-grow"></div>
-                                    @endif
-
-                                    <!-- Date Badge -->
-                                    <div class="flex items-center gap-2 text-sm text-gray-500 mb-6">
-                                        <div class="w-2 h-2 bg-gradient-to-r from-indigo-500 to-purple-500 rounded-full"></div>
-                                        <span>Dibuat {{ $class->created_at->format('d M Y') }}</span>
+                                    <div class="mb-4">
+                                        <h3 class="text-xl font-bold text-gray-800 group-hover:text-indigo-700 transition-colors duration-300 leading-tight mb-2">
+                                            {{ $class->name }}
+                                        </h3>
+                                        @if($class->description)
+                                            <p class="text-gray-600 text-sm leading-relaxed line-clamp-2">
+                                                {{ $class->description }}
+                                            </p>
+                                        @endif
                                     </div>
 
-                                    <!-- Mentor Info -->
-                                    <div class="flex items-center gap-4 mb-6 p-4 bg-gradient-to-r from-gray-50 to-indigo-50 rounded-xl lg:rounded-2xl border border-gray-100 group-hover:from-indigo-50 group-hover:to-purple-50 transition-all duration-300">
-                                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-600 to-purple-600 rounded-xl flex items-center justify-center text-white font-bold text-lg shadow-lg group-hover:scale-110 transition-transform duration-300 flex-shrink-0">
-                                            {{ strtoupper(substr($class->mentor->name ?? 'U', 0, 2)) }}
+                                    <!-- Compact Info Section -->
+                                    <div class="mb-4 space-y-3">
+                                        <!-- MENTOR INFO (Main Focus - Clean & Elegant) -->
+                                        <div class="mentor-badge rounded-2xl p-4 bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-300 shadow-md">
+                                            <div class="flex items-center gap-3">
+                                                <!-- Elegant Mentor Avatar with Profile Photo -->
+                                                <div class="relative flex-shrink-0">
+                                                    <div class="w-12 h-12 rounded-full overflow-hidden shadow-lg border-2 border-white">
+                                                        @if($class->mentor && $class->mentor->avatar)
+                                                            <img src="{{ asset('storage/' . $class->mentor->avatar) }}"
+                                                                 alt="{{ $class->mentor->name }}"
+                                                                 class="w-full h-full object-cover"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                            {{-- Fallback if image fails to load --}}
+                                                            <div class="w-full h-full flex items-center justify-center text-white font-bold text-lg bg-gradient-to-br from-green-500 to-emerald-600"
+                                                                 style="display: none;">
+                                                                {{ strtoupper(substr($class->mentor->name ?? 'M', 0, 2)) }}
+                                                            </div>
+                                                        @else
+                                                            {{-- Fallback to UI Avatars if no avatar uploaded --}}
+                                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($class->mentor->name ?? 'Mentor') }}&size=48&background=10b981&color=ffffff&font-size=0.6"
+                                                                 alt="{{ $class->mentor->name ?? 'Mentor' }}"
+                                                                 class="w-full h-full object-cover"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                            {{-- Final fallback --}}
+                                                            <div class="w-full h-full flex items-center justify-center text-white font-bold text-lg bg-gradient-to-br from-green-500 to-emerald-600"
+                                                                 style="display: none;">
+                                                                {{ strtoupper(substr($class->mentor->name ?? 'M', 0, 2)) }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+
+                                                </div>
+
+                                                <div class="flex-1 min-w-0">
+                                                    <!-- Mentor name with elegant styling -->
+                                                    <h4 class="text-base font-bold text-gray-800 truncate mb-1">
+                                                        {{ $class->mentor->name ?? 'Mentor Tidak Diketahui' }}
+                                                    </h4>
+                                                    <div class="flex items-center gap-2">
+                                                        <span class="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full text-xs font-semibold">
+                                                            EBuddy
+                                                        </span>
+
+                                                    </div>
+                                                </div>
+
+                                                <!-- Elegant right accent -->
+                                                <div class="text-green-500 text-xl flex-shrink-0">
+                                                    <i class="fas fa-user-tie"></i>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="flex-1 min-w-0">
-                                            <h4 class="font-bold text-gray-800 text-base lg:text-lg truncate">{{ $class->mentor->name ?? 'Mentor Tidak Diketahui' }}</h4>
-                                            <p class="text-sm text-gray-500">Instruktur Ahli</p>
+
+                                        <!-- Teacher & Class Info (Minimal & Subtle) -->
+                                        @if($class->teacherClass && $class->teacherClass->teacher)
+                                            <div class="bg-gray-50 rounded-lg p-3 border border-gray-200">
+                                                <div class="flex items-center gap-2">
+                                                    <!-- Small Teacher Avatar with Profile Photo -->
+                                                    <div class="w-7 h-7 rounded-lg overflow-hidden shadow-sm border border-gray-300 flex-shrink-0">
+                                                        @if($class->teacherClass->teacher->avatar)
+                                                            <img src="{{ asset('storage/' . $class->teacherClass->teacher->avatar) }}"
+                                                                 alt="{{ $class->teacherClass->teacher->name }}"
+                                                                 class="w-full h-full object-cover"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                            {{-- Fallback if image fails to load --}}
+                                                            <div class="w-full h-full flex items-center justify-center text-white font-medium text-xs bg-gradient-to-br from-gray-400 to-gray-500"
+                                                                 style="display: none;">
+                                                                {{ strtoupper(substr($class->teacherClass->teacher->name, 0, 1)) }}
+                                                            </div>
+                                                        @else
+                                                            {{-- Fallback to UI Avatars if no avatar uploaded --}}
+                                                            <img src="https://ui-avatars.com/api/?name={{ urlencode($class->teacherClass->teacher->name) }}&size=28&background=6b7280&color=ffffff&font-size=0.6"
+                                                                 alt="{{ $class->teacherClass->teacher->name }}"
+                                                                 class="w-full h-full object-cover"
+                                                                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                                                            {{-- Final fallback --}}
+                                                            <div class="w-full h-full flex items-center justify-center text-white font-medium text-xs bg-gradient-to-br from-gray-400 to-gray-500"
+                                                                 style="display: none;">
+                                                                {{ strtoupper(substr($class->teacherClass->teacher->name, 0, 1)) }}
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-center gap-2 text-sm">
+                                                            <span class="font-medium text-gray-700 truncate">{{ $class->teacherClass->teacher->name }}</span>
+                                                            <span class="text-gray-400">•</span>
+                                                            <span class="text-gray-500 truncate">{{ $class->teacherClass->name }}</span>
+                                                        </div>
+                                                        <p class="text-xs text-gray-400 mt-0.5">EMaster</p>
+                                                    </div>
+                                                    <div class="text-gray-400 flex-shrink-0">
+                                                        <i class="fas fa-graduation-cap text-sm"></i>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        @endif
+                                    </div>
+
+                                    <!-- Compact Stats -->
+                                    <div class="mb-4">
+                                        <div class="flex items-center justify-between text-sm">
+                                            <div class="flex items-center gap-4">
+                                                <div class="flex items-center gap-1 text-blue-600">
+                                                    <i class="fas fa-book text-xs"></i>
+                                                    <span class="font-semibold">{{ $class->materials->count() ?? 0 }}</span>
+                                                </div>
+                                                <div class="flex items-center gap-1 text-green-600">
+                                                    <i class="fas fa-{{ ($class->is_active ?? true) ? 'check' : 'pause' }}-circle text-xs"></i>
+                                                    <span class="font-semibold">{{ ($class->is_active ?? true) ? 'Aktif' : 'Nonaktif' }}</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-xs text-gray-500">
+                                                {{ $class->created_at->format('d M Y') }}
+                                            </div>
                                         </div>
-                                        <div class="w-3 h-3 bg-green-400 rounded-full shadow-lg animate-pulse flex-shrink-0"></div>
                                     </div>
 
                                     <!-- Action Button -->
-                                    <a href="{{ route('classes.show', $class->id) }}"
-                                       class="group/btn block w-full py-3.5 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold rounded-xl lg:rounded-2xl text-center transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden text-sm lg:text-base">
-                                        <span class="relative z-10 flex items-center justify-center gap-2">
-                                            <i class="fas fa-eye group-hover/btn:scale-110 transition-transform"></i>
-                                            Lihat Detail Kelas
-                                        </span>
-                                        <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
-                                    </a>
+                                    <div class="mt-auto">
+                                        <a href="{{ route('classes.show', $class->id) }}"
+                                           class="group/btn block w-full py-3 bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-semibold rounded-2xl text-center transition-all duration-300 hover:from-indigo-700 hover:to-purple-700 hover:shadow-xl hover:-translate-y-1 relative overflow-hidden">
+                                            <span class="relative z-10 flex items-center justify-center gap-2">
+                                                <i class="fas fa-eye group-hover/btn:scale-110 transition-transform"></i>
+                                                Lihat Detail
+                                            </span>
+                                            <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent opacity-0 group-hover/btn:opacity-100 transition-opacity duration-300"></div>
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -298,6 +409,18 @@
     style.textContent = `
         @keyframes ripple {
             to { transform: scale(4); opacity: 0; }
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        .line-clamp-3 {
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
     `;
     document.head.appendChild(style);
