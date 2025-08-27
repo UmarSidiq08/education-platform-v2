@@ -32,7 +32,8 @@
                              alt="Foto Profil"
                              class="w-full h-full object-cover"
                              loading="lazy"
-                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE2IiBmaWxsPSIjNkI3MjgwIi8+CjxwYXRoIGQ9Im00MCA5NmMwLTEzLjI1NSAxMC43NDUtMjQgMjQtMjRzMjQgMTAuNzQ1IDI0IDI0SDQweiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K'">
+                             onerror="this.src='data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTI4IiBoZWlnaHQ9IjEyOCIgdmlld0JveD0iMCAwIDEyOCAxMjgiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiBmaWxsPSIjRjNGNEY2Ii8+CjxjaXJjbGUgY3g9IjY0IiBjeT0iNDgiIHI9IjE2IiBmaWxsPSIjNkI3MjgwIi8+CjxwYXRoIGQ9Im00MCA5NmMwLTEzLjI1NSAxMC43NDUtMjQgMjQtMjRzMjQgMTAuNzQ1IDI0IDI0SDQweiIgZmlsbD0iIzZCNzI4MCIvPgo8L3N2Zz4K'"
+                             autocomplete="photo">
                     </div>
                 </div>
 
