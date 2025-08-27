@@ -25,17 +25,17 @@ return new class extends Migration
             $table->timestamps();
 
             $table->unique(['post_test_id', 'user_id']);
-               $table->integer('attempt_number')->default(1)->after('finished_at');
-            $table->boolean('requires_approval')->default(false)->after('attempt_number');
-            $table->boolean('mentor_approved')->default(false)->after('requires_approval');
-            $table->timestamp('approval_requested_at')->nullable()->after('mentor_approved');
-            $table->timestamp('approved_at')->nullable()->after('approval_requested_at');
-            $table->text('approval_reason')->nullable()->after('approved_at'); // Satu user hanya boleh satu attempt per post test
+               $table->integer('attempt_number')->default(1);
+            $table->boolean('requires_approval')->default(false);
+            $table->boolean('mentor_approved')->default(false);
+            $table->timestamp('approval_requested_at')->nullable();
+            $table->timestamp('approved_at')->nullable();
+            $table->text('approval_reason')->nullable();
 
-             $table->boolean('is_approval_attempt')->default(false)->after('approval_reason');
+             $table->boolean('is_approval_attempt')->default(false);
 
             // Field untuk menandakan apakah approval sudah digunakan
-            $table->boolean('is_used')->default(false)->after('is_approval_attempt');
+            $table->boolean('is_used')->default(false);
         });
     }
     /**

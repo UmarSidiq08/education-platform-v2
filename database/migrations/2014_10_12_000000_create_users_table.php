@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
-            $table->enum('role', ['siswa', 'mentor', 'guru'])->default('siswa')->after('email');
-            $table->boolean('is_verified')->default(false)->after('role');
+            $table->enum('role', ['siswa', 'mentor', 'guru'])->default('siswa');//->after('email');
+            $table->boolean('is_verified')->default(false);//->after('role');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
