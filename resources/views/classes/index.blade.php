@@ -216,7 +216,7 @@
                                                     </h4>
                                                     <div class="flex items-center gap-2">
                                                         <span class="px-3 py-1 bg-gradient-to-r from-green-500 to-emerald-500 text-white rounded-full text-xs font-semibold">
-                                                            EBuddy
+                                                            eBuddy
                                                         </span>
 
                                                     </div>
@@ -264,7 +264,7 @@
                                                             <span class="text-gray-400">•</span>
                                                             <span class="text-gray-500 truncate">{{ $class->teacherClass->name }}</span>
                                                         </div>
-                                                        <p class="text-xs text-gray-400 mt-0.5">EMaster</p>
+                                                        <p class="text-xs text-gray-400 mt-0.5">eMaster</p>
                                                     </div>
                                                     <div class="text-gray-400 flex-shrink-0">
                                                         <i class="fas fa-graduation-cap text-sm"></i>

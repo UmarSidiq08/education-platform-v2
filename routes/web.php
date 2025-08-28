@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Request;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MentorController;
 use App\Http\Controllers\AdminDashboardController;
@@ -14,12 +15,26 @@ use App\Http\Controllers\AchievementController;
 use App\Http\Controllers\NavbarMentorController;
 use App\Http\Controllers\TeacherClassController;
 use App\Http\Controllers\MentorRequestController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\PublicTeacherClassController;
 use Dom\Implementation;
 
 
 Route::get('/', function () {
     return redirect()->route('dashboard');
 });
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+// PERBAIKAN: Pindahkan route API check-name ke bagian atas dan ubah path
+// Route untuk check name availability (tidak perlu auth)
+Route::post('/api/check-name', [RegisteredUserController::class, 'checkName'])
+    ->name('api.check-name');
+
+// Route untuk get teacher classes (tidak perlu auth untuk registrasi)
+Route::get('/api/teacher-classes', [TeacherClassController::class, 'getForDropdown'])
+    ->name('api.teacher-classes');
 
 Route::post('/logout', function () {
     Auth::logout();
@@ -131,6 +146,13 @@ Route::middleware('auth')->prefix('post-tests')->controller(PostTestController::
     Route::post('/{postTest}/update-timer', 'updateTimer')->name('post_tests.updateTimer');
     Route::post('/{postTest}/save-progress', 'saveProgress')->name('post_tests.saveProgress');
 });
+Route::middleware('auth')->prefix('mata-pelajaran')->name('public.teacher-classes.')->controller(PublicTeacherClassController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/search', 'search')->name('search');
+    Route::get('/filter', 'filterBySubject')->name('filter');
+    Route::get('/{teacherClass}',  'show')->name('show');
+    Route::get('/{teacherClass}/mentor/{mentor}',  'showMentorClasses')->name('mentor-classes');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -213,14 +235,6 @@ Route::middleware(['auth', 'role:guru'])->group(function () {
             ->name('teacher-classes.mentor-class.material.destroy');
     });
 });
-
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-*/
-Route::get('/api/teacher-classes', [TeacherClassController::class, 'getForDropdown'])
-    ->name('api.teacher-classes');
 
 /*
 |--------------------------------------------------------------------------

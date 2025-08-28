@@ -68,6 +68,24 @@
             box-shadow: 0 15px 35px rgba(102, 126, 234, 0.3);
         }
 
+        /* Name validation styles */
+        .username-feedback {
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+        }
+
+        .username-available {
+            color: #10b981;
+        }
+
+        .username-taken {
+            color: #ef4444;
+        }
+
+        .username-checking {
+            color: #6b7280;
+        }
+
         /* Mobile Responsive Styles */
         @media (max-width: 1023px) {
             .floating-shape {
@@ -203,6 +221,7 @@
                                     type="text" name="name" :value="old('name')" required autofocus
                                     autocomplete="name" placeholder="Masukkan nama lengkap Anda" />
                             </div>
+                            <div id="name-feedback" class="username-feedback"></div>
                             <x-input-error :messages="$errors->get('name')" class="mt-2 text-red-500 text-sm" />
                         </div>
 
@@ -220,7 +239,7 @@
                                 </div>
                                 <x-text-input id="email"
                                     class="input-floating w-full pl-10 pr-4 py-3 lg:py-4 border border-gray-200 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm lg:text-base"
-                                    type="email" name="email" :value="old('email')" required autocomplete="username"
+                                    type="email" name="email" :value="old('email')" required autocomplete="email"
                                     placeholder="Masukkan email Anda" />
                             </div>
                             <x-input-error :messages="$errors->get('email')" class="mt-2 text-red-500 text-sm" />
@@ -315,10 +334,13 @@
                                     <option value="" class="text-gray-900">Pilih peran Anda</option>
                                     <option value="siswa" class="text-gray-900">Siswa</option>
                                     <option value="mentor" class="text-gray-900">Mentor (butuh verifikasi)</option>
+                                    <option value="guru" class="text-gray-900">Guru</option>
                                 </select>
                             </div>
                             <x-input-error :messages="$errors->get('role')" class="mt-2 text-red-500 text-sm" />
                         </div>
+
+                        <!-- Teacher Class Selection (only for mentor) -->
                         <div id="teacher-class-section" class="hidden">
                             <x-input-label for="teacher_class_id" :value="__('Pilih Kelas Guru')"
                                 class="block text-sm font-medium text-gray-700 mb-2" />
@@ -339,7 +361,7 @@
                         </div>
 
                         <!-- Submit Button -->
-                        <x-primary-button
+                        <x-primary-button id="submit-btn"
                             class="btn-hover w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-semibold py-3 lg:py-4 px-4 rounded-xl transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 shadow-lg justify-center text-sm lg:text-base">
                             {{ __('Register') }}
                         </x-primary-button>
@@ -410,6 +432,8 @@
     </div>
 
     <script>
+        let nameCheckTimeout;
+
         function togglePassword(fieldId) {
             const passwordInput = document.getElementById(fieldId);
             const prefix = fieldId === 'password' ? 'password' : 'confirm-password';
@@ -426,6 +450,72 @@
                 eyeClosed.classList.add('hidden');
             }
         }
+
+        // Name availability checker - PERBAIKAN PADA FETCH URL
+        function checkNameAvailability(name) {
+            if (name.length < 3) {
+                document.getElementById('name-feedback').innerHTML = '';
+                return;
+            }
+
+            document.getElementById('name-feedback').innerHTML =
+                '<span class="username-checking">⏳ Mengecek ketersediaan nama...</span>';
+
+            // PERBAIKAN: Gunakan path yang sesuai dengan route
+            fetch('/api/check-name', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                    },
+                    body: JSON.stringify({
+                        name: name
+                    })
+                })
+                .then(response => {
+                    // PERBAIKAN: Cek status response terlebih dahulu
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const feedback = document.getElementById('name-feedback');
+                    const submitBtn = document.getElementById('submit-btn');
+
+                    if (data.available) {
+                        feedback.innerHTML = '<span class="username-available">✓ Nama tersedia</span>';
+                        submitBtn.disabled = false;
+                        submitBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                    } else {
+                        feedback.innerHTML = '<span class="username-taken">✗ Nama sudah digunakan</span>';
+                        submitBtn.disabled = true;
+                        submitBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error checking name availability:', error);
+                    document.getElementById('name-feedback').innerHTML =
+                        '<span class="username-taken">✗ Error mengecek nama: ' + error.message + '</span>';
+                });
+        }
+
+        // Add name input listener
+        document.getElementById('name').addEventListener('input', function() {
+            const name = this.value.trim();
+
+            clearTimeout(nameCheckTimeout);
+
+            if (name.length > 0) {
+                nameCheckTimeout = setTimeout(() => {
+                    checkNameAvailability(name);
+                }, 500);
+            } else {
+                document.getElementById('name-feedback').innerHTML = '';
+                document.getElementById('submit-btn').disabled = false;
+                document.getElementById('submit-btn').classList.remove('opacity-50', 'cursor-not-allowed');
+            }
+        });
 
         // Add validation feedback for password confirmation
         document.getElementById('password_confirmation').addEventListener('input', function() {
@@ -464,26 +554,39 @@
                 this.parentElement.classList.remove('scale-105');
             });
         });
+
         document.addEventListener('DOMContentLoaded', function() {
             const roleSelect = document.getElementById('role');
             const teacherClassSection = document.getElementById('teacher-class-section');
             const teacherClassSelect = document.getElementById('teacher_class_id');
 
-            // Load teacher classes
+            // Load teacher classes - PERBAIKAN: Tambah error handling yang lebih baik
             fetch('/api/teacher-classes')
-                .then(response => response.json())
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                    }
+                    return response.json();
+                })
                 .then(data => {
                     teacherClassSelect.innerHTML =
                     '<option value="">Pilih kelas yang ingin diikuti...</option>';
-                    data.forEach(tc => {
-                        teacherClassSelect.innerHTML += `<option value="${tc.id}">${tc.name}</option>`;
-                    });
+                    if (Array.isArray(data) && data.length > 0) {
+                        data.forEach(tc => {
+                            teacherClassSelect.innerHTML +=
+                                `<option value="${tc.id}">${tc.name}</option>`;
+                        });
+                    } else {
+                        teacherClassSelect.innerHTML += '<option value="">Tidak ada kelas tersedia</option>';
+                    }
                 })
-                .catch(() => {
-                    teacherClassSelect.innerHTML = '<option value="">Gagal memuat kelas</option>';
+                .catch(error => {
+                    console.error('Error loading teacher classes:', error);
+                    teacherClassSelect.innerHTML = '<option value="">Gagal memuat kelas: ' + error.message +
+                        '</option>';
                 });
 
-            // Show/hide teacher class dropdown
+            // Show/hide teacher class dropdown based on role selection
             roleSelect.addEventListener('change', function() {
                 if (this.value === 'mentor') {
                     teacherClassSection.classList.remove('hidden');
@@ -491,8 +594,31 @@
                 } else {
                     teacherClassSection.classList.add('hidden');
                     teacherClassSelect.removeAttribute('required');
+                    teacherClassSelect.value = '';
                 }
             });
+        });
+
+        // Form validation before submit
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const name = document.getElementById('name').value.trim();
+            const feedback = document.getElementById('name-feedback').textContent;
+
+            if (name && feedback.includes('sudah digunakan')) {
+                e.preventDefault();
+                alert('Nama sudah digunakan. Silakan pilih nama lain.');
+                return false;
+            }
+
+            // PERBAIKAN: Tambah validasi untuk mentor yang memilih teacher class
+            const role = document.getElementById('role').value;
+            const teacherClassId = document.getElementById('teacher_class_id').value;
+
+            if (role === 'mentor' && !teacherClassId) {
+                e.preventDefault();
+                alert('Silakan pilih kelas guru untuk mendaftar sebagai mentor.');
+                return false;
+            }
         });
     </script>
 </body>
