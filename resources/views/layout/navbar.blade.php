@@ -2,13 +2,20 @@
     style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); backdrop-filter: blur(20px);">
     <div class="flex justify-between items-center max-w-[1400px] mx-auto w-full h-full px-8">
         <div class="flex items-center gap-8">
-            <div class="logo">
-                <div
-                    class="logo-icon w-[45px] h-[45px] bg-white rounded-xl flex items-center justify-center text-[1.6rem] shadow-lg transition-transform duration-300 ease-in-out hover:scale-105">
-                    😹
-                </div>
+            <div class="logo relative w-[100px] h-[100px] flex items-center justify-center">
+                <!-- Logo -->
+                <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-contain relative z-10">
             </div>
-            <ul class="nav-links flex gap-2 list-none items-center m-0 p-2 rounded-[15px] shadow-xl"
+
+            <!-- Mobile Menu Button - Hidden on Desktop -->
+            <button class="mobile-menu-btn hidden md:hidden" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+
+            <!-- Desktop Navigation - Hidden on Mobile -->
+            <ul class="nav-links flex gap-2 list-none items-center m-0 p-2 rounded-[15px] shadow-xl md:flex hidden"
                 style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);">
 
                 <li class="m-0 p-0">
@@ -47,12 +54,12 @@
                             style="{{ request()->routeIs('post_tests.approval_requests') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">
                             <i class="fas fa-clipboard-check mr-1"></i>Approval Requests
                             @php
-                                $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function ($query, ) {
-                                    $query->where('mentor_id', auth()->id());
-                                })
-                                    ->where('requires_approval', true)
-                                    ->where('mentor_approved', false)
-                                    ->count();
+    $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function ($query, ) {
+        $query->where('mentor_id', auth()->id());
+    })
+        ->where('requires_approval', true)
+        ->where('mentor_approved', false)
+        ->count();
                             @endphp
                             @if ($pendingCount > 0)
                                 <span
@@ -62,7 +69,47 @@
                     </li>
                 @endif
             </ul>
+
+            <!-- Mobile Navigation Menu -->
+            <div class="mobile-nav-menu fixed top-[85px] left-0 right-0 bg-white shadow-lg rounded-b-[20px] z-[999] overflow-hidden transform -translate-y-full opacity-0 invisible transition-all duration-300"
+                id="mobileNavMenu">
+                <div class="p-4 space-y-2">
+                    <a href="{{ route('dashboard') }}"
+                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : '' }}"
+                        onclick="closeMobileMenu()">
+                        <span class="text-lg mr-3">🏠</span>Dashboard
+                    </a>
+                    <a href="{{ route('classes.index') }}"
+                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'bg-blue-500 text-white' : '' }}"
+                        onclick="closeMobileMenu()">
+                        <span class="text-lg mr-3">📚</span>Classes
+                    </a>
+                    <a href="{{ route('navbar.mentor') }}"
+                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('navbar.mentor') ? 'bg-blue-500 text-white' : '' }}"
+                        onclick="closeMobileMenu()">
+                        <span class="text-lg mr-3">👨‍🏫</span>Mentor
+                    </a>
+                    @if (auth()->user()->role === 'siswa')
+                        <a href="{{ route('achievements.index') }}"
+                            class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('achievements.*') ? 'bg-blue-500 text-white' : '' }}"
+                            onclick="closeMobileMenu()">
+                            <span class="text-lg mr-3">🏆</span>Achievement
+                        </a>
+                    @endif
+                    @if (auth()->user()->role === 'mentor')
+                        <a href="{{ route('post_tests.approval_requests') }}"
+                            class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 relative {{ request()->routeIs('post_tests.approval_requests') ? 'bg-blue-500 text-white' : '' }}"
+                            onclick="closeMobileMenu()">
+                            <span class="text-lg mr-3">✅</span>Approval Requests
+                            @if ($pendingCount > 0)
+                                <span class="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center">{{ $pendingCount }}</span>
+                            @endif
+                        </a>
+                    @endif
+                </div>
+            </div>
         </div>
+
         <div class="user-dropdown relative" id="userDropdown">
             <div class="user-info flex items-center gap-3 px-5 py-2.5 rounded-[30px] cursor-pointer transition-all duration-300 ease-in-out border-0 m-0 hover:-translate-y-px hover:bg-white"
                 style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px); box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);"
@@ -183,6 +230,51 @@
         margin: 0;
     }
 
+    /* Mobile Menu Button */
+    .mobile-menu-btn {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        background: rgba(255, 255, 255, 0.9);
+        border: none;
+        padding: 8px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .hamburger-line {
+        width: 20px;
+        height: 2px;
+        background: #374151;
+        transition: all 0.3s ease;
+        border-radius: 2px;
+    }
+
+    .mobile-menu-btn.active .hamburger-line:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+
+    .mobile-menu-btn.active .hamburger-line:nth-child(2) {
+        opacity: 0;
+    }
+
+    .mobile-menu-btn.active .hamburger-line:nth-child(3) {
+        transform: rotate(-45deg) translate(7px, -6px);
+    }
+
+    /* Mobile Navigation Menu */
+    .mobile-nav-menu.active {
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .mobile-nav-link:hover {
+        background: rgba(79, 195, 247, 0.1) !important;
+        color: #1976d2 !important;
+    }
+
     /* User Avatar Styles */
     .user-avatar {
         transition: all 0.3s ease;
@@ -248,25 +340,43 @@
         }
     }
 
+    @media (min-width: 769px) {
+        .mobile-menu-btn {
+            display: none !important; /* Force hide di desktop */
+        }
+
+        .nav-links {
+            display: flex !important; /* Force show di desktop */
+        }
+
+        .mobile-nav-menu {
+            display: none !important; /* Force hide mobile menu di desktop */
+        }
+    }
+
     @media (max-width: 768px) {
         body {
-            padding-top: 75px !important;
+            padding-top: 85px !important; /* Tetap sama untuk konsistensi */
         }
 
         nav {
-            height: 75px;
+            height: 85px; /* Tetap sama */
         }
 
-        .nav-container {
+        .flex.justify-between.items-center {
             padding: 0 1rem;
         }
 
         .nav-links {
-            display: none;
+            display: none !important; /* Force hide desktop menu di mobile */
         }
 
-        .nav-left {
-            gap: 1rem;
+        .mobile-menu-btn {
+            display: flex !important; /* Force show mobile menu button */
+        }
+
+        .mobile-nav-menu {
+            top: 85px; /* Sesuaikan dengan tinggi navbar */
         }
 
         .user-info {
@@ -274,7 +384,7 @@
         }
 
         .user-name {
-            display: none;
+            display: none; /* Sembunyikan nama di mobile */
         }
 
         .dropdown-menu {
@@ -282,28 +392,19 @@
             right: -10px;
         }
 
-        .logo-icon {
-            width: 40px;
-            height: 40px;
-            font-size: 1.4rem;
+        .logo {
+            width: 60px;
+            height: 60px;
         }
 
         .user-avatar {
-            width: 35px !important;
-            height: 35px !important;
+            width: 32px !important;
+            height: 32px !important;
         }
     }
 
     @media (max-width: 480px) {
-        body {
-            padding-top: 70px !important;
-        }
-
-        nav {
-            height: 70px;
-        }
-
-        .nav-container {
+        .flex.justify-between.items-center {
             padding: 0 0.8rem;
         }
 
@@ -321,9 +422,14 @@
             font-size: 0.85rem;
         }
 
+        .logo {
+            width: 50px;
+            height: 50px;
+        }
+
         .user-avatar {
-            width: 32px !important;
-            height: 32px !important;
+            width: 28px !important;
+            height: 28px !important;
         }
     }
 </style>
@@ -334,17 +440,43 @@
         dropdown.classList.toggle('active');
     }
 
-    // Close dropdown when clicking outside
+    function toggleMobileMenu() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNavMenu = document.getElementById('mobileNavMenu');
+        
+        mobileMenuBtn.classList.toggle('active');
+        mobileNavMenu.classList.toggle('active');
+    }
+
+    function closeMobileMenu() {
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNavMenu = document.getElementById('mobileNavMenu');
+        
+        mobileMenuBtn.classList.remove('active');
+        mobileNavMenu.classList.remove('active');
+    }
+
+    // Close dropdowns when clicking outside
     document.addEventListener('click', function (event) {
         const dropdown = document.getElementById('userDropdown');
+        const mobileMenu = document.getElementById('mobileNavMenu');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        
+        // Close user dropdown
         if (!dropdown.contains(event.target)) {
             dropdown.classList.remove('active');
+        }
+        
+        // Close mobile menu
+        if (!mobileMenu.contains(event.target) && !mobileMenuBtn.contains(event.target)) {
+            mobileMenu.classList.remove('active');
+            mobileMenuBtn.classList.remove('active');
         }
     });
 
     // Enhanced dropdown functionality
     document.addEventListener('DOMContentLoaded', function () {
-        // Smooth navbar scroll effect
+        // Smooth navbar scroll effect - REMOVED THE HIDE FUNCTIONALITY
         window.addEventListener('scroll', function () {
             const navbar = document.querySelector('nav');
             if (window.scrollY > 50) {
@@ -359,24 +491,32 @@
         // Keyboard navigation for dropdown
         document.addEventListener('keydown', function (e) {
             const dropdown = document.getElementById('userDropdown');
+            const mobileMenu = document.getElementById('mobileNavMenu');
+            const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+            
             if (e.key === 'Escape') {
                 dropdown.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                mobileMenuBtn.classList.remove('active');
             }
         });
 
-        // Enhanced mobile menu handling
-        const navbar = document.querySelector('nav');
-        let lastScrollY = window.scrollY;
-
-        window.addEventListener('scroll', () => {
-            if (window.innerWidth <= 768) {
-                if (window.scrollY > lastScrollY && window.scrollY > 100) {
-                    navbar.style.transform = 'translateY(-100%)';
-                } else {
-                    navbar.style.transform = 'translateY(0)';
+        // Prevent body scroll when mobile menu is open
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileNavMenu = document.getElementById('mobileNavMenu');
+        
+        const observer = new MutationObserver(function(mutations) {
+            mutations.forEach(function(mutation) {
+                if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                    if (mobileNavMenu.classList.contains('active')) {
+                        document.body.style.overflow = 'hidden';
+                    } else {
+                        document.body.style.overflow = '';
+                    }
                 }
-                lastScrollY = window.scrollY;
-            }
+            });
         });
+        
+        observer.observe(mobileNavMenu, { attributes: true });
     });
 </script>

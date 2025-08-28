@@ -29,36 +29,19 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request): RedirectResponse
-    {
-        // Validasi dasar untuk semua role
-        $validationRules = [
-            'name' => 'required|string|min:3|max:255|unique:users',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => 'required|in:siswa,mentor,guru',
-        ];
+// Update method store di RegisteredUserController.php existing
 
-        // Tambahkan validasi teacher_class_id hanya jika role adalah mentor
-        if ($request->role === 'mentor') {
-            $validationRules['teacher_class_id'] = 'required|exists:teacher_classes,id';
-        }
+public function store(Request $request): RedirectResponse
+{
+    $request->validate([
+        'name' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255|unique:users',
+        'password' => ['required', 'confirmed', Rules\Password::defaults()],
+        'role' => 'required|in:siswa,mentor',
+        'teacher_class_id' => 'required_if:role,mentor|exists:teacher_classes,id'
+    ]);
 
-        $request->validate($validationRules, [
-            'name.required' => 'Nama wajib diisi.',
-            'name.min' => 'Nama minimal 3 karakter.',
-            'name.unique' => 'Nama sudah digunakan, silakan pilih yang lain.',
-            'teacher_class_id.required' => 'Pilih kelas guru untuk mendaftar sebagai mentor.',
-            'teacher_class_id.exists' => 'Kelas guru yang dipilih tidak valid.',
-        ]);
-
-        // Tentukan status verifikasi berdasarkan role
-        $isVerified = match($request->role) {
-            'guru' => true,      // Guru langsung verified
-            'siswa' => true,     // Siswa langsung verified
-            'mentor' => false,   // Mentor perlu verifikasi
-            default => false
-        };
+    $isVerified = $request->role === 'mentor' ? false : true;
 
         $user = User::create([
             'name' => $request->name,
@@ -68,8 +51,7 @@ class RegisteredUserController extends Controller
             'is_verified' => $isVerified,
         ]);
 
-        // Assign role menggunakan Spatie Permission
-        $user->assignRole($request->role);
+    $user->assignRole($request->role);
 
         // Jika mentor, buat request otomatis
         if ($request->role === 'mentor' && $request->teacher_class_id) {
@@ -83,31 +65,6 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        // Redirect dengan pesan sesuai role
-        $message = match($request->role) {
-            'guru' => 'Pendaftaran berhasil! Akun guru Anda sudah aktif. Silakan login.',
-            'siswa' => 'Pendaftaran berhasil! Silakan login untuk mulai belajar.',
-            'mentor' => 'Pendaftaran berhasil! Akun mentor Anda menunggu verifikasi admin.',
-            default => 'Pendaftaran berhasil! Silakan login.'
-        };
-
-        return redirect()->route('login')->with('success', $message);
-    }
-
-    /**
-     * Check name availability
-     */
-    public function checkName(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string|min:3|max:255'
-        ]);
-
-        $exists = User::where('name', $request->name)->exists();
-
-        return response()->json([
-            'available' => !$exists,
-            'message' => $exists ? 'Nama sudah digunakan' : 'Nama tersedia'
-        ]);
-    }
+    return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login.');
+}
 }
