@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Edit Kuis - ' . $quiz->title)
+@section('title', 'Edit Pre Test - ' . $quiz->title)
 
 @section('content')
 <div class="max-w-7xl mx-auto p-5">
@@ -8,7 +8,7 @@
     <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 rounded-3xl p-10 text-center mb-8 relative overflow-hidden shadow-2xl shadow-indigo-500/30">
         <div class="relative z-10">
             <h2 class="text-white text-4xl font-bold mb-3">
-                <i class="fas fa-edit animate-bounce mr-3"></i>Edit Kuis
+                <i class="fas fa-edit animate-bounce mr-3"></i>Edit Pre Test
             </h2>
             <p class="text-white/80 text-lg">
                 Untuk materi: <strong>{{ $material->title }}</strong>
@@ -20,7 +20,7 @@
                 <i class="fas fa-exclamation-triangle text-yellow-200 mr-2"></i>
                 <strong class="text-yellow-200">Peringatan:</strong>
                 <span class="text-yellow-100">
-                    Kuis ini sudah dikerjakan oleh {{ $quiz->attempts()->count() }} siswa.
+                    Pre Test ini sudah dikerjakan oleh {{ $quiz->attempts()->count() }} siswa.
                     Perubahan mungkin mempengaruhi hasil yang sudah ada.
                 </span>
             </div>
@@ -38,7 +38,7 @@
         <div class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-8 py-6">
             <div class="flex justify-between items-center">
                 <h4 class="text-white text-2xl font-semibold">
-                    <i class="fas fa-edit mr-3 animate-bounce"></i>Formulir Edit Kuis
+                    <i class="fas fa-edit mr-3 animate-bounce"></i>Formulir Edit Pre Test
                 </h4>
                 <div class="bg-white/20 backdrop-blur-sm px-4 py-2 rounded-full text-white text-sm">
                     <i class="fas fa-book-open mr-2"></i>{{ $material->title }}
@@ -67,13 +67,13 @@
 
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
                         <div class="lg:col-span-2">
-                            <label for="title" class="block text-gray-800 font-semibold mb-2">Judul Kuis</label>
+                            <label for="title" class="block text-gray-800 font-semibold mb-2">Judul Pre Test</label>
                             <div class="relative">
                                 <i class="fas fa-heading absolute left-4 top-1/2 transform -translate-y-1/2 text-indigo-500 z-10"></i>
                                 <input type="text"
                                        class="w-full pl-12 pr-4 py-4 border-2 border-indigo-100 rounded-xl text-base transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none @error('title') border-red-500 @enderror"
                                        id="title" name="title" value="{{ old('title', $quiz->title) }}"
-                                       placeholder="Masukkan judul kuis yang menarik" required>
+                                       placeholder="Masukkan judul Pre Test yang menarik" required>
                                 @error('title')
                                     <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                                 @enderror
@@ -98,16 +98,16 @@
 
                     <div class="mb-6">
                         <label for="description" class="block text-gray-800 font-semibold mb-2">
-                            Deskripsi Kuis <span class="text-gray-500 font-normal">(opsional)</span>
+                            Deskripsi Pre Test <span class="text-gray-500 font-normal">(opsional)</span>
                         </label>
                         <textarea class="w-full p-4 border-2 border-indigo-100 rounded-xl text-base transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 outline-none resize-y min-h-[120px] @error('description') border-red-500 @enderror"
                                   id="description" name="description" rows="4"
-                                  placeholder="Tambahkan deskripsi kuis, petunjuk pengerjaan, atau informasi penting lainnya...">{{ old('description', $quiz->description) }}</textarea>
+                                  placeholder="Tambahkan deskripsi Pre Test, petunjuk pengerjaan, atau informasi penting lainnya...">{{ old('description', $quiz->description) }}</textarea>
                         @error('description')
                             <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
                         @enderror
                         <div class="text-gray-600 text-sm mt-2">
-                            <i class="fas fa-lightbulb mr-1"></i>Deskripsi akan ditampilkan kepada peserta sebelum memulai kuis
+                            <i class="fas fa-lightbulb mr-1"></i>Deskripsi akan ditampilkan kepada peserta sebelum memulai Pre Test
                         </div>
                     </div>
                 </div>
@@ -120,7 +120,7 @@
                                 <h5 class="text-indigo-600 text-xl font-semibold mb-1">
                                     <i class="fas fa-question-circle mr-3"></i>Daftar Pertanyaan
                                 </h5>
-                                <p class="text-gray-600 text-sm">Minimal 1 pertanyaan diperlukan untuk membuat kuis</p>
+                                <p class="text-gray-600 text-sm">Minimal 1 pertanyaan diperlukan untuk membuat Pre Test</p>
                             </div>
                             <button type="button"
                                     class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-6 py-3 rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-1"
@@ -158,7 +158,7 @@
                             </button>
                             <button type="submit"
                                     class="w-full lg:w-auto inline-flex items-center justify-center px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded-full font-semibold transition-all duration-300 hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-1">
-                                <i class="fas fa-save mr-2"></i>Update Kuis
+                                <i class="fas fa-save mr-2"></i>Update Pre Test
                             </button>
                         </div>
                     </div>
@@ -241,6 +241,11 @@ function addQuestion(questionData = null) {
                         <option value="3" ${points == 3 ? 'selected' : ''}>3 Poin</option>
                         <option value="4" ${points == 4 ? 'selected' : ''}>4 Poin</option>
                         <option value="5" ${points == 5 ? 'selected' : ''}>5 Poin</option>
+                        <option value="6" ${points == 6 ? 'selected' : ''}>6 Poin</option>
+                        <option value="7" ${points == 7 ? 'selected' : ''}>7 Poin</option>
+                        <option value="8" ${points == 8 ? 'selected' : ''}>8 Poin</option>
+                        <option value="9" ${points == 9 ? 'selected' : ''}>9 Poin</option>
+                        <option value="10" ${points == 10 ? 'selected' : ''}>10 Poin</option>
                     </select>
                 </div>
             </div>
@@ -395,7 +400,7 @@ function previewQuiz() {
         return;
     }
 
-    alert(`Preview Kuis:\n\nJudul: ${title}\nWaktu: ${timeLimit} menit\nDeskripsi: ${description || 'Tidak ada'}\nJumlah Pertanyaan: ${questions}`);
+    alert(`Preview Pre Test:\n\nJudul: ${title}\nWaktu: ${timeLimit} menit\nDeskripsi: ${description || 'Tidak ada'}\nJumlah Pertanyaan: ${questions}`);
 }
 
 // Initialize - Load existing questions

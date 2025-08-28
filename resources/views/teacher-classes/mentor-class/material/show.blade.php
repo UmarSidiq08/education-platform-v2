@@ -85,7 +85,7 @@
                     </div>
                     <div class="min-w-0">
                         <div class="text-xl font-bold text-gray-900">{{ $material->quizzes->count() }}</div>
-                        <div class="text-xs text-gray-600">Quiz</div>
+                        <div class="text-xs text-gray-600">Pre Test</div>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3 p-3 bg-emerald-50 rounded-lg">
@@ -94,7 +94,7 @@
                     </div>
                     <div class="min-w-0">
                         <div class="text-xl font-bold text-gray-900">{{ $material->quizzes->where('is_active', true)->count() }}</div>
-                        <div class="text-xs text-gray-600">Quiz Aktif</div>
+                        <div class="text-xs text-gray-600">Pre Test Aktif</div>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
@@ -194,9 +194,9 @@
                 <!-- Quiz Section -->
                 <div class="bg-white rounded-lg shadow-sm border p-6">
                     <div class="flex items-center justify-between mb-6">
-                        <h2 class="text-xl font-bold text-gray-900">Quiz</h2>
+                        <h2 class="text-xl font-bold text-gray-900">Pre Test</h2>
                         @if($material->quizzes->count() > 0)
-                            <span class="text-sm text-gray-500">{{ $material->quizzes->count() }} quiz tersedia</span>
+                            <span class="text-sm text-gray-500">{{ $material->quizzes->count() }} Pre Test tersedia</span>
                         @endif
                     </div>
 
@@ -241,8 +241,8 @@
                             <div class="w-20 h-20 mx-auto mb-6 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl flex items-center justify-center">
                                 <i class="fas fa-question-circle text-3xl text-gray-400"></i>
                             </div>
-                            <h3 class="text-xl font-bold text-gray-900 mb-3">Belum ada quiz</h3>
-                            <p class="text-gray-500 mb-6 max-w-md mx-auto">Quiz belum tersedia untuk materi ini. Tambahkan quiz untuk menguji pemahaman siswa.</p>
+                            <h3 class="text-xl font-bold text-gray-900 mb-3">Belum ada Pre Test</h3>
+                            <p class="text-gray-500 mb-6 max-w-md mx-auto">Pre Test belum tersedia untuk materi ini. Tambahkan Pre Test untuk menguji pemahaman siswa.</p>
                         </div>
                     @endif
                 </div>
@@ -287,12 +287,12 @@
                         @endif
 
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Total Quiz:</span>
+                            <span class="text-gray-600">Total Pre Test:</span>
                             <span class="font-medium text-gray-900">{{ $material->quizzes->count() }}</span>
                         </div>
 
                         <div class="flex justify-between items-center">
-                            <span class="text-gray-600">Quiz Aktif:</span>
+                            <span class="text-gray-600">Pre Test Aktif:</span>
                             <span class="font-medium text-emerald-600">{{ $material->quizzes->where('is_active', true)->count() }}</span>
                         </div>
 
@@ -336,7 +336,7 @@
                     <div class="mt-4 p-4 bg-red-50 rounded-xl border border-red-100">
                         <p class="text-sm text-red-700 flex items-start">
                             <i class="fas fa-info-circle mr-2 mt-0.5"></i>
-                            <span>Semua quiz terkait akan ikut terhapus secara permanen.</span>
+                            <span>Semua Pre Test terkait akan ikut terhapus secara permanen.</span>
                         </p>
                     </div>
                 </div>

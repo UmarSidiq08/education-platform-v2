@@ -81,7 +81,7 @@
                     </div>
                     <div class="min-w-0">
                         <div class="text-xl font-bold text-gray-900">{{ $material->quizzes->count() }}</div>
-                        <div class="text-xs text-gray-600">Quiz</div>
+                        <div class="text-xs text-gray-600">Pre Test</div>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
@@ -306,7 +306,7 @@
                                 <span class="font-medium">{{ $material->updated_at->format('d M Y') }}</span>
                             </div>
                             <div class="flex justify-between">
-                                <span class="text-gray-600">Quiz:</span>
+                                <span class="text-gray-600">Pre Test:</span>
                                 <span class="font-medium">{{ $material->quizzes->count() }}</span>
                             </div>
                         </div>

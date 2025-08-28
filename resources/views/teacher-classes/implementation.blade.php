@@ -51,7 +51,7 @@
                     </div>
                     <div>
                         <div class="text-xl font-bold text-gray-900">{{ $teacherClass->implementationClasses->sum(function($class) { return $class->materials->sum(function($material) { return $material->quizzes->count(); }); }) }}</div>
-                        <div class="text-xs text-gray-600">Total Quiz</div>
+                        <div class="text-xs text-gray-600">Total Pre Test</div>
                     </div>
                 </div>
             </div>
@@ -180,7 +180,7 @@
                                     <i class="fas fa-question-circle text-white text-sm"></i>
                                 </div>
                                 <div class="text-xl font-bold text-purple-700">{{ $class->materials->sum(function($material) { return $material->quizzes->count(); }) }}</div>
-                                <div class="text-xs text-purple-600 font-medium">Quiz</div>
+                                <div class="text-xs text-purple-600 font-medium">Pre Test</div>
                             </div>
                         </div>
                     </div>
@@ -242,7 +242,7 @@
                     <div class="mt-4 p-4 bg-red-50 rounded-xl border border-red-100">
                         <p class="text-sm text-red-700 flex items-start">
                             <i class="fas fa-info-circle mr-2 mt-0.5"></i>
-                            <span>Semua materi dan quiz akan ikut terhapus secara permanen.</span>
+                            <span>Semua materi dan Pre Test akan ikut terhapus secara permanen.</span>
                         </p>
                     </div>
                 </div>

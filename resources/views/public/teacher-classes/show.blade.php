@@ -13,11 +13,11 @@
         </ol>
     </nav>
 
-    <!-- Header Section -->
+    <!-- Header Section dengan Foto Profil Guru -->
     <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-8">
         <div class="bg-gradient-to-r from-blue-500 to-purple-600 px-6 py-8 text-white">
             <div class="flex flex-col md:flex-row md:items-center md:justify-between">
-                <div>
+                <div class="flex-1">
                     <div class="flex items-center mb-2">
                         @if($teacherClass->subject)
                             <span class="bg-white bg-opacity-20 text-xs font-medium px-3 py-1 rounded-full mr-3">
@@ -27,7 +27,18 @@
                         <span class="text-sm opacity-90">{{ $teacherClass->created_at->format('d M Y') }}</span>
                     </div>
                     <h1 class="text-3xl font-bold mb-2">{{ $teacherClass->name }}</h1>
-                    <p class="text-blue-100">Oleh {{ $teacherClass->teacher->name }}</p>
+
+                    <!-- PERUBAHAN: Tambah foto profil guru di header -->
+                    <div class="flex items-center mt-4">
+                        <div class="relative w-10 h-10 mr-3 flex-shrink-0">
+                            <img src="{{ $teacherClass->teacher && $teacherClass->teacher->avatar ? asset('storage/' . $teacherClass->teacher->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($teacherClass->teacher->name) . '&background=ffffff&color=3B82F6&size=40' }}"
+                                alt="{{ $teacherClass->teacher->name }}"
+                                class="w-full h-full rounded-full object-cover border-2 border-white/30"
+                                loading="lazy"
+                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($teacherClass->teacher->name) }}&background=ffffff&color=3B82F6&size=40'">
+                        </div>
+                        <p class="text-blue-100">Oleh {{ $teacherClass->teacher->name }}</p>
+                    </div>
                 </div>
                 <div class="mt-4 md:mt-0 text-right">
                     <div class="text-2xl font-bold">{{ $mentors->count() }}</div>
@@ -44,7 +55,7 @@
         @endif
     </div>
 
-    <!-- Mentors Section -->
+    <!-- Mentors Section dengan Foto Profil -->
     @if($mentors->count() > 0)
         <div class="mb-8">
             <div class="flex justify-between items-center mb-6">
@@ -59,15 +70,20 @@
                     @endphp
 
                     <div class="bg-white rounded-lg shadow-sm p-6 hover:shadow-md transition-shadow">
-                        <!-- Mentor Avatar & Name -->
+                        <!-- PERUBAHAN: Mentor Avatar dengan foto profil dari storage -->
                         <div class="flex items-center mb-4">
-                            <div class="w-12 h-12 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
-                                <span class="text-white font-bold text-lg">
-                                    {{ strtoupper(substr($mentor->name, 0, 1)) }}
-                                </span>
+                            <div class="relative w-12 h-12 mr-4 flex-shrink-0">
+                                <img src="{{ $mentor->avatar ? asset('storage/' . $mentor->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($mentor->name) . '&background=3B82F6&color=ffffff&size=48' }}"
+                                    alt="{{ $mentor->name }}"
+                                    class="w-full h-full rounded-full object-cover border-2 border-gray-200 hover:border-blue-300 transition-colors"
+                                    loading="lazy"
+                                    onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($mentor->name) }}&background=6B7280&color=ffffff&size=48'">
+
+                                <!-- Status indicator (online/offline) -->
+                                <div class="absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 bg-green-400 border-2 border-white rounded-full"></div>
                             </div>
-                            <div>
-                                <h3 class="text-lg font-semibold text-gray-900">{{ $mentor->name }}</h3>
+                            <div class="flex-1 min-w-0">
+                                <h3 class="text-lg font-semibold text-gray-900 truncate">{{ $mentor->name }}</h3>
                                 <p class="text-sm text-gray-500">
                                     Approved {{ $mentor->pivot->approved_at ? \Carbon\Carbon::parse($mentor->pivot->approved_at)->format('M Y') : 'Belum diketahui' }}
                                 </p>
@@ -129,21 +145,40 @@
         </div>
     @endif
 
-    <!-- Teacher Info Section -->
+    <!-- PERUBAHAN: Teacher Info Section dengan foto profil yang lebih besar -->
     <div class="bg-white rounded-lg shadow-sm p-6">
         <h3 class="text-lg font-semibold mb-4">Informasi Pengajar</h3>
         <div class="flex items-center">
-            <div class="w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-full flex items-center justify-center mr-4">
-                <span class="text-white font-bold text-xl">
-                    {{ strtoupper(substr($teacherClass->teacher->name, 0, 1)) }}
-                </span>
+            <div class="relative w-16 h-16 mr-4 flex-shrink-0">
+                <img src="{{ $teacherClass->teacher->avatar ? asset('storage/' . $teacherClass->teacher->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($teacherClass->teacher->name) . '&background=3B82F6&color=ffffff&size=64' }}"
+                    alt="{{ $teacherClass->teacher->name }}"
+                    class="w-full h-full rounded-full object-cover border-3 border-gray-200 hover:border-blue-300 transition-colors shadow-md"
+                    loading="lazy"
+                    onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($teacherClass->teacher->name) }}&background=6B7280&color=ffffff&size=64'">
+
+                <!-- Badge atau indicator untuk guru -->
+                <div class="absolute -bottom-1 -right-1 w-5 h-5 bg-blue-500 border-2 border-white rounded-full flex items-center justify-center">
+                    <svg class="w-2.5 h-2.5 text-white" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                </div>
             </div>
-            <div>
+            <div class="flex-1">
                 <h4 class="font-semibold text-gray-900">{{ $teacherClass->teacher->name }}</h4>
                 <p class="text-gray-600">Pengajar Mata Pelajaran</p>
                 <p class="text-sm text-gray-500 mt-1">
                     Bergabung sejak {{ $teacherClass->teacher->created_at->format('M Y') }}
                 </p>
+
+                <!-- Optional: Tambah info tambahan jika ada -->
+                @if($teacherClass->teacher->email)
+                    <div class="flex items-center mt-2 text-sm text-gray-500">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+                        </svg>
+                        {{ $teacherClass->teacher->email }}
+                    </div>
+                @endif
             </div>
         </div>
     </div>

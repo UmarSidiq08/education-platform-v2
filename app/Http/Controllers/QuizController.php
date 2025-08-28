@@ -66,7 +66,7 @@ class QuizController extends Controller
         }
 
         return redirect()->route('materials.show', $material)
-            ->with('success', 'Kuis berhasil ditambahkan untuk materi: ' . $material->title);
+            ->with('success', 'Pre Test berhasil ditambahkan untuk materi: ' . $material->title);
     }
 
     public function edit(Material $material, Quiz $quiz)
@@ -129,7 +129,7 @@ class QuizController extends Controller
         }
 
         return redirect()->route('materials.show', $material)
-            ->with('success', 'Kuis berhasil diperbarui untuk materi: ' . $material->title);
+            ->with('success', 'Pre Test berhasil diperbarui untuk materi: ' . $material->title);
     }
 
     // UPDATED: Show quiz dengan logic untuk handle multiple attempts

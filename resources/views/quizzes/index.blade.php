@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Statistik Kuis - ' . $material->title)
+@section('title', 'Statistik Pre Test - ' . $material->title)
 
 @section('content')
     <div class="stats-container">
@@ -8,7 +8,7 @@
         <div class="stats-header">
             <div class="header-content">
                 <div class="header-text">
-                    <h2>Statistik Kuis</h2>
+                    <h2>Statistik Pre Test</h2>
                     <p class="material-name">Materi: {{ $material->title }}</p>
                 </div>
                 <a href="{{ route('materials.show', $material) }}" class="back-button">
@@ -47,10 +47,10 @@
             @else
                 <div class="empty-state">
                     <div class="empty-icon">📊</div>
-                    <h3>Belum ada kuis</h3>
-                    <p>Buat kuis terlebih dahulu untuk melihat statistik</p>
+                    <h3>Belum ada Pre Test</h3>
+                    <p>Buat Pre Test terlebih dahulu untuk melihat statistik</p>
                     <a href="{{ route('quizzes.create', $material) }}" class="primary-button">
-                        <span class="icon">+</span> Buat Kuis
+                        <span class="icon">+</span> Buat Pre Test
                     </a>
                 </div>
             @endif
@@ -194,7 +194,7 @@
                     <div class="stats-section">
                         <div class="section-header">
                             <span class="icon">🕒</span>
-                            <h3>Riwayat Kuis</h3>
+                            <h3>Riwayat Pre Test</h3>
                         </div>
                         <div class="table-container">
                             <table class="history-table">
@@ -225,7 +225,7 @@
                                                         @csrf
                                                         @method('PATCH')
                                                         <button type="submit" class="btn btn-success btn-sm"
-                                                            onclick="return confirm('Aktifkan quiz ini? Quiz lain akan menjadi tidak aktif.')">
+                                                            onclick="return confirm('Aktifkan Pre Test ini? Pre Test lain akan menjadi tidak aktif.')">
                                                             <i class="fas fa-power-off me-1"></i>Aktifkan
                                                         </button>
                                                     </form>
@@ -687,7 +687,7 @@
 
     <script>
         function activateQuiz(quizId) {
-            if (confirm('Aktifkan kuis ini? Kuis yang sedang aktif akan dinonaktifkan.')) {
+            if (confirm('Aktifkan Pre Test ini? Pre Test yang sedang aktif akan dinonaktifkan.')) {
                 // Implementasi activate quiz (bisa dibuat route terpisah)
                 console.log('Activate quiz:', quizId);
             }

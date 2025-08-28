@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Kuis: ' . $quiz->title)
+@section('title', 'Pre Test: ' . $quiz->title)
 
 @section('content')
     <!-- Background Decorations -->
@@ -289,7 +289,7 @@
                 // Auto submit when time is up
                 if (timeRemaining <= 0) {
                     clearInterval(timerInterval);
-                    alert('Waktu habis! Quiz akan otomatis disubmit.');
+                    alert('Waktu habis! Pre Test akan otomatis disubmit.');
                     submitQuizDirectly();
                     return;
                 }
@@ -504,7 +504,7 @@
                 const isSubmitting = quizForm.classList.contains('submitting');
                 if (!isSubmitting) {
                     e.preventDefault();
-                    e.returnValue = 'Apakah Anda yakin ingin meninggalkan halaman? Progress quiz akan hilang.';
+                    e.returnValue = 'Apakah Anda yakin ingin meninggalkan halaman? Progress Pre Test akan hilang.';
                 }
             });
 

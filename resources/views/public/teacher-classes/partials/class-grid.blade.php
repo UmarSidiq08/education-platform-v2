@@ -22,15 +22,22 @@
 
                 <!-- Content -->
                 <div class="p-4">
-                    <!-- Teacher Info -->
+                    <!-- Teacher Info dengan Foto Profil -->
                     <div class="flex items-center mb-3">
-                        <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center mr-3">
-                            <svg class="w-6 h-6 text-gray-600" fill="currentColor" viewBox="0 0 20 20">
-                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
-                            </svg>
+                        <!-- PERUBAHAN: Ganti SVG icon dengan foto profil -->
+                        <div class="relative w-10 h-10 mr-3 flex-shrink-0">
+                            <img src="{{ $teacherClass->teacher && $teacherClass->teacher->avatar ? asset('storage/' . $teacherClass->teacher->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($teacherClass->teacher->name ?? 'Teacher') . '&background=3B82F6&color=ffffff&size=40' }}"
+                                alt="{{ $teacherClass->teacher->name ?? 'Teacher' }}"
+                                class="w-full h-full rounded-full object-cover border-2 border-gray-200 transition-transform hover:scale-105"
+                                loading="lazy"
+                                onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($teacherClass->teacher->name ?? 'Teacher') }}&background=6B7280&color=ffffff&size=40'">
+
+                            <!-- Optional: Status indicator (online/offline) -->
+                            <div class="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-400 border-2 border-white rounded-full"></div>
                         </div>
-                        <div>
-                            <p class="font-medium text-gray-900">{{ $teacherClass->teacher->name }}</p>
+
+                        <div class="flex-1 min-w-0">
+                            <p class="font-medium text-gray-900 truncate">{{ $teacherClass->teacher->name }}</p>
                             <p class="text-sm text-gray-500">eMaster</p>
                         </div>
                     </div>

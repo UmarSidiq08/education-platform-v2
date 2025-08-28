@@ -192,7 +192,7 @@
                                             class="bg-gradient-to-br from-gray-50 to-gray-100 rounded-2xl p-8 border border-gray-200">
                                             <div class="mb-6">
                                                 <h5 class="flex items-center text-xl font-semibold text-gray-600">
-                                                    <i class="fas fa-chart-line mr-3"></i>Hasil Quiz Terbaik Anda
+                                                    <i class="fas fa-chart-line mr-3"></i>Hasil Pre Test Terbaik Anda
                                                 </h5>
                                                 @if ($material->activeQuiz->getTotalAttemptsByUser(auth()->id()) > 1)
                                                     <p class="text-sm text-gray-500 mt-1">
@@ -272,7 +272,7 @@
                                                         <span class="font-semibold">Tips:</span>
                                                     </div>
                                                     <p class="text-orange-700 mt-1">Nilai Anda masih bisa ditingkatkan!
-                                                        Pelajari kembali materi dan coba quiz lagi untuk mendapatkan skor
+                                                        Pelajari kembali materi dan coba Pre Test lagi untuk mendapatkan skor
                                                         yang lebih baik.</p>
                                                 </div>
                                             @elseif($quizAttempt->percentage >= 90)
@@ -294,10 +294,10 @@
                                                 class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent animate-pulse">
                                             </div>
                                             <div class="relative z-10 mb-8">
-                                                <h5 class="text-2xl font-bold mb-2">Siap untuk mengerjakan quiz?</h5>
+                                                <h5 class="text-2xl font-bold mb-2">Siap untuk mengerjakan Pre Test?</h5>
                                                 <p class="text-white/90 text-lg">Uji pemahaman Anda tentang materi yang
                                                     telah dipelajari</p>
-                                                <p class="text-white/75 text-sm mt-2">* Anda dapat mengerjakan quiz
+                                                <p class="text-white/75 text-sm mt-2">* Anda dapat mengerjakan Pre Test
                                                     berulang kali, skor tertinggi akan menjadi nilai akhir</p>
                                             </div>
                                             <div class="relative z-10">
@@ -305,7 +305,7 @@
                                                       class="inline-flex items-center px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl animate-pulse">
                                                     @csrf
                                                     <button type="submit">
-                                                        <i class="fas fa-play mr-3"></i> Mulai Quiz Sekarang
+                                                        <i class="fas fa-play mr-3"></i> Mulai Pre Test Sekarang
                                                     </button>
                                                 </form>
                                             </div>
@@ -317,9 +317,9 @@
                                     <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100">
                                         <div class="mb-6">
                                             <h5 class="flex items-center text-xl font-semibold text-gray-600 mb-2">
-                                                <i class="fas fa-cogs mr-3"></i>Kelola Quiz
+                                                <i class="fas fa-cogs mr-3"></i>Kelola Pre Test
                                             </h5>
-                                            <p class="text-gray-500">Kelola dan pantau quiz untuk materi ini</p>
+                                            <p class="text-gray-500">Kelola dan pantau Pre Test untuk materi ini</p>
                                         </div>
                                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                             <a href="{{ route('quizzes.index', $material) }}"
@@ -332,7 +332,7 @@
                                                 <a href="{{ route('quizzes.edit', [$material, $activeQuiz]) }}"
                                                     class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
                                                     <i class="fas fa-edit text-2xl mb-2"></i>
-                                                    <span class="font-semibold mb-1">Edit Quiz</span>
+                                                    <span class="font-semibold mb-1">Edit Pre Test</span>
                                                     <small class="text-yellow-100 text-sm">Ubah soal & pengaturan</small>
                                                 </a>
                                             @endif
@@ -351,8 +351,8 @@
                                 class="w-24 h-24 mx-auto mb-6 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-5xl text-white shadow-2xl">
                                 <i class="fas fa-lightbulb"></i>
                             </div>
-                            <h4 class="text-gray-900 font-bold mb-4 text-2xl">Tingkatkan Pembelajaran dengan Quiz</h4>
-                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat quiz interaktif untuk membantu siswa
+                            <h4 class="text-gray-900 font-bold mb-4 text-2xl">Tingkatkan Pembelajaran dengan Pre Test</h4>
+                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat Pre Test interaktif untuk membantu siswa
                                 menguji pemahaman mereka tentang materi ini</p>
                             <div class="flex justify-center gap-8 mb-10 flex-wrap">
                                 <div class="flex items-center text-gray-600 font-medium">
@@ -373,7 +373,7 @@
                                 <span
                                     class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-600"></span>
                                 <i class="fas fa-plus mr-3 relative z-10"></i>
-                                <span class="relative z-10">Buat Quiz Pertama</span>
+                                <span class="relative z-10">Buat Pre Test Pertama</span>
                             </a>
                         </div>
                     </div>
