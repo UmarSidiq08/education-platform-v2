@@ -29,42 +29,47 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-// Update method store di RegisteredUserController.php existing
+    public function store(Request $request): RedirectResponse
+    {
+        // Validasi dasar untuk semua role
+        $validationRules = [
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            'role' => 'required|in:siswa,mentor',
+        ];
 
-public function store(Request $request): RedirectResponse
-{
-    $request->validate([
-        'name' => 'required|string|max:255',
-        'email' => 'required|string|email|max:255|unique:users',
-        'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        'role' => 'required|in:siswa,mentor',
-        'teacher_class_id' => 'required_if:role,mentor|exists:teacher_classes,id'
-    ]);
+        // Tambahkan validasi teacher_class_id hanya jika role adalah mentor
+        if ($request->role === 'mentor') {
+            $validationRules['teacher_class_id'] = 'required|exists:teacher_classes,id';
+        }
 
-    $isVerified = $request->role === 'mentor' ? false : true;
+        $request->validate($validationRules);
 
-    $user = User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-        'role' => $request->role,
-        'is_verified' => $isVerified,
-    ]);
+        $isVerified = $request->role === 'mentor' ? false : true;
 
-    $user->assignRole($request->role);
-
-    // Jika mentor, buat request otomatis
-    if ($request->role === 'mentor' && $request->teacher_class_id) {
-        MentorRequest::create([
-            'mentor_id' => $user->id,
-            'teacher_class_id' => $request->teacher_class_id,
-            'status' => 'pending',
-            'requested_at' => now()
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'role' => $request->role,
+            'is_verified' => $isVerified,
         ]);
+
+        $user->assignRole($request->role);
+
+        // Jika mentor, buat request otomatis
+        if ($request->role === 'mentor' && $request->teacher_class_id) {
+            MentorRequest::create([
+                'mentor_id' => $user->id,
+                'teacher_class_id' => $request->teacher_class_id,
+                'status' => 'pending',
+                'requested_at' => now()
+            ]);
+        }
+
+        event(new Registered($user));
+
+        return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login.');
     }
-
-    event(new Registered($user));
-
-    return redirect()->route('login')->with('success', 'Pendaftaran berhasil! Silakan login.');
-}
 }
