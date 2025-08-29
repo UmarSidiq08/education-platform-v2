@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Tambah Kuis - ' . $material->title)
+@section('title', 'Tambah Pre Test - ' . $material->title)
 
 @section('content')
 <div class="container">
     <!-- Hero Section -->
     <div class="hero-banner">
         <div class="hero-content">
-            <h2><i class="fas fa-magic"></i>Buat Kuis Baru</h2>
+            <h2><i class="fas fa-magic"></i>Buat Pre Test Baru</h2>
             <p>Untuk materi: <strong>{{ $material->title }}</strong></p>
         </div>
         <div class="hero-decoration"></div>
@@ -17,7 +17,7 @@
     <div class="main-card">
         <div class="card-header">
             <div class="header-content">
-                <h4><i class="fas fa-plus-circle bounce-icon"></i>Formulir Kuis</h4>
+                <h4><i class="fas fa-plus-circle bounce-icon"></i>Formulir Pre Test</h4>
                 <div class="status-badge">
                     <i class="fas fa-book-open"></i>{{ $material->title }}
                 </div>
@@ -39,12 +39,12 @@
 
                     <div class="form-row">
                         <div class="form-col-8">
-                            <label for="title" class="form-label">Judul Kuis</label>
+                            <label for="title" class="form-label">Judul Pre Test</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-heading input-icon"></i>
                                 <input type="text" class="form-input @error('title') error @enderror"
                                        id="title" name="title" value="{{ old('title') }}"
-                                       placeholder="Masukkan judul kuis yang menarik" required>
+                                       placeholder="Masukkan judul Pre Test yang menarik" required>
                                 @error('title')
                                     <div class="error-message">{{ $message }}</div>
                                 @enderror
@@ -68,16 +68,16 @@
 
                     <div class="form-group">
                         <label for="description" class="form-label">
-                            Deskripsi Kuis <span class="optional">(opsional)</span>
+                            Deskripsi Pre Test <span class="optional">(opsional)</span>
                         </label>
                         <textarea class="form-textarea @error('description') error @enderror"
                                   id="description" name="description" rows="4"
-                                  placeholder="Tambahkan deskripsi kuis, petunjuk pengerjaan, atau informasi penting lainnya...">{{ old('description') }}</textarea>
+                                  placeholder="Tambahkan deskripsi Pre Test, petunjuk pengerjaan, atau informasi penting lainnya...">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="error-message">{{ $message }}</div>
                         @enderror
                         <div class="form-help">
-                            <i class="fas fa-lightbulb"></i>Deskripsi akan ditampilkan kepada peserta sebelum memulai kuis
+                            <i class="fas fa-lightbulb"></i>Deskripsi akan ditampilkan kepada peserta sebelum memulai Pre Test
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                                 <h5 class="section-title">
                                     <i class="fas fa-question-circle"></i>Daftar Pertanyaan
                                 </h5>
-                                <p class="section-subtitle">Minimal 1 pertanyaan diperlukan untuk membuat kuis</p>
+                                <p class="section-subtitle">Minimal 1 pertanyaan diperlukan untuk membuat Pre Test</p>
                             </div>
                             <button type="button" class="btn btn-add" id="add-question">
                                 <i class="fas fa-plus"></i>Tambah Pertanyaan
@@ -122,7 +122,7 @@
                                 <i class="fas fa-eye"></i>Preview
                             </button>
                             <button type="submit" class="btn btn-save">
-                                <i class="fas fa-save"></i>Simpan Kuis
+                                <i class="fas fa-save"></i>Simpan Pre Test
                             </button>
                         </div>
                     </div>
@@ -188,6 +188,11 @@ function addQuestion() {
                         <option value="3">3 Poin</option>
                         <option value="4">4 Poin</option>
                         <option value="5">5 Poin</option>
+                        <option value="6">6 Poin</option>
+                        <option value="7">7 Poin</option>
+                        <option value="8">8 Poin</option>
+                        <option value="9">9 Poin</option>
+                        <option value="10">10 Poin</option>
                     </select>
                 </div>
             </div>
@@ -308,7 +313,7 @@ function previewQuiz() {
         return;
     }
 
-    alert(`Preview Kuis:\n\nJudul: ${title}\nWaktu: ${timeLimit} menit\nDeskripsi: ${description || 'Tidak ada'}\nJumlah Pertanyaan: ${questions}`);
+    alert(`Preview Pre Test:\n\nJudul: ${title}\nWaktu: ${timeLimit} menit\nDeskripsi: ${description || 'Tidak ada'}\nJumlah Pertanyaan: ${questions}`);
 }
 
 // Initialize

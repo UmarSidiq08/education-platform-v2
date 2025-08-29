@@ -197,24 +197,24 @@
                                 @elseif ($progressPercentage >= 75)
                                     <div class="flex items-center gap-2 text-yellow-200 font-semibold">
                                         <i class="fas fa-fire"></i>
-                                        <span>Hampir selesai! Pastikan semua quiz mencapai nilai ≥80%!</span>
+                                        <span>Hampir selesai! Pastikan semua Pre Test mencapai nilai ≥80%!</span>
                                     </div>
                                 @elseif ($progressPercentage >= 50)
                                     <div class="flex items-center gap-2 text-blue-200 font-semibold">
                                         <i class="fas fa-rocket"></i>
-                                        <span>Kerja bagus! Jangan lupa nilai quiz minimal 80% untuk menyelesaikan
+                                        <span>Kerja bagus! Jangan lupa nilai Pre Test minimal 80% untuk menyelesaikan
                                             materi!</span>
                                     </div>
                                 @elseif ($progressPercentage > 0)
                                     <div class="flex items-center gap-2 text-purple-200 font-semibold">
                                         <i class="fas fa-seedling"></i>
                                         <span>Awal yang baik! Lanjutkan belajar dan capai nilai ≥80% untuk setiap
-                                            quiz!</span>
+                                            Pre Test!</span>
                                     </div>
                                 @else
                                     <div class="flex items-center gap-2 text-white/80 font-semibold">
                                         <i class="fas fa-play"></i>
-                                        <span>Siap memulai? Capai nilai ≥80% di setiap quiz untuk menyelesaikan
+                                        <span>Siap memulai? Capai nilai ≥80% di setiap Pre Test untuk menyelesaikan
                                             materi!</span>
                                     </div>
                                 @endif
@@ -754,7 +754,7 @@
                                                     </form>
                                                     <a href="{{ route('quizzes.create', $material) }}"
                                                         class="bg-quiz-gradient text-white border-0 px-4 py-2.5 rounded-md font-semibold text-sm transition-all duration-300 no-underline text-center inline-flex items-center justify-center gap-1.5 whitespace-nowrap hover:-translate-y-0.5">
-                                                        <i class="fas fa-question-circle"></i>Tambah Kuis
+                                                        <i class="fas fa-question-circle"></i>Tambah Pre Test
                                                     </a>
                                                 @else
                                                     <a href="{{ route('materials.show', $material->id) }}"
@@ -764,7 +764,7 @@
                                                         @if ($completionStatus['completed'])
                                                             Lihat Lagi
                                                         @elseif ($completionStatus['attempted'])
-                                                            Ulangi Quiz
+                                                            Ulangi Pre Test
                                                         @else
                                                             Pelajari
                                                         @endif

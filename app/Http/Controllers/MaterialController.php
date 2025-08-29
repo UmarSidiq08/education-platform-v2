@@ -73,25 +73,25 @@ class MaterialController extends Controller
             ->with('success', 'Materi berhasil dibuat!');
     }
 
-    // UPDATED: Menampilkan detail materi dengan status completion 80%
+    // UPDATED: Menampilkan detail materi dengan akses yang diperluas untuk mentor
     public function show(Material $material)
     {
         $material->load(['class.mentor', 'activeQuiz.questions']);
         $user = Auth::user();
 
-        // Kontrol akses sederhana berdasarkan role
+        // UPDATED: Kontrol akses yang diperluas
         if ($user->role === 'mentor') {
-            // Mentor hanya bisa akses materi kelasnya sendiri
-            if ($user->id !== $material->class->mentor_id) {
-                abort(403, 'Anda tidak memiliki akses ke materi ini.');
-            }
+            // Mentor bisa akses semua materi seperti siswa
+            // Tidak ada pembatasan khusus untuk mentor
         }
-        // Untuk siswa, izinkan akses ke semua materi
         elseif ($user->role === 'siswa') {
             // Siswa bisa akses semua materi
         } else {
             abort(403, 'Akses ditolak.');
         }
+
+        // Tentukan apakah user adalah pemilik materi (untuk hak CRUD)
+        $isOwner = ($user->role === 'mentor' && $user->id === $material->class->mentor_id);
 
         // UPDATED: Jika ada quiz aktif, ambil completion status dengan 80% logic
         $quizAttempt = null;
@@ -104,7 +104,7 @@ class MaterialController extends Controller
             $completionStatus = $activeQuiz->getCompletionStatusByUser($user->id);
         }
 
-        return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz', 'completionStatus'));
+        return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz', 'completionStatus', 'isOwner'));
     }
 
     // Form edit materi

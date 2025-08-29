@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Hasil Kuis: ' . $quiz->title)
+@section('title', 'Hasil Pre Test: ' . $quiz->title)
 
 @section('content')
     <div class="max-w-4xl mx-auto p-5 font-sans text-gray-800">
@@ -10,7 +10,7 @@
             <div class="absolute inset-0 bg-gradient-to-br from-purple-600/90 to-indigo-600/90"></div>
             <div class="relative z-10 flex justify-between items-center flex-wrap">
                 <div class="mb-5 md:mb-0">
-                    <h1 class="text-3xl md:text-4xl font-bold mb-1">Hasil Kuis</h1>
+                    <h1 class="text-3xl md:text-4xl font-bold mb-1">Hasil Pre Test</h1>
                     <h2 class="text-xl md:text-2xl font-semibold mb-2">{{ $quiz->title }}</h2>
                     <p class="opacity-90 text-sm md:text-base">Materi: {{ $quiz->material->title }}</p>
                 </div>
@@ -180,7 +180,7 @@
                 </a>
 
                 @if ($attempt->percentage < 70)
-               
+
                     <form action="{{ route('quizzes.start', $quiz) }}" method="POST" class="inline">
                         @csrf
                         <button type="submit"

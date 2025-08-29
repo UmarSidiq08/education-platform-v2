@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -17,17 +18,27 @@ use App\Http\Controllers\TeacherClassController;
 use App\Http\Controllers\MentorRequestController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PublicTeacherClassController;
-use Dom\Implementation;
-
 
 Route::get('/', function () {
-    return redirect()->route('dashboard');
+    if (Auth::check()) {
+        $user = Auth::user();
+
+        if ($user->role === 'guru') {
+            return redirect()->route('admin.dashboard');
+        } else {
+            // Untuk role siswa dan mentor
+            return redirect()->route('dashboard');
+        }
+    }
+
+    // Jika user belum login, redirect ke login
+    return redirect()->route('login');
 });
+
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-// PERBAIKAN: Pindahkan route API check-name ke bagian atas dan ubah path
 // Route untuk check name availability (tidak perlu auth)
 Route::post('/api/check-name', [RegisteredUserController::class, 'checkName'])
     ->name('api.check-name');
@@ -43,10 +54,12 @@ Route::post('/logout', function () {
     return redirect()->route('login');
 })->name('logout')->middleware('auth');
 
+// PERBAIKAN: Route untuk siswa/mentor - menggunakan path /dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth', 'verify.mentor'])
     ->name('dashboard');
 
+// PERBAIKAN: Route untuk guru - menggunakan path /admin/dashboard (path berbeda)
 Route::get('/admin/dashboard', [TeacherClassController::class, 'index'])
     ->middleware(['auth', 'role:guru'])
     ->name('admin.dashboard');
@@ -153,6 +166,8 @@ Route::middleware('auth')->prefix('mata-pelajaran')->name('public.teacher-classe
     Route::get('/{teacherClass}',  'show')->name('show');
     Route::get('/{teacherClass}/mentor/{mentor}',  'showMentorClasses')->name('mentor-classes');
 });
+
+
 
 /*
 |--------------------------------------------------------------------------

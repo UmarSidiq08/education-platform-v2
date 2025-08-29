@@ -101,7 +101,7 @@
                     </div>
                     <div class="min-w-0">
                         <div class="text-xl font-bold text-gray-900">{{ $class->materials->sum(function($material) { return $material->quizzes->count(); }) }}</div>
-                        <div class="text-xs text-gray-600">Quiz</div>
+                        <div class="text-xs text-gray-600">Pre Test</div>
                     </div>
                 </div>
                 <div class="flex items-center space-x-3 p-3 bg-purple-50 rounded-lg">
@@ -166,7 +166,7 @@
                                             </span>
                                         @endif
                                         <span class="inline-flex items-center">
-                                            <i class="fas fa-question-circle mr-1 text-blue-500"></i>{{ $material->quizzes->count() }} Quiz
+                                            <i class="fas fa-question-circle mr-1 text-blue-500"></i>{{ $material->quizzes->count() }} Pre Test
                                         </span>
                                         <span class="inline-flex items-center">
                                             <i class="fas fa-calendar mr-1 text-gray-400"></i>{{ $material->created_at->format('d M Y') }}
@@ -193,12 +193,12 @@
                             <!-- Quiz List -->
                             @if($material->quizzes->count() > 0)
                                 <div class="mt-4 pt-4 border-t border-gray-100">
-                                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Quiz Tersedia:</h4>
+                                    <h4 class="text-sm font-semibold text-gray-700 mb-3">Pre Test Tersedia:</h4>
                                     <div class="flex flex-wrap gap-2">
                                         @foreach($material->quizzes as $quiz)
                                             <span class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-medium border {{ $quiz->is_active ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-gray-50 text-gray-600 border-gray-200' }}">
                                                 <i class="fas fa-{{ $quiz->is_active ? 'check-circle' : 'clock' }} mr-1.5"></i>
-                                                {{ $quiz->title ?? 'Quiz ' . $loop->iteration }}
+                                                {{ $quiz->title ?? 'Pre Test ' . $loop->iteration }}
                                             </span>
                                         @endforeach
                                     </div>
@@ -243,7 +243,7 @@
                     <div class="mt-4 p-4 bg-red-50 rounded-xl border border-red-100">
                         <p class="text-sm text-red-700 flex items-start">
                             <i class="fas fa-info-circle mr-2 mt-0.5"></i>
-                            <span>Semua materi, quiz, dan data terkait akan terhapus secara permanen.</span>
+                            <span>Semua materi, Pre Test, dan data terkait akan terhapus secara permanen.</span>
                         </p>
                     </div>
                 </div>
@@ -286,7 +286,7 @@
                     <div class="mt-4 p-4 bg-red-50 rounded-xl border border-red-100">
                         <p class="text-sm text-red-700 flex items-start">
                             <i class="fas fa-info-circle mr-2 mt-0.5"></i>
-                            <span>Semua quiz terkait akan ikut terhapus secara permanen.</span>
+                            <span>Semua Pre Test terkait akan ikut terhapus secara permanen.</span>
                         </p>
                     </div>
                 </div>

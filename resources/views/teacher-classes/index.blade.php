@@ -43,7 +43,7 @@
 
                     <!-- Action Buttons -->
                     <div class="flex space-x-2">
-                     
+
 
                         <!-- Edit Button -->
                         <a href="{{ route('teacher-classes.edit', $teacherClass) }}"
@@ -118,7 +118,7 @@
                     Apakah Anda yakin ingin menghapus kelas "<span id="className" class="font-semibold"></span>"?
                 </p>
                 <p class="text-sm text-red-500 mt-2">
-                    <strong>Peringatan:</strong> Tindakan ini akan menghapus semua data terkait termasuk implementation classes, materials, dan quiz yang ada di dalamnya. Tindakan ini tidak dapat dibatalkan.
+                    <strong>Peringatan:</strong> Tindakan ini akan menghapus semua data terkait termasuk implementation classes, materials, dan Pre Test yang ada di dalamnya. Tindakan ini tidak dapat dibatalkan.
                 </p>
             </div>
             <div class="items-center px-4 py-3">
