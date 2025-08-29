@@ -334,7 +334,7 @@
     }
 
     .slide-bg-1 {
-        background: linear-gradient(135deg, #008e37 0%, #9bfaba 100%);
+        background: linear-gradient(135deg, #5c5900 0%, #f8f683 100%);
     }
 
     .slide-bg-2 {

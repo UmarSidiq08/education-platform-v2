@@ -65,7 +65,7 @@ nav, .navbar {
                     </a>
                 </div>
                 <div class="slide-visual">
-                    <img src="{{ asset('images/gambar1.png') }}" alt="Leaderboard Illustration" class="leaderboard-image" >
+                    <img src="{{ asset('images/GambarC-1.png') }}" alt="Leaderboard Illustration" class="leaderboard-image" >
                 </div>
             </div>
 
