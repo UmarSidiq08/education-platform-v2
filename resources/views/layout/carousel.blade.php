@@ -172,3 +172,4 @@ nav, .navbar {
             <a href="{{ route('classes.index') }}" class="cta-button">Start learning</a>
     </div>
 </section>
+

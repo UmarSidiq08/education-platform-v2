@@ -54,7 +54,7 @@
                 </div>
                 <div class="flex items-center space-x-4">
                     <!-- Home Button -->
-                    <a href="{{ auth()->check() && auth()->user()->role === 'guru' ? route('admin.dashboard') : route('navbar.mentor') }}"
+                    <a href="{{ auth()->check() && auth()->user()->role === 'guru' ? route('admin.dashboard') : route('dashboard') }}"
                         class="px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
                         Kembali ke Beranda
                     </a>
