@@ -2,23 +2,23 @@
 
 @section('content')
 <div class="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-    <div class="container mx-auto px-4 py-8">
+    <div class="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         <!-- Header Section -->
-        <div class="mb-8">
+        <div class="mb-6 sm:mb-8">
             <div class="bg-white rounded-xl shadow-lg border border-gray-200 overflow-hidden">
-                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-6">
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h1 class="text-3xl font-bold text-white mb-2">
-                                <i class="fas fa-graduation-cap mr-3"></i>Buat Post Test Baru
+                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 p-4 sm:p-6">
+                    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-4 sm:space-y-0">
+                        <div class="flex-1">
+                            <h1 class="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2">
+                                <i class="fas fa-graduation-cap mr-2 sm:mr-3"></i>Buat Post Test Baru
                             </h1>
-                            <p class="text-blue-100">
+                            <p class="text-blue-100 text-sm sm:text-base">
                                 Buat soal evaluasi akhir untuk mengukur pemahaman siswa terhadap seluruh materi
                             </p>
                         </div>
-                        <div class="hidden md:block">
-                            <div class="bg-white bg-opacity-20 rounded-lg p-4">
-                                <i class="fas fa-clipboard-list text-4xl text-white"></i>
+                        <div class="hidden sm:block">
+                            <div class="bg-white bg-opacity-20 rounded-lg p-3 sm:p-4">
+                                <i class="fas fa-clipboard-list text-2xl sm:text-4xl text-white"></i>
                             </div>
                         </div>
                     </div>
@@ -28,31 +28,31 @@
 
         <!-- Main Form -->
         <div class="bg-white rounded-xl shadow-lg border border-gray-200">
-            <div class="p-8">
+            <div class="p-4 sm:p-6 lg:p-8">
                 <form action="{{ route('post_tests.store', $class) }}" method="POST" id="postTestForm">
                     @csrf
 
                     <!-- Basic Information -->
-                    <div class="mb-8">
-                        <h3 class="text-xl font-bold text-gray-800 mb-6 pb-3 border-b border-gray-200">
+                    <div class="mb-6 sm:mb-8">
+                        <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
                             <i class="fas fa-info-circle text-blue-500 mr-2"></i>Informasi Dasar
                         </h3>
 
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                             <!-- Title -->
                             <div class="lg:col-span-2">
                                 <label for="title" class="block text-sm font-semibold text-gray-700 mb-2">
                                     Judul Post Test <span class="text-red-500">*</span>
                                 </label>
                                 <input type="text"
-                                       class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('title') border-red-500 @enderror"
+                                       class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('title') border-red-500 @enderror"
                                        id="title"
                                        name="title"
                                        value="{{ old('title') }}"
                                        placeholder="Masukkan judul post test yang menarik..."
                                        required>
                                 @error('title')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -61,13 +61,13 @@
                                 <label for="description" class="block text-sm font-semibold text-gray-700 mb-2">
                                     Deskripsi
                                 </label>
-                                <textarea class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('description') border-red-500 @enderror"
+                                <textarea class="w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('description') border-red-500 @enderror"
                                           id="description"
                                           name="description"
                                           rows="3"
                                           placeholder="Berikan deskripsi singkat tentang post test ini...">{{ old('description') }}</textarea>
                                 @error('description')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -78,7 +78,7 @@
                                 </label>
                                 <div class="relative">
                                     <input type="number"
-                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('time_limit') border-red-500 @enderror"
+                                           class="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('time_limit') border-red-500 @enderror"
                                            id="time_limit"
                                            name="time_limit"
                                            value="{{ old('time_limit', 30) }}"
@@ -89,7 +89,7 @@
                                     </div>
                                 </div>
                                 @error('time_limit')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
 
@@ -100,7 +100,7 @@
                                 </label>
                                 <div class="relative">
                                     <input type="number"
-                                           class="w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('passing_score') border-red-500 @enderror"
+                                           class="w-full px-3 sm:px-4 py-2 sm:py-3 pr-10 sm:pr-12 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300 @error('passing_score') border-red-500 @enderror"
                                            id="passing_score"
                                            name="passing_score"
                                            value="{{ old('passing_score', 80) }}"
@@ -112,38 +112,38 @@
                                     </div>
                                 </div>
                                 @error('passing_score')
-                                    <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                                    <p class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</p>
                                 @enderror
                             </div>
                         </div>
                     </div>
 
                     <!-- Questions Section -->
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-6 pb-3 border-b border-gray-200">
-                            <h3 class="text-xl font-bold text-gray-800">
+                    <div class="mb-6 sm:mb-8">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-4 sm:mb-6 pb-3 border-b border-gray-200 space-y-3 sm:space-y-0">
+                            <h3 class="text-lg sm:text-xl font-bold text-gray-800">
                                 <i class="fas fa-question-circle text-purple-500 mr-2"></i>Pertanyaan Post Test
                             </h3>
                             <button type="button"
-                                    class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg"
+                                    class="bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-4 sm:px-6 py-2 rounded-lg font-semibold hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg text-sm sm:text-base w-full sm:w-auto"
                                     id="add-question">
                                 <i class="fas fa-plus mr-2"></i>Tambah Pertanyaan
                             </button>
                         </div>
 
-                        <div id="questions-container" class="space-y-6">
+                        <div id="questions-container" class="space-y-4 sm:space-y-6">
                             <!-- Questions will be added here by JavaScript -->
                         </div>
                     </div>
 
                     <!-- Action Buttons -->
-                    <div class="flex flex-col sm:flex-row gap-4 justify-between pt-6 border-t border-gray-200">
+                    <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between pt-4 sm:pt-6 border-t border-gray-200">
                         <a href="{{ route('classes.show', $class->id) }}"
-                           class="flex items-center justify-center px-6 py-3 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-300">
+                           class="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-300 text-sm sm:text-base order-2 sm:order-1">
                             <i class="fas fa-arrow-left mr-2"></i>Kembali
                         </a>
                         <button type="submit"
-                                class="flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white px-8 py-3 rounded-lg font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg">
+                                class="flex items-center justify-center bg-gradient-to-r from-green-500 to-emerald-600 text-white px-6 sm:px-8 py-2 sm:py-3 rounded-lg font-bold hover:from-green-600 hover:to-emerald-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg text-sm sm:text-base order-1 sm:order-2">
                             <i class="fas fa-save mr-2"></i>Simpan Post Test
                         </button>
                     </div>
@@ -156,26 +156,26 @@
 <!-- Question Template -->
 <template id="question-template">
     <div class="question-card bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+        <div class="bg-gradient-to-r from-gray-50 to-gray-100 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
             <div class="flex items-center justify-between">
-                <h4 class="text-lg font-bold text-gray-800">
+                <h4 class="text-base sm:text-lg font-bold text-gray-800">
                     <i class="fas fa-edit text-blue-500 mr-2"></i>
                     Pertanyaan #<span class="question-number">1</span>
                 </h4>
                 <button type="button"
                         class="remove-question bg-red-500 text-white p-2 rounded-lg hover:bg-red-600 transition-all duration-300 hover:-translate-y-0.5 shadow-md">
-                    <i class="fas fa-trash"></i>
+                    <i class="fas fa-trash text-xs sm:text-sm"></i>
                 </button>
             </div>
         </div>
 
-        <div class="p-6">
+        <div class="p-4 sm:p-6">
             <!-- Question Text -->
-            <div class="mb-6">
+            <div class="mb-4 sm:mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                     Pertanyaan <span class="text-red-500">*</span>
                 </label>
-                <textarea class="question-text w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                <textarea class="question-text w-full px-3 sm:px-4 py-2 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                           name="questions[0][question]"
                           rows="3"
                           placeholder="Tulis pertanyaan Anda di sini..."
@@ -183,19 +183,19 @@
             </div>
 
             <!-- Points -->
-            <div class="mb-6">
+            <div class="mb-4 sm:mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
                     Poin <span class="text-red-500">*</span>
                 </label>
-                <div class="relative w-32">
+                <div class="relative w-24 sm:w-32">
                     <input type="number"
-                           class="question-points w-full px-4 py-3 pr-12 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                           class="question-points w-full px-3 sm:px-4 py-2 sm:py-3 pr-8 sm:pr-12 text-sm sm:text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
                            name="questions[0][points]"
                            value="1"
                            min="1"
                            required>
-                    <div class="absolute inset-y-0 right-0 flex items-center pr-3">
-                        <i class="fas fa-star text-yellow-400"></i>
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:pr-3">
+                        <i class="fas fa-star text-yellow-400 text-xs sm:text-sm"></i>
                     </div>
                 </div>
             </div>
@@ -204,29 +204,31 @@
             <div class="mb-4">
                 <label class="block text-sm font-semibold text-gray-700 mb-3">
                     Pilihan Jawaban <span class="text-red-500">*</span>
-                    <span class="text-xs text-gray-500 font-normal ml-2">(Klik radio button untuk menandai jawaban yang benar)</span>
+                    <span class="block sm:inline text-xs text-gray-500 font-normal sm:ml-2 mt-1 sm:mt-0">(Klik radio button untuk menandai jawaban yang benar)</span>
                 </label>
 
                 <div class="options-container space-y-3">
                     <!-- Option A -->
                     <div class="option-item">
-                        <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">A</span>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
+                            <div class="flex items-center space-x-3 w-full sm:w-auto">
+                                <div class="flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center w-6 sm:w-8 h-6 sm:h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-xs sm:text-sm">A</span>
+                                </div>
+                                <input type="text"
+                                       class="flex-1 sm:flex-initial px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                       name="questions[0][options][0]"
+                                       placeholder="Masukkan pilihan jawaban A..."
+                                       required>
                             </div>
-                            <input type="text"
-                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                                   name="questions[0][options][0]"
-                                   placeholder="Masukkan pilihan jawaban A..."
-                                   required>
-                            <div class="flex-shrink-0">
+                            <div class="flex-shrink-0 pl-9 sm:pl-0">
                                 <label class="inline-flex items-center">
                                     <input type="radio"
                                            name="questions[0][correct_answer]"
                                            value="0"
                                            class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500"
                                            required>
-                                    <span class="ml-2 text-sm font-medium text-gray-700">Benar</span>
+                                    <span class="ml-2 text-xs sm:text-sm font-medium text-gray-700">Benar</span>
                                 </label>
                             </div>
                         </div>
@@ -234,22 +236,24 @@
 
                     <!-- Option B -->
                     <div class="option-item">
-                        <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">B</span>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
+                            <div class="flex items-center space-x-3 w-full sm:w-auto">
+                                <div class="flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center w-6 sm:w-8 h-6 sm:h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-xs sm:text-sm">B</span>
+                                </div>
+                                <input type="text"
+                                       class="flex-1 sm:flex-initial px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                       name="questions[0][options][1]"
+                                       placeholder="Masukkan pilihan jawaban B..."
+                                       required>
                             </div>
-                            <input type="text"
-                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                                   name="questions[0][options][1]"
-                                   placeholder="Masukkan pilihan jawaban B..."
-                                   required>
-                            <div class="flex-shrink-0">
+                            <div class="flex-shrink-0 pl-9 sm:pl-0">
                                 <label class="inline-flex items-center">
                                     <input type="radio"
                                            name="questions[0][correct_answer]"
                                            value="1"
                                            class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
-                                    <span class="ml-2 text-sm font-medium text-gray-700">Benar</span>
+                                    <span class="ml-2 text-xs sm:text-sm font-medium text-gray-700">Benar</span>
                                 </label>
                             </div>
                         </div>
@@ -257,22 +261,24 @@
 
                     <!-- Option C -->
                     <div class="option-item">
-                        <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">C</span>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
+                            <div class="flex items-center space-x-3 w-full sm:w-auto">
+                                <div class="flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center w-6 sm:w-8 h-6 sm:h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-xs sm:text-sm">C</span>
+                                </div>
+                                <input type="text"
+                                       class="flex-1 sm:flex-initial px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                       name="questions[0][options][2]"
+                                       placeholder="Masukkan pilihan jawaban C..."
+                                       required>
                             </div>
-                            <input type="text"
-                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                                   name="questions[0][options][2]"
-                                   placeholder="Masukkan pilihan jawaban C..."
-                                   required>
-                            <div class="flex-shrink-0">
+                            <div class="flex-shrink-0 pl-9 sm:pl-0">
                                 <label class="inline-flex items-center">
                                     <input type="radio"
                                            name="questions[0][correct_answer]"
                                            value="2"
                                            class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
-                                    <span class="ml-2 text-sm font-medium text-gray-700">Benar</span>
+                                    <span class="ml-2 text-xs sm:text-sm font-medium text-gray-700">Benar</span>
                                 </label>
                             </div>
                         </div>
@@ -280,22 +286,24 @@
 
                     <!-- Option D -->
                     <div class="option-item">
-                        <div class="flex items-center space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
-                            <div class="flex-shrink-0">
-                                <span class="inline-flex items-center justify-center w-8 h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-sm">D</span>
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center space-y-2 sm:space-y-0 sm:space-x-3 p-3 border border-gray-200 rounded-lg hover:border-blue-300 transition-colors duration-300">
+                            <div class="flex items-center space-x-3 w-full sm:w-auto">
+                                <div class="flex-shrink-0">
+                                    <span class="inline-flex items-center justify-center w-6 sm:w-8 h-6 sm:h-8 bg-blue-100 text-blue-800 rounded-full font-semibold text-xs sm:text-sm">D</span>
+                                </div>
+                                <input type="text"
+                                       class="flex-1 sm:flex-initial px-2 sm:px-3 py-1 sm:py-2 text-sm sm:text-base border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                                       name="questions[0][options][3]"
+                                       placeholder="Masukkan pilihan jawaban D..."
+                                       required>
                             </div>
-                            <input type="text"
-                                   class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
-                                   name="questions[0][options][3]"
-                                   placeholder="Masukkan pilihan jawaban D..."
-                                   required>
-                            <div class="flex-shrink-0">
+                            <div class="flex-shrink-0 pl-9 sm:pl-0">
                                 <label class="inline-flex items-center">
                                     <input type="radio"
                                            name="questions[0][correct_answer]"
                                            value="3"
                                            class="w-4 h-4 text-green-600 border-gray-300 focus:ring-green-500">
-                                    <span class="ml-2 text-sm font-medium text-gray-700">Benar</span>
+                                    <span class="ml-2 text-xs sm:text-sm font-medium text-gray-700">Benar</span>
                                 </label>
                             </div>
                         </div>
@@ -378,7 +386,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const alertDiv = document.createElement('div');
         const bgColor = type === 'warning' ? 'bg-yellow-500' : type === 'error' ? 'bg-red-500' : 'bg-blue-500';
 
-        alertDiv.className = `fixed top-4 right-4 ${bgColor} text-white px-6 py-4 rounded-lg shadow-lg z-50 transform translate-x-full transition-transform duration-300`;
+        alertDiv.className = `fixed top-4 right-2 sm:right-4 left-2 sm:left-auto ${bgColor} text-white px-4 sm:px-6 py-3 sm:py-4 rounded-lg shadow-lg z-50 transform translate-x-full sm:translate-x-full transition-transform duration-300 text-sm sm:text-base`;
         alertDiv.innerHTML = `
             <div class="flex items-center">
                 <i class="fas ${type === 'warning' ? 'fa-exclamation-triangle' : type === 'error' ? 'fa-times-circle' : 'fa-info-circle'} mr-2"></i>

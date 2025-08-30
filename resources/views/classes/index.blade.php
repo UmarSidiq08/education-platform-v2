@@ -62,12 +62,73 @@
         background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(16, 185, 129, 0.1) 100%);
         border: 1px solid rgba(34, 197, 94, 0.2);
     }
+
+    /* Search box styles */
+    .search-container {
+        position: relative;
+        max-width: 500px;
+        margin: 0 auto 40px;
+    }
+
+    .search-box {
+        width: 100%;
+        padding: 16px 50px 16px 20px;
+        border: none;
+        border-radius: 50px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        color: white;
+        font-size: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+    }
+
+    .search-box::placeholder {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    .search-box:focus {
+        outline: none;
+        background: rgba(255, 255, 255, 0.25);
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    }
+
+    .search-icon {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: white;
+        font-size: 20px;
+    }
+
+    .no-results {
+        text-align: center;
+        padding: 40px 20px;
+        color: white;
+    }
+
+    .no-results i {
+        font-size: 48px;
+        margin-bottom: 16px;
+        opacity: 0.7;
+    }
+
+    .no-results h3 {
+        font-size: 24px;
+        margin-bottom: 8px;
+    }
+
+    .no-results p {
+        opacity: 0.8;
+    }
 </style>
 
 <div class="bg-main-gradient min-h-screen -mx-4 -mt-5 px-6">
     <div class="max-w-6xl mx-auto">
         <!-- Hero Header Section -->
-        <div class="relative text-center mb-20 px-4 pt-20 md:pt-24 lg:pt-10">
+        <div class="relative text-center mb-12 px-4 pt-20 md:pt-24 lg:pt-10">
             <!-- Floating Decorative Elements -->
             <div class="hero-decoration w-24 h-24 absolute -top-2 -left-6 floating-animation" style="animation-delay: 0s;"></div>
             <div class="hero-decoration w-16 h-16 absolute top-6 -right-2 floating-animation" style="animation-delay: 2s;"></div>
@@ -98,6 +159,14 @@
                         </a>
                     </div>
                 @endif
+            </div>
+        </div>
+
+        <!-- Search Box -->
+        <div class="search-container">
+            <input type="text" id="searchInput" class="search-box" placeholder="Cari kelas atau mentor..." autocomplete="off">
+            <div class="search-icon">
+                <i class="fas fa-search"></i>
             </div>
         </div>
 
@@ -154,10 +223,20 @@
                     </div>
                 </div>
             @else
+                <!-- No Results Message (Initially Hidden) -->
+                <div id="noResults" class="no-results hidden">
+                    <i class="fas fa-search"></i>
+                    <h3>Tidak ada hasil ditemukan</h3>
+                    <p>Coba gunakan kata kunci yang berbeda atau lebih umum</p>
+                </div>
+
                 <!-- Classes Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 px-2">
+                <div id="classesGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 lg:gap-8 px-2">
                     @foreach($classes as $index => $class)
-                        <div class="scroll-fade-in group relative h-full" style="animation-delay: {{ $index * 100 }}ms;">
+                        <div class="class-card scroll-fade-in group relative h-full"
+                             data-class-name="{{ strtolower($class->name) }}"
+                             data-mentor-name="{{ isset($class->mentor) ? strtolower($class->mentor->name) : '' }}"
+                             style="animation-delay: {{ $index * 100 }}ms;">
                             <div class="bg-card-gradient glass-effect rounded-3xl shadow-xl border border-white/20 h-full flex flex-col relative overflow-hidden gradient-border transition-all duration-500 hover:shadow-2xl hover:-translate-y-3 hover:scale-[1.02]">
                                 <!-- Hover Glow Effect -->
                                 <div class="absolute inset-0 bg-gradient-to-br from-indigo-600/10 to-purple-600/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl"></div>
@@ -316,6 +395,68 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const classCards = document.querySelectorAll('.class-card');
+        const classesGrid = document.getElementById('classesGrid');
+        const noResults = document.getElementById('noResults');
+
+        // Add data attributes for search if not already present
+        classCards.forEach(card => {
+            const className = card.querySelector('h3').textContent.toLowerCase();
+            const mentorName = card.querySelector('.mentor-badge h4')?.textContent.toLowerCase() || '';
+
+            card.setAttribute('data-class-name', className);
+            card.setAttribute('data-mentor-name', mentorName);
+        });
+
+        // Search function
+        function performSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            let hasResults = false;
+
+            if (searchTerm === '') {
+                // Show all cards if search is empty
+                classCards.forEach(card => {
+                    card.style.display = 'block';
+                });
+                if (noResults) noResults.classList.add('hidden');
+                return;
+            }
+
+            // Filter cards based on search term
+            classCards.forEach(card => {
+                const className = card.getAttribute('data-class-name');
+                const mentorName = card.getAttribute('data-mentor-name');
+
+                if (className.includes(searchTerm) || mentorName.includes(searchTerm)) {
+                    card.style.display = 'block';
+                    hasResults = true;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+
+            // Show/hide no results message
+            if (noResults) {
+                if (hasResults) {
+                    noResults.classList.add('hidden');
+                } else {
+                    noResults.classList.remove('hidden');
+                }
+            }
+        }
+
+        // Event listener for search input
+        searchInput.addEventListener('input', performSearch);
+
+        // Add debounce to improve performance
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(performSearch, 300);
+        });
+
         // Intersection Observer for scroll animations
         const observerOptions = {
             threshold: 0.1,

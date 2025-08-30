@@ -229,7 +229,7 @@
                                         <i class="fas fa-user mr-3 text-gray-400"></i>
                                         View Profile
                                     </a>
-                               
+
                                     <div class="border-t border-gray-100 mt-2 pt-2">
                                         <form method="POST" action="{{ route('logout') }}">
                                             @csrf
