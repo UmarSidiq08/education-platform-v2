@@ -1,151 +1,247 @@
-    <footer class="footer-section">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Footer with Tailwind CSS</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/js/all.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'primary': '#4fc3f7',
+                        'primary-dark': '#29b6f6',
+                        'footer-bg-1': '#1a1a2e',
+                        'footer-bg-2': '#16213e',
+                        'footer-bg-3': '#0f172a',
+                    },
+                    animation: {
+                        'float-particles': 'floatParticles 15s ease-in-out infinite',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @keyframes floatParticles {
+            0%, 100% {
+                transform: translate(0, 0) rotate(0deg);
+            }
+            25% {
+                transform: translate(20px, -20px) rotate(90deg);
+            }
+            50% {
+                transform: translate(-15px, -30px) rotate(180deg);
+            }
+            75% {
+                transform: translate(-20px, 15px) rotate(270deg);
+            }
+        }
 
-        <div class="footer-content">
+        .bg-gradient-footer {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
+        }
+
+        .bg-gradient-logo {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+        }
+
+        .text-gradient {
+            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .bg-gradient-instagram {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+        }
+
+        .particle-blur {
+            backdrop-filter: blur(10px);
+        }
+
+        .animation-delay-0 {
+            animation-delay: 0s;
+        }
+
+        .animation-delay-5 {
+            animation-delay: -5s;
+        }
+
+        .animation-delay-10 {
+            animation-delay: -10s;
+        }
+    </style>
+</head>
+
+<body class="font-inter">
+    <!-- Demo content to show scrolling -->
+
+
+    <footer class="bg-gradient-footer text-white relative overflow-hidden">
+        <div class="relative z-10 pt-8 sm:pt-12">
             <!-- Main Footer Grid -->
-            <div class="footer-main">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+
                 <!-- Company Info Column -->
-                <div class="footer-column company-info">
-                    <div class="footer-logo">
-                        <div class="logo-icon">
+                <div class="lg:col-span-4 xl:col-span-3 order-1">
+                    <div class="flex items-center gap-3 mb-4 justify-center sm:justify-start">
+                        <div class="w-10 h-10 sm:w-11 sm:h-11 bg-gradient-logo rounded-lg flex items-center justify-center text-lg sm:text-xl shadow-lg shadow-primary/30">
                             <i class="fas fa-graduation-cap"></i>
                         </div>
-                        <h3>Lumina</h3>
+                        <h3 class="text-xl sm:text-2xl font-extrabold text-gradient">Lumina</h3>
                     </div>
-                    <p class="company-description">
+                    <p class="text-slate-300 leading-relaxed mb-6 text-sm text-center sm:text-left max-w-sm mx-auto sm:max-w-none sm:mx-0">
                         Teman setia waktu kamu belajar. Bergabunglah dengan ribuan siswa yang telah merasakan pengalaman
                         belajar yang luar biasa bersama kami.
                     </p>
 
-                    <div class="social-links">
-                        <a href="#" class="social-link facebook" data-platform="facebook">
+                    <div class="flex gap-2 sm:gap-3 justify-center sm:justify-start flex-wrap">
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-white/10 text-white border border-white/10 particle-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20 hover:bg-[#3b5998] hover:border-[#3b5998] text-sm">
                             <i class="fab fa-facebook-f"></i>
                         </a>
-                        <a href="#" class="social-link twitter" data-platform="twitter">
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-white/10 text-white border border-white/10 particle-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20 hover:bg-[#1da1f2] hover:border-[#1da1f2] text-sm">
                             <i class="fab fa-twitter"></i>
                         </a>
-                        <a href="#" class="social-link instagram" data-platform="instagram">
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-white/10 text-white border border-white/10 particle-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20 hover:bg-gradient-instagram hover:border-[#e6683c] text-sm">
                             <i class="fab fa-instagram"></i>
                         </a>
-                        <a href="#" class="social-link youtube" data-platform="youtube">
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-white/10 text-white border border-white/10 particle-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20 hover:bg-[#ff0000] hover:border-[#ff0000] text-sm">
                             <i class="fab fa-youtube"></i>
                         </a>
-                        <a href="#" class="social-link linkedin" data-platform="linkedin">
+                        <a href="#" class="w-9 h-9 sm:w-10 sm:h-10 rounded-lg flex items-center justify-center bg-white/10 text-white border border-white/10 particle-blur transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-black/20 hover:bg-[#0077b5] hover:border-[#0077b5] text-sm">
                             <i class="fab fa-linkedin-in"></i>
                         </a>
                     </div>
                 </div>
 
-                <!-- Quick Links Column -->
-                <div class="footer-column">
-                    <h4 class="column-title">
-                        <i class="fas fa-link"></i>
-                        Quick Links
-                    </h4>
-                    <ul class="footer-links">
-                        <li><a href="#about">Tentang Kami</a></li>
-                        <li><a href="#courses">Kursus</a></li>
-                        <li><a href="#mentors">Mentor</a></li>
-                        <li><a href="#pricing">Harga</a></li>
-                        <li><a href="#blog">Blog</a></li>
-                        <li><a href="#career">Karir</a></li>
-                    </ul>
-                </div>
+                <!-- Quick Links & Programs Combined (Mobile Side by Side) -->
+                <div class="col-span-1 sm:col-span-2 lg:col-span-4 xl:col-span-4 order-2 lg:order-2">
+                    <div class="grid grid-cols-2 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 text-center sm:text-left">
+                        <!-- Quick Links -->
+                        <div>
+                            <h4 class="flex items-center gap-2 text-base sm:text-lg font-bold mb-4 sm:mb-5 text-white justify-center sm:justify-start">
+                                <i class="fas fa-link w-4 text-primary text-sm"></i>
+                                <span class="hidden xs:inline sm:inline">Quick Links</span>
+                                <span class="xs:hidden sm:hidden text-sm">Links</span>
+                            </h4>
+                            <div class="flex flex-col space-y-2">
+                                <a href="#about" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Tentang Kami</a>
+                                <a href="#courses" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Kursus</a>
+                                <a href="#mentors" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Mentor</a>
+                                <a href="#pricing" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Harga</a>
+                                <a href="#blog" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Blog</a>
+                                <a href="#career" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Karir</a>
+                            </div>
+                        </div>
 
-                <!-- Programs Column -->
-                <div class="footer-column">
-                    <h4 class="column-title">
-                        <i class="fas fa-code"></i>
-                        Program
-                    </h4>
-                    <ul class="footer-links">
-                        <li><a href="#web-dev">Web Development</a></li>
-                        <li><a href="#mobile-dev">Mobile Development</a></li>
-                        <li><a href="#data-science">Data Science</a></li>
-                        <li><a href="#ui-ux">UI/UX Design</a></li>
-                        <li><a href="#digital-marketing">Digital Marketing</a></li>
-                        <li><a href="#cyber-security">Cyber Security</a></li>
-                    </ul>
+                        <!-- Programs -->
+                        <div>
+                            <h4 class="flex items-center gap-2 text-base sm:text-lg font-bold mb-4 sm:mb-5 text-white justify-center sm:justify-start">
+                                <i class="fas fa-code w-4 text-primary text-sm"></i>
+                                <span class="hidden xs:inline sm:inline">Program</span>
+                                <span class="xs:hidden sm:hidden text-sm">Program</span>
+                            </h4>
+                            <div class="flex flex-col space-y-2">
+                                <a href="#web-dev" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Web Development</a>
+                                <a href="#mobile-dev" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Mobile Development</a>
+                                <a href="#data-science" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Data Science</a>
+                                <a href="#ui-ux" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">UI/UX Design</a>
+                                <a href="#digital-marketing" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Digital Marketing</a>
+                                <a href="#cyber-security" class="text-slate-300 text-sm transition-all duration-300 pl-0 sm:pl-3 relative hover:text-primary sm:hover:pl-5 before:content-['→'] before:absolute before:left-0 before:opacity-0 before:-translate-x-2 before:transition-all before:duration-300 before:text-primary before:text-xs hover:before:opacity-100 hover:before:translate-x-0 before:hidden sm:before:inline">Cyber Security</a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
 
                 <!-- Contact Info Column -->
-                <div class="footer-column">
-                    <h4 class="column-title">
-                        <i class="fas fa-phone"></i>
+                <div class="lg:col-span-2 xl:col-span-2 text-center sm:text-left order-3 lg:order-4">
+                    <h4 class="flex items-center gap-2 text-base sm:text-lg font-bold mb-4 sm:mb-5 text-white justify-center sm:justify-start">
+                        <i class="fas fa-phone w-4 text-primary text-sm"></i>
                         Kontak
                     </h4>
-                    <div class="contact-info">
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div>
-                                <span class="contact-label">Email</span>
-                                <span class="contact-value">info@edubuddy.id</span>
+                    <div class="space-y-3 sm:space-y-4 max-w-xs mx-auto sm:max-w-none sm:mx-0">
+                        <div class="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10 transition-all duration-300 hover:bg-white/8 hover:translate-x-1">
+                            <i class="fas fa-envelope text-primary text-sm w-4 mt-0.5"></i>
+                            <div class="flex-1 min-w-0">
+                                <span class="block text-xs text-slate-400 mb-0.5 font-medium">Email</span>
+                                <span class="block text-white font-semibold text-sm break-all">info@edubuddy.id</span>
                             </div>
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone"></i>
-                            <div>
-                                <span class="contact-label">Telepon</span>
-                                <span class="contact-value">+62 21 1234 5678</span>
+                        <div class="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10 transition-all duration-300 hover:bg-white/8 hover:translate-x-1">
+                            <i class="fas fa-phone text-primary text-sm w-4 mt-0.5"></i>
+                            <div class="flex-1">
+                                <span class="block text-xs text-slate-400 mb-0.5 font-medium">Telepon</span>
+                                <span class="block text-white font-semibold text-sm">+62 21 1234 5678</span>
                             </div>
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div>
-                                <span class="contact-label">Alamat</span>
-                                <span class="contact-value">Jakarta, Indonesia</span>
+                        <div class="flex items-start gap-3 p-3 bg-white/5 rounded-lg border border-white/10 transition-all duration-300 hover:bg-white/8 hover:translate-x-1">
+                            <i class="fas fa-map-marker-alt text-primary text-sm w-4 mt-0.5"></i>
+                            <div class="flex-1">
+                                <span class="block text-xs text-slate-400 mb-0.5 font-medium">Alamat</span>
+                                <span class="block text-white font-semibold text-sm">Jakarta, Indonesia</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <!-- Newsletter Column -->
-                <div class="footer-column newsletter-column">
-                    <h4 class="column-title">
-                        <i class="fas fa-bell"></i>
-                        Newsletter
-                    </h4>
-                    <p class="newsletter-desc">
-                        Dapatkan tips belajar dan update terbaru langsung ke email kamu.
-                    </p>
-                    <form class="newsletter-form">
-                        <div class="input-group">
-                            <input type="email" placeholder="Email kamu..." required>
-                            <button type="submit">
-                                <i class="fas fa-paper-plane"></i>
-                            </button>
-                        </div>
-                        <label class="checkbox-container">
-                            <input type="checkbox" required>
-                            <span class="checkmark"></span>
-                            <span class="checkbox-text">Saya setuju dengan <a href="#privacy">kebijakan
-                                    privasi</a></span>
-                        </label>
-                    </form>
-
+                <div class="lg:col-span-4 xl:col-span-3 sm:col-span-2 order-4 lg:order-5">
+                    <div class="bg-white/3 p-4 sm:p-6 rounded-2xl border border-white/10 max-w-md mx-auto lg:max-w-none lg:mx-0">
+                        <h4 class="flex items-center gap-2 text-base sm:text-lg font-bold mb-4 sm:mb-5 text-white justify-center sm:justify-start">
+                            <i class="fas fa-bell w-4 text-primary text-sm"></i>
+                            Newsletter
+                        </h4>
+                        <p class="text-slate-300 text-sm leading-relaxed mb-4 sm:mb-5 text-center sm:text-left">
+                            Dapatkan tips belajar dan update terbaru langsung ke email kamu.
+                        </p>
+                        <form class="newsletter-form mb-4 sm:mb-6">
+                            <div class="flex flex-col gap-3 mb-3">
+                                <div class="flex bg-white/10 rounded-lg border border-white/20 overflow-hidden">
+                                    <input type="email" placeholder="Email kamu..." required class="flex-1 bg-transparent border-none p-3 text-white text-sm focus:outline-none focus:bg-white/5 placeholder-white/60 min-w-0">
+                                    <button type="submit" class="bg-gradient-logo text-white border-none p-3 cursor-pointer text-sm transition-all duration-300 hover:bg-gradient-to-r hover:from-primary-dark hover:to-blue-700 hover:scale-105 flex items-center justify-center w-12 flex-shrink-0">
+                                        <i class="fas fa-paper-plane"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <label class="flex items-start gap-2 text-slate-300 text-xs leading-relaxed cursor-pointer select-none justify-center sm:justify-start text-center sm:text-left">
+                                <input type="checkbox" required class="hidden peer">
+                                <span class="w-4 h-4 border-2 border-white/30 rounded flex items-center justify-center transition-all duration-300 flex-shrink-0 mt-0.5 peer-checked:bg-gradient-logo peer-checked:border-primary after:content-['✓'] after:text-white after:text-xs after:font-bold after:opacity-0 peer-checked:after:opacity-100"></span>
+                                <span class="checkbox-text">Saya setuju dengan <a href="#privacy" class="text-primary hover:text-primary-dark hover:underline transition-colors duration-300">kebijakan privasi</a></span>
+                            </label>
+                        </form>
+                    </div>
                 </div>
             </div>
 
             <!-- Footer Bottom -->
-            <div class="footer-bottom">
-                <div class="bottom-content">
-                    <div class="bottom-left">
-                        <p>&copy; 2025 Gletzer Julio Ivanees & Umar Sidiq. All rights reserved.</p>
-                        <div class="legal-links">
-                            <a href="#privacy">Privacy Policy</a>
-                            <a href="#terms">Terms of Service</a>
-                            <a href="#cookies">Cookie Policy</a>
+            <div class="bg-black/30 border-t border-white/10 py-4 sm:py-6 mt-4">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row justify-between items-center gap-4 lg:gap-6">
+                    <div class="text-center lg:text-left order-2 lg:order-1 w-full lg:w-auto">
+                        <p class="text-slate-400 mb-2 text-xs sm:text-sm">&copy; 2025 Gletzer Julio Ivanees & Umar Sidiq. All rights reserved.</p>
+                        <div class="flex gap-3 sm:gap-5 flex-wrap justify-center lg:justify-start">
+                            <a href="#privacy" class="text-slate-300 text-xs hover:text-primary transition-colors duration-300">Privacy Policy</a>
+                            <a href="#terms" class="text-slate-300 text-xs hover:text-primary transition-colors duration-300">Terms of Service</a>
+                            <a href="#cookies" class="text-slate-300 text-xs hover:text-primary transition-colors duration-300">Cookie Policy</a>
                         </div>
                     </div>
-                    <div class="bottom-right">
-                        <div class="language-selector">
-                            <i class="fas fa-globe"></i>
-                            <select>
-                                <option value="id">Bahasa Indonesia</option>
-                                <option value="en">English</option>
+                    <div class="flex items-center gap-3 sm:gap-4 order-1 lg:order-2 flex-shrink-0">
+                        <div class="flex items-center gap-2 bg-white/10 py-2 px-3 rounded-lg border border-white/20">
+                            <i class="fas fa-globe text-primary text-sm"></i>
+                            <select class="bg-transparent border-none text-white text-xs cursor-pointer focus:outline-none">
+                                <option value="id" class="bg-footer-bg-1 text-white">Bahasa Indonesia</option>
+                                <option value="en" class="bg-footer-bg-1 text-white">English</option>
                             </select>
                         </div>
-                        <div class="back-to-top" onclick="scrollToTop()">
-                            <i class="fas fa-arrow-up"></i>
+                        <div class="w-10 h-10 bg-gradient-logo text-white rounded-full flex items-center justify-center cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:scale-110 shadow-lg shadow-primary/30 hover:shadow-primary/40" onclick="scrollToTop()">
+                            <i class="fas fa-arrow-up text-sm"></i>
                         </div>
                     </div>
                 </div>
@@ -153,632 +249,12 @@
         </div>
 
         <!-- Background Effects -->
-        <div class="footer-bg-effects">
-            <div class="bg-particle particle-1"></div>
-            <div class="bg-particle particle-2"></div>
-            <div class="bg-particle particle-3"></div>
+        <div class="absolute top-0 left-0 right-0 bottom-0 overflow-hidden z-0">
+            <div class="absolute w-20 sm:w-30 h-20 sm:h-30 rounded-full opacity-5 animate-float-particles animation-delay-0 top-[15%] left-[15%]" style="background: radial-gradient(circle, #4fc3f7, transparent);"></div>
+            <div class="absolute w-16 sm:w-25 h-16 sm:h-25 rounded-full opacity-5 animate-float-particles animation-delay-5 top-[60%] right-[25%]" style="background: radial-gradient(circle, #29b6f6, transparent);"></div>
+            <div class="absolute w-12 sm:w-20 h-12 sm:h-20 rounded-full opacity-5 animate-float-particles animation-delay-10 bottom-[25%] left-[70%]" style="background: radial-gradient(circle, #4fc3f7, transparent);"></div>
         </div>
     </footer>
-
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            line-height: 1.6;
-        }
-
-        /* ===================
-           FOOTER STYLES
-           =================== */
-        .footer-section {
-            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f172a 100%);
-            color: white;
-            position: relative;
-            overflow: hidden;
-            margin-top: 0;
-        }
-
-
-        .footer-content {
-            position: relative;
-            z-index: 2;
-            padding-top: 3rem;
-        }
-
-        .footer-main {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem 2rem;
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1fr 1.2fr;
-            gap: 2rem;
-            align-items: start;
-        }
-
-
-        /* Company Info */
-        .company-info .footer-logo {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-        }
-
-        .logo-icon {
-            width: 45px;
-            height: 45px;
-            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.3rem;
-            box-shadow: 0 8px 25px rgba(79, 195, 247, 0.3);
-        }
-
-        .company-info h3 {
-            font-size: 1.6rem;
-            font-weight: 800;
-            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
-        .company-description {
-            color: #cbd5e1;
-            line-height: 1.6;
-            margin-bottom: 1.5rem;
-            font-size: 0.9rem;
-        }
-
-        .social-links {
-            display: flex;
-            gap: 0.8rem;
-        }
-
-        .social-link {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            text-decoration: none;
-            transition: all 0.3s ease;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .social-link:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .social-link[data-platform="facebook"]:hover {
-            background: #3b5998;
-            border-color: #3b5998;
-        }
-
-        .social-link[data-platform="twitter"]:hover {
-            background: #1da1f2;
-            border-color: #1da1f2;
-        }
-
-        .social-link[data-platform="instagram"]:hover {
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            border-color: #e6683c;
-        }
-
-        .social-link[data-platform="youtube"]:hover {
-            background: #ff0000;
-            border-color: #ff0000;
-        }
-
-        .social-link[data-platform="linkedin"]:hover {
-            background: #0077b5;
-            border-color: #0077b5;
-        }
-
-        /* Column Titles */
-        .column-title {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 1.1rem;
-            font-weight: 700;
-            margin-bottom: 1.2rem;
-            color: white;
-        }
-
-        .column-title i {
-            width: 18px;
-            color: #4fc3f7;
-        }
-
-        /* Footer Links */
-        .footer-links {
-            list-style: none;
-        }
-
-        .footer-links li {
-            margin-bottom: 0.6rem;
-        }
-
-        .footer-links a {
-            color: #cbd5e1;
-            text-decoration: none;
-            font-size: 0.9rem;
-            transition: all 0.3s ease;
-            position: relative;
-            padding-left: 0.8rem;
-        }
-
-        .footer-links a::before {
-            content: '→';
-            position: absolute;
-            left: 0;
-            opacity: 0;
-            transform: translateX(-8px);
-            transition: all 0.3s ease;
-            color: #4fc3f7;
-            font-size: 0.8rem;
-        }
-
-        .footer-links a:hover {
-            color: #4fc3f7;
-            padding-left: 1.2rem;
-        }
-
-        .footer-links a:hover::before {
-            opacity: 1;
-            transform: translateX(0);
-        }
-
-        /* Contact Info */
-        .contact-info .contact-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.8rem;
-            margin-bottom: 1rem;
-            padding: 0.8rem;
-            background: rgba(255, 255, 255, 0.05);
-            border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.3s ease;
-        }
-
-        .contact-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-            transform: translateX(3px);
-        }
-
-        .contact-item i {
-            color: #4fc3f7;
-            font-size: 1rem;
-            width: 16px;
-            margin-top: 2px;
-        }
-
-        .contact-item div {
-            flex: 1;
-        }
-
-        .contact-label {
-            display: block;
-            font-size: 0.75rem;
-            color: #94a3b8;
-            margin-bottom: 2px;
-            font-weight: 500;
-        }
-
-        .contact-value {
-            display: block;
-            color: white;
-            font-weight: 600;
-            font-size: 0.85rem;
-        }
-
-        /* Newsletter Column */
-        .newsletter-column {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 1.5rem;
-            border-radius: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-
-        .newsletter-desc {
-            color: #cbd5e1;
-            font-size: 0.85rem;
-            line-height: 1.5;
-            margin-bottom: 1.2rem;
-        }
-
-        .newsletter-form {
-            margin-bottom: 1.5rem;
-        }
-
-        .input-group {
-            display: flex;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 3px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            margin-bottom: 0.8rem;
-        }
-
-        .input-group input {
-            flex: 1;
-            background: none;
-            border: none;
-            padding: 0.8rem;
-            color: white;
-            font-size: 0.85rem;
-            border-radius: 7px;
-        }
-
-        .input-group input::placeholder {
-            color: rgba(255, 255, 255, 0.6);
-        }
-
-        .input-group input:focus {
-            outline: none;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .input-group button {
-            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-            color: white;
-            border: none;
-            padding: 0.8rem;
-            border-radius: 7px;
-            cursor: pointer;
-            font-size: 0.85rem;
-            transition: all 0.3s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 40px;
-        }
-
-        .input-group button:hover {
-            background: linear-gradient(135deg, #29b6f6 0%, #1976d2 100%);
-            transform: scale(1.05);
-        }
-
-        .checkbox-container {
-            display: flex;
-            align-items: flex-start;
-            gap: 0.6rem;
-            color: #cbd5e1;
-            font-size: 0.75rem;
-            line-height: 1.4;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .checkbox-container input {
-            display: none;
-        }
-
-        .checkmark {
-            width: 16px;
-            height: 16px;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            border-radius: 3px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 0.3s ease;
-            flex-shrink: 0;
-            margin-top: 1px;
-        }
-
-        .checkbox-container input:checked+.checkmark {
-            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-            border-color: #4fc3f7;
-        }
-
-        .checkbox-container input:checked+.checkmark::after {
-            content: '✓';
-            color: white;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .checkbox-text a {
-            color: #4fc3f7;
-            text-decoration: none;
-            transition: color 0.3s ease;
-        }
-
-        .checkbox-text a:hover {
-            color: #29b6f6;
-            text-decoration: underline;
-        }
-
-        /* Download Section */
-        .download-section {
-            margin-top: 1.5rem;
-        }
-
-        .download-title {
-            color: #cbd5e1;
-            font-size: 0.8rem;
-            font-weight: 600;
-            margin-bottom: 0.8rem;
-        }
-
-        .download-buttons {
-            display: flex;
-            gap: 0.6rem;
-        }
-
-        .download-btn {
-            width: 40px;
-            height: 40px;
-            background: rgba(255, 255, 255, 0.1);
-            color: #4fc3f7;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            transition: all 0.3s ease;
-            font-size: 1.2rem;
-        }
-
-        .download-btn:hover {
-            background: rgba(79, 195, 247, 0.15);
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        /* Footer Bottom */
-        .footer-bottom {
-            background: rgba(0, 0, 0, 0.3);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 1.5rem 0;
-            margin-top: 1rem;
-        }
-
-        .bottom-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
-
-        .bottom-left p {
-            color: #94a3b8;
-            margin-bottom: 0.4rem;
-            font-size: 0.85rem;
-        }
-
-        .legal-links {
-            display: flex;
-            gap: 1.2rem;
-            flex-wrap: wrap;
-        }
-
-        .legal-links a {
-            color: #cbd5e1;
-            text-decoration: none;
-            font-size: 0.8rem;
-            transition: color 0.3s ease;
-        }
-
-        .legal-links a:hover {
-            color: #4fc3f7;
-        }
-
-        .bottom-right {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .language-selector {
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.4rem 0.8rem;
-            border-radius: 8px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .language-selector i {
-            color: #4fc3f7;
-            font-size: 0.9rem;
-        }
-
-        .language-selector select {
-            background: none;
-            border: none;
-            color: white;
-            font-size: 0.8rem;
-            cursor: pointer;
-            padding: 0;
-        }
-
-        .language-selector select option {
-            background: #1a1a2e;
-            color: white;
-        }
-
-        .back-to-top {
-            width: 40px;
-            height: 40px;
-            background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%);
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            box-shadow: 0 4px 15px rgba(79, 195, 247, 0.3);
-        }
-
-        .back-to-top:hover {
-            transform: translateY(-3px) scale(1.1);
-            box-shadow: 0 6px 20px rgba(79, 195, 247, 0.4);
-        }
-
-        /* Background Effects */
-        .footer-bg-effects {
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            overflow: hidden;
-            z-index: 1;
-        }
-
-        .bg-particle {
-            position: absolute;
-            border-radius: 50%;
-            opacity: 0.04;
-            animation: floatParticles 15s ease-in-out infinite;
-        }
-
-        .particle-1 {
-            width: 120px;
-            height: 120px;
-            background: radial-gradient(circle, #4fc3f7, transparent);
-            top: 15%;
-            left: 15%;
-            animation-delay: 0s;
-        }
-
-        .particle-2 {
-            width: 100px;
-            height: 100px;
-            background: radial-gradient(circle, #29b6f6, transparent);
-            top: 60%;
-            right: 25%;
-            animation-delay: -5s;
-        }
-
-        .particle-3 {
-            width: 80px;
-            height: 80px;
-            background: radial-gradient(circle, #4fc3f7, transparent);
-            bottom: 25%;
-            left: 70%;
-            animation-delay: -10s;
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes floatParticles {
-
-            0%,
-            100% {
-                transform: translate(0, 0) rotate(0deg);
-            }
-
-            25% {
-                transform: translate(20px, -20px) rotate(90deg);
-            }
-
-            50% {
-                transform: translate(-15px, -30px) rotate(180deg);
-            }
-
-            75% {
-                transform: translate(-20px, 15px) rotate(270deg);
-            }
-        }
-
-        /* ===================
-           RESPONSIVE DESIGN
-           =================== */
-        @media (max-width: 1024px) {
-            .footer-main {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 1.5rem;
-            }
-
-            .company-info {
-                grid-column: 1 / -1;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .footer-main {
-                grid-template-columns: 1fr;
-                gap: 1.5rem;
-                padding: 0 1rem 1.5rem;
-            }
-
-            .footer-content {
-                padding-top: 2rem;
-            }
-
-            .bottom-content {
-                flex-direction: column;
-                text-align: center;
-                gap: 0.8rem;
-            }
-
-            .legal-links {
-                justify-content: center;
-            }
-
-            .newsletter-column {
-                padding: 1rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .footer-main {
-                padding: 0 0.8rem 1rem;
-            }
-
-            .social-links {
-                justify-content: center;
-            }
-
-            .download-buttons {
-                justify-content: center;
-            }
-
-            .input-group {
-                flex-direction: column;
-                gap: 0.5rem;
-            }
-
-            .input-group button {
-                width: 100%;
-            }
-        }
-    </style>
 
     <script>
         function scrollToTop() {
@@ -816,7 +292,5 @@
             }
         });
     </script>
-
 </body>
-
 </html>

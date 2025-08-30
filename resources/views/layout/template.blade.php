@@ -63,42 +63,6 @@
         transform: scale(1.05);
     }
 
-    .nav-links {
-        display: flex;
-        gap: 0.5rem;
-        list-style: none;
-        align-items: center;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 0.4rem;
-        border-radius: 15px;
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(15px);
-    }
-
-    .nav-links li a {
-        text-decoration: none;
-        color: #374151;
-        font-weight: 600;
-        padding: 0.8rem 1.3rem;
-        border-radius: 15px;
-        transition: all 0.3s ease;
-        position: relative;
-        white-space: nowrap;
-        font-size: 0.9rem;
-    }
-
-    .nav-links li a:hover {
-        background: rgba(79, 195, 247, 0.15);
-        color: #1976d2;
-        transform: translateY(-2px);
-    }
-
-    .nav-links li a.active {
-        background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%);
-        color: white;
-        box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
-    }
-
     /* User Dropdown */
     .user-dropdown {
         position: relative;
@@ -334,7 +298,7 @@
     }
 
     .slide-bg-1 {
-        background: linear-gradient(135deg, #008e37 0%, #9bfaba 100%);
+        background: linear-gradient(135deg, #5c5900 0%, #f8f683 100%);
     }
 
     .slide-bg-2 {
@@ -1120,40 +1084,7 @@
     // ===================
     // DROPDOWN FUNCTIONALITY
     // ===================
-    function toggleDropdown() {
-        const dropdown = document.querySelector('.user-dropdown');
-        dropdown.classList.toggle('active');
-    }
-
-    // Close dropdown when clicking outside
-    document.addEventListener('click', function (event) {
-        const dropdown = document.querySelector('.user-dropdown');
-        if (!dropdown.contains(event.target)) {
-            dropdown.classList.remove('active');
-        }
-    });
-
-    // Handle dropdown item clicks
-    document.querySelectorAll('.dropdown-item').forEach(item => {
-    item.addEventListener('click', function (e) {
-        const action = this.textContent.trim();
-
-        // Jangan preventDefault untuk logout
-        if (action !== 'Log Out' && !this.classList.contains('logout')) {
-            e.preventDefault();
-        }
-
-        // Close dropdown
-        document.querySelector('.user-dropdown').classList.remove('active');
-
-        // Handle actions
-        if (action === 'Log Out') {
-            // Biarkan form logout berjalan normal, jangan intercept
-            return true;
-        }
-        // ... handle actions lainnya
-    });
-});
+    
     // ===================
     // GLOBAL FUNCTIONS
     // ===================

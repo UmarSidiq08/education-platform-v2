@@ -15,7 +15,122 @@
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <style>
+        .select2-container--default .select2-selection--single {
+            height: 48px;
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            padding: 0.5rem;
+            background-color: white;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__arrow {
+            height: 46px;
+            right: 8px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            line-height: 46px;
+            padding-left: 35px;
+            color: #111827;
+            font-size: 14px;
+        }
+
+        .select2-container--default .select2-selection--single .select2-selection__placeholder {
+            color: #9ca3af;
+        }
+
+        .select2-container--default .select2-search--dropdown .select2-search__field {
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+        }
+
+        /* Dropdown styling */
+        .select2-dropdown {
+            border: 1px solid #d1d5db;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .select2-results__option {
+            padding: 12px 16px;
+            font-size: 14px;
+            transition: background-color 0.2s ease;
+        }
+
+        .select2-results__option--highlighted {
+            background-color: #f3f4f6 !important;
+            color: #111827 !important;
+        }
+
+        .select2-results__option--selected {
+            background-color: #eef2ff !important;
+            color: #3730a3 !important;
+        }
+
+        /* Mobile responsive adjustments */
+        @media (max-width: 768px) {
+            .select2-container--default .select2-selection--single {
+                height: 44px;
+                font-size: 14px;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__arrow {
+                height: 42px;
+            }
+
+            .select2-container--default .select2-selection--single .select2-selection__rendered {
+                line-height: 42px;
+                font-size: 14px;
+            }
+
+            .select2-dropdown {
+                border-radius: 8px;
+            }
+
+            .select2-results__option {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            /* Make dropdown full width on mobile */
+            .select2-container {
+                width: 100% !important;
+            }
+
+            .select2-dropdown {
+                width: 100% !important;
+                left: 0 !important;
+                right: 0 !important;
+            }
+        }
+
+        /* Focus states */
+        .select2-container--default.select2-container--focus .select2-selection--single {
+            border-color: #6366f1;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        /* Loading state */
+        .select2-results__option[aria-live="polite"] {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        /* No results state */
+        .select2-results__option[role="alert"] {
+            text-align: center;
+            color: #6b7280;
+            font-style: italic;
+        }
+
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
@@ -153,6 +268,23 @@
                 max-height: none;
             }
         }
+
+        /* Ensure proper z-index and positioning */
+        .select2-container {
+            z-index: 1000;
+        }
+
+        .select2-dropdown {
+            z-index: 1001;
+        }
+
+        /* Fix for dropdown positioning */
+        .select2-container--open .select2-dropdown {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+        }
     </style>
 </head>
 
@@ -254,7 +386,7 @@
                                     <svg class="h-4 w-4 lg:h-5 lg:w-5 text-gray-400" fill="currentColor"
                                         viewBox="0 0 24 24">
                                         <path
-                                            d="M18,8h-1V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,3A3,3 0 0,1 15,6V8H9V6A3,3 0 0,1 12,3Z" />
+                                            d="M18,8H17V6A5,5 0 0,0 12,1A5,5 0 0,0 7,6V8H6A2,2 0 0,0 4,10V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V10A2,2 0 0,0 18,8M12,3A3,3 0 0,1 15,6V8H9V6A3,3 0 0,1 12,3Z" />
                                     </svg>
                                 </div>
                                 <x-text-input id="password"
@@ -345,7 +477,7 @@
                             <x-input-label for="teacher_class_id" :value="__('Pilih Kelas Guru')"
                                 class="block text-sm font-medium text-gray-700 mb-2" />
                             <div class="relative">
-                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                                     <svg class="h-4 w-4 lg:h-5 lg:w-5 text-gray-400" fill="currentColor"
                                         viewBox="0 0 24 24">
                                         <path
@@ -353,7 +485,7 @@
                                     </svg>
                                 </div>
                                 <select name="teacher_class_id" id="teacher_class_id"
-                                    class="input-floating w-full pl-10 pr-4 py-3 lg:py-4 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm lg:text-base">
+                                    class="w-full pl-10 pr-4 py-3 lg:py-4 border border-gray-200 rounded-xl text-gray-900 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 text-sm lg:text-base">
                                     <option value="">Loading kelas guru...</option>
                                 </select>
                             </div>
@@ -431,6 +563,10 @@
         </div>
     </div>
 
+    <!-- Select2 JS -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script>
         let nameCheckTimeout;
 
@@ -451,7 +587,7 @@
             }
         }
 
-        // Name availability checker - PERBAIKAN PADA FETCH URL
+        // Name availability checker
         function checkNameAvailability(name) {
             if (name.length < 3) {
                 document.getElementById('name-feedback').innerHTML = '';
@@ -461,7 +597,6 @@
             document.getElementById('name-feedback').innerHTML =
                 '<span class="username-checking">⏳ Mengecek ketersediaan nama...</span>';
 
-            // PERBAIKAN: Gunakan path yang sesuai dengan route
             fetch('/api/check-name', {
                     method: 'POST',
                     headers: {
@@ -473,7 +608,6 @@
                     })
                 })
                 .then(response => {
-                    // PERBAIKAN: Cek status response terlebih dahulu
                     if (!response.ok) {
                         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                     }
@@ -560,7 +694,32 @@
             const teacherClassSection = document.getElementById('teacher-class-section');
             const teacherClassSelect = document.getElementById('teacher_class_id');
 
-            // Load teacher classes - PERBAIKAN: Tambah error handling yang lebih baik
+            // Enhanced Select2 initialization function
+            function initializeSelect2() {
+                // Destroy existing instance if exists
+                if ($(teacherClassSelect).hasClass("select2-hidden-accessible")) {
+                    $(teacherClassSelect).select2('destroy');
+                }
+
+                $(teacherClassSelect).select2({
+                    placeholder: "Cari kelas guru...",
+                    allowClear: true,
+                    width: '100%',
+                    language: {
+                        noResults: function() {
+                            return "Kelas tidak ditemukan";
+                        },
+                        searching: function() {
+                            return "Mencari kelas...";
+                        },
+                        inputTooShort: function() {
+                            return "Ketik untuk mencari kelas";
+                        }
+                    }
+                });
+            }
+
+            // Load teacher classes with enhanced error handling
             fetch('/api/teacher-classes')
                 .then(response => {
                     if (!response.ok) {
@@ -569,37 +728,87 @@
                     return response.json();
                 })
                 .then(data => {
-                    teacherClassSelect.innerHTML =
-                    '<option value="">Pilih kelas yang ingin diikuti...</option>';
+                    // Clear loading state
+                    teacherClassSelect.innerHTML = '<option value="">Pilih kelas yang ingin diikuti...</option>';
+
                     if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(tc => {
-                            teacherClassSelect.innerHTML +=
-                                `<option value="${tc.id}">${tc.name}</option>`;
+                        // Sort classes alphabetically for better UX
+                        const sortedData = data.sort((a, b) => a.name.localeCompare(b.name));
+
+                        sortedData.forEach(tc => {
+                            const option = document.createElement('option');
+                            option.value = tc.id;
+                            option.textContent = tc.name;
+                            option.setAttribute('data-description', tc.description || '');
+                            teacherClassSelect.appendChild(option);
                         });
+
+                        // Initialize Select2 after options are loaded
+                        initializeSelect2();
                     } else {
-                        teacherClassSelect.innerHTML += '<option value="">Tidak ada kelas tersedia</option>';
+                        teacherClassSelect.innerHTML += '<option value="" disabled>Tidak ada kelas tersedia</option>';
+                        initializeSelect2();
                     }
                 })
                 .catch(error => {
                     console.error('Error loading teacher classes:', error);
-                    teacherClassSelect.innerHTML = '<option value="">Gagal memuat kelas: ' + error.message +
-                        '</option>';
+                    teacherClassSelect.innerHTML = '<option value="" disabled>Gagal memuat kelas: ' + error.message + '</option>';
+                    initializeSelect2();
                 });
 
-            // Show/hide teacher class dropdown based on role selection
+            // Enhanced role selection handler
             roleSelect.addEventListener('change', function() {
                 if (this.value === 'mentor') {
                     teacherClassSection.classList.remove('hidden');
                     teacherClassSelect.setAttribute('required', 'required');
+
+                    // Smooth animation for showing
+                    teacherClassSection.style.opacity = '0';
+                    teacherClassSection.style.transform = 'translateY(-10px)';
+
+                    setTimeout(() => {
+                        teacherClassSection.style.transition = 'all 0.3s ease';
+                        teacherClassSection.style.opacity = '1';
+                        teacherClassSection.style.transform = 'translateY(0)';
+
+                        // Reinitialize Select2 when shown
+                        setTimeout(() => {
+                            initializeSelect2();
+                        }, 100);
+                    }, 50);
                 } else {
-                    teacherClassSection.classList.add('hidden');
-                    teacherClassSelect.removeAttribute('required');
-                    teacherClassSelect.value = '';
+                    // Smooth animation for hiding
+                    teacherClassSection.style.transition = 'all 0.3s ease';
+                    teacherClassSection.style.opacity = '0';
+                    teacherClassSection.style.transform = 'translateY(-10px)';
+
+                    setTimeout(() => {
+                        teacherClassSection.classList.add('hidden');
+                        teacherClassSelect.removeAttribute('required');
+                        teacherClassSelect.value = '';
+
+                        // Clear Select2 selection
+                        if ($(teacherClassSelect).hasClass("select2-hidden-accessible")) {
+                            $(teacherClassSelect).val(null).trigger('change');
+                        }
+                    }, 300);
                 }
+            });
+
+            // Handle window resize for mobile optimization
+            let resizeTimeout;
+            window.addEventListener('resize', function() {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function() {
+                    // Reinitialize Select2 on resize for better mobile experience
+                    if ($(teacherClassSelect).hasClass("select2-hidden-accessible") && !teacherClassSection.classList.contains('hidden')) {
+                        initializeSelect2();
+                    }
+                }, 250);
             });
         });
 
-        // Form validation before submit
+        // Enhanced form validation before submit
         document.querySelector('form').addEventListener('submit', function(e) {
             const name = document.getElementById('name').value.trim();
             const feedback = document.getElementById('name-feedback').textContent;
@@ -610,16 +819,42 @@
                 return false;
             }
 
-            // PERBAIKAN: Tambah validasi untuk mentor yang memilih teacher class
+            // Enhanced validation for mentor role
             const role = document.getElementById('role').value;
             const teacherClassId = document.getElementById('teacher_class_id').value;
 
             if (role === 'mentor' && !teacherClassId) {
                 e.preventDefault();
+
+                // Focus on the teacher class selection for better UX
+                document.getElementById('teacher-class-section').scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+
+                // Highlight the field
+                const select2Container = $(document.getElementById('teacher_class_id')).next('.select2-container');
+                select2Container.addClass('border-red-500');
+                setTimeout(() => {
+                    select2Container.removeClass('border-red-500');
+                }, 3000);
+
                 alert('Silakan pilih kelas guru untuk mendaftar sebagai mentor.');
                 return false;
             }
         });
+
+        // Add loading state management for better UX
+        function setLoadingState(isLoading) {
+            const submitBtn = document.getElementById('submit-btn');
+            if (isLoading) {
+                submitBtn.disabled = true;
+                submitBtn.innerHTML = '<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Mendaftar...</span>';
+            } else {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '{{ __("Register") }}';
+            }
+        }
     </script>
 </body>
 
