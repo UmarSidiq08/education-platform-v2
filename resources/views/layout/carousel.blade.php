@@ -95,9 +95,8 @@ nav, .navbar {
                     </a>
                 </div>
                 <div class="slide-visual">
-                                        <img src="{{ asset('images/GAMBAR2.png') }}" alt="Leaderboard Illustration" class="leaderboard-image">
+                                        <img src="{{ asset('images/GambarC-2.png') }}" alt="Leaderboard Illustration" class="leaderboard-image">
 
-                    </div>
                 </div>
             </div>
 
@@ -125,7 +124,7 @@ nav, .navbar {
                     <button class="slide-cta-btn">Join Now <span>→</span></button>
                 </div>
                 <div class="slide-visual">
-                    <img src="{{ asset('images/gambar3.png') }}" alt="Leaderboard Illustration" class="leaderboard-image " style="width: auto;" class="shadow-lg p-3 mb-5 bg-body rounded">
+                    <img src="{{ asset('images/gambarC-3.png') }}" alt="Leaderboard Illustration" class="leaderboard-image " style="width: autow;" class="shadow-lg p-3 mb-5 bg-body rounded" >
                 </div>
             </div>
         </div>
