@@ -33,13 +33,13 @@
         <li class="m-0 p-0">
             <a href="{{ route('public.teacher-classes.index') }}"
                 class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('public.teacher-classes.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                style="{{ request()->routeIs('public.teacher-classes.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Guru</a>
+                style="{{ request()->routeIs('public.teacher-classes.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">eMaster</a>
         </li>
 
         <li class="m-0 p-0">
             <a href="{{ route('navbar.mentor') }}"
                 class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                style="{{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Mentor</a>
+                style="{{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">eBuddy</a>
         </li>
 
         @if (auth()->user()->role === 'siswa')

@@ -3,55 +3,53 @@
 @section('title', 'Tambah Pre Test - ' . $material->title)
 
 @section('content')
-<div class="max-w-7xl mx-auto p-3 sm:p-5">
+<div class="max-w-6xl mx-auto p-3 sm:p-4 md:p-5">
     <!-- Hero Section -->
-    <div class="bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl sm:rounded-3xl p-6 sm:p-8 md:p-10 text-center mb-6 sm:mb-8 relative overflow-hidden shadow-2xl shadow-indigo-500/30">
+    <div class="bg-gradient-to-br from-indigo-500 via-purple-600 to-purple-700 rounded-xl sm:rounded-2xl md:rounded-3xl p-4 sm:p-6 md:p-8 lg:p-10 text-center mb-4 sm:mb-6 md:mb-8 relative overflow-hidden shadow-lg sm:shadow-xl md:shadow-2xl shadow-indigo-300/30">
         <div class="relative z-10">
-            <h2 class="text-white text-2xl sm:text-3xl md:text-4xl font-bold mb-2 sm:mb-3">
-                <i class="fas fa-magic animate-bounce mr-2 sm:mr-3"></i>Buat Pre Test Baru
+            <h2 class="text-white text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-2 sm:mb-3">
+                <i class="fas fa-magic mr-2 animate-bounce"></i>Buat Pre Test Baru
             </h2>
-            <p class="text-white/80 text-sm sm:text-base md:text-lg px-2 sm:px-0">
-                Untuk materi: <strong class="break-words">{{ $material->title }}</strong>
+            <p class="text-indigo-100 text-sm sm:text-base md:text-lg">
+                Untuk materi: <strong>{{ $material->title }}</strong>
             </p>
         </div>
-        <div class="absolute -top-8 sm:-top-12 -right-8 sm:-right-12 w-32 sm:w-48 h-32 sm:h-48 bg-white/10 rounded-full">
-            <div class="absolute top-6 sm:top-12 left-6 sm:left-12 w-16 sm:w-24 h-16 sm:h-24 bg-white/10 rounded-full"></div>
-        </div>
+        <div class="absolute -top-6 sm:-top-8 md:-top-12 -right-6 sm:-right-8 md:-right-12 w-24 sm:w-32 md:w-48 h-24 sm:h-32 md:h-48 bg-white/10 rounded-full"></div>
+        <div class="absolute -top-3 sm:-top-4 md:-top-6 -right-3 sm:-right-4 md:-right-6 w-12 sm:w-16 md:w-24 h-12 sm:h-16 md:h-24 bg-white/10 rounded-full"></div>
     </div>
 
     <!-- Main Form Card -->
-    <div class="bg-white rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl shadow-black/10">
-        <div class="bg-gradient-to-br from-indigo-500 to-purple-600 p-4 sm:p-6 md:p-8">
-            <div class="flex justify-between items-center flex-col md:flex-row gap-3 sm:gap-4">
+    <div class="bg-white rounded-xl sm:rounded-2xl md:rounded-3xl overflow-hidden shadow-lg sm:shadow-xl md:shadow-2xl shadow-gray-500/10">
+        <div class="bg-gradient-to-br from-indigo-500 via-purple-600 to-purple-700 px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-5 md:py-6">
+            <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-2 sm:gap-3 md:gap-4">
                 <h4 class="text-white text-lg sm:text-xl md:text-2xl font-semibold m-0 text-center md:text-left">
-                    <i class="fas fa-plus-circle animate-bounce mr-2 sm:mr-3"></i>Formulir Pre Test
+                    <i class="fas fa-plus-circle mr-2 animate-bounce"></i>Formulir Pre Test
                 </h4>
-                <div class="bg-white/20 backdrop-blur-md px-3 sm:px-4 py-2 rounded-full text-white text-xs sm:text-sm max-w-full">
-                    <i class="fas fa-book-open mr-1 sm:mr-2"></i>
-                    <span class="truncate inline-block max-w-[200px] sm:max-w-none">{{ $material->title }}</span>
+                <div class="bg-white/20 backdrop-blur px-2 sm:px-3 md:px-4 py-1 sm:py-2 rounded-full text-white text-xs sm:text-sm text-center md:text-left mt-2 md:mt-0">
+                    <i class="fas fa-book-open mr-1 sm:mr-2"></i>{{ $material->title }}
                 </div>
             </div>
         </div>
 
-        <div class="p-4 sm:p-6 md:p-8 lg:p-10">
+        <div class="p-3 sm:p-4 md:p-6 lg:p-8">
             <form action="{{ route('quizzes.store', $material) }}" method="POST" id="quiz-form">
                 @csrf
 
                 <!-- Basic Info Section -->
-                <div class="mb-8 sm:mb-10 md:mb-12">
-                    <div class="mb-6 sm:mb-8">
-                        <h5 class="text-indigo-600 text-lg sm:text-xl font-semibold mb-2">
-                            <i class="fas fa-info-circle mr-2 sm:mr-3"></i>Informasi Dasar
+                <div class="mb-6 sm:mb-8 md:mb-10 lg:mb-12">
+                    <div class="mb-4 sm:mb-5 md:mb-6">
+                        <h5 class="text-indigo-600 text-base sm:text-lg md:text-xl font-semibold mb-2">
+                            <i class="fas fa-info-circle mr-2"></i>Informasi Dasar
                         </h5>
-                        <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full mb-4"></div>
+                        <div class="h-1 bg-gradient-to-r from-indigo-500 via-purple-600 to-transparent rounded-full"></div>
                     </div>
 
-                    <div class="flex flex-col lg:flex-row gap-4 sm:gap-5 mb-4 sm:mb-6">
-                        <div class="flex-1 lg:flex-[2]">
-                            <label for="title" class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">Judul Pre Test</label>
+                    <div class="flex flex-col gap-3 sm:gap-4 md:gap-5 mb-4 sm:mb-5 md:mb-6">
+                        <div class="flex-1">
+                            <label for="title" class="block text-gray-800 font-semibold mb-2 text-xs sm:text-sm">Judul Pre Test</label>
                             <div class="relative flex items-center">
-                                <i class="fas fa-heading absolute left-3 sm:left-4 text-indigo-500 z-10 text-sm sm:text-base"></i>
-                                <input type="text" class="w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 sm:py-4 border-2 border-indigo-100 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:-translate-y-0.5 @error('title') border-red-500 @enderror"
+                                <i class="fas fa-heading absolute left-3 text-indigo-500 z-10 text-xs sm:text-sm"></i>
+                                <input type="text" class="w-full pl-9 sm:pl-10 md:pl-12 pr-3 py-2 sm:py-3 md:py-4 border-2 border-indigo-100 rounded-lg text-xs sm:text-sm md:text-base transition-all duration-300 focus:border-indigo-500 focus:shadow-lg focus:shadow-indigo-100 focus:outline-none focus:-translate-y-0.5 @error('title') border-red-500 @enderror"
                                        id="title" name="title" value="{{ old('title') }}"
                                        placeholder="Masukkan judul Pre Test yang menarik" required>
                                 @error('title')
@@ -61,13 +59,13 @@
                         </div>
 
                         <div class="flex-1">
-                            <label for="time_limit" class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">Waktu Pengerjaan</label>
+                            <label for="time_limit" class="block text-gray-800 font-semibold mb-2 text-xs sm:text-sm">Waktu Pengerjaan</label>
                             <div class="relative flex items-center">
-                                <i class="fas fa-clock absolute left-3 sm:left-4 text-indigo-500 z-10 text-sm sm:text-base"></i>
-                                <input type="number" class="w-full pl-10 sm:pl-12 pr-12 sm:pr-16 py-3 sm:py-4 border-2 border-indigo-100 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:-translate-y-0.5 @error('time_limit') border-red-500 @enderror"
+                                <i class="fas fa-clock absolute left-3 text-indigo-500 z-10 text-xs sm:text-sm"></i>
+                                <input type="number" class="w-full pl-9 sm:pl-10 md:pl-12 pr-10 sm:pr-12 md:pr-16 py-2 sm:py-3 md:py-4 border-2 border-indigo-100 rounded-lg text-xs sm:text-sm md:text-base transition-all duration-300 focus:border-indigo-500 focus:shadow-lg focus:shadow-indigo-100 focus:outline-none focus:-translate-y-0.5 @error('time_limit') border-red-500 @enderror"
                                        id="time_limit" name="time_limit" value="{{ old('time_limit', 30) }}"
                                        min="1" required>
-                                <span class="absolute right-3 sm:right-4 text-gray-500 text-xs sm:text-sm">menit</span>
+                                <span class="absolute right-3 text-gray-500 text-xs">menit</span>
                                 @error('time_limit')
                                     <div class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</div>
                                 @enderror
@@ -75,63 +73,63 @@
                         </div>
                     </div>
 
-                    <div class="mb-4 sm:mb-6">
-                        <label for="description" class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">
+                    <div class="mb-4 sm:mb-5 md:mb-6">
+                        <label for="description" class="block text-gray-800 font-semibold mb-2 text-xs sm:text-sm">
                             Deskripsi Pre Test <span class="text-gray-500 font-normal">(opsional)</span>
                         </label>
-                        <textarea class="w-full p-3 sm:p-4 border-2 border-indigo-100 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 resize-y min-h-[100px] sm:min-h-[120px] font-inherit focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:-translate-y-0.5 @error('description') border-red-500 @enderror"
+                        <textarea class="w-full p-3 border-2 border-indigo-100 rounded-lg text-xs sm:text-sm md:text-base transition-all duration-300 resize-y min-h-24 sm:min-h-28 md:min-h-32 font-inherit focus:border-indigo-500 focus:shadow-lg focus:shadow-indigo-100 focus:outline-none focus:-translate-y-0.5 @error('description') border-red-500 @enderror"
                                   id="description" name="description" rows="4"
                                   placeholder="Tambahkan deskripsi Pre Test, petunjuk pengerjaan, atau informasi penting lainnya...">{{ old('description') }}</textarea>
                         @error('description')
                             <div class="text-red-500 text-xs sm:text-sm mt-1">{{ $message }}</div>
                         @enderror
-                        <div class="mt-2 text-xs sm:text-sm text-gray-500">
+                        <div class="mt-2 text-xs text-gray-500">
                             <i class="fas fa-lightbulb mr-1"></i>Deskripsi akan ditampilkan kepada peserta sebelum memulai Pre Test
                         </div>
                     </div>
                 </div>
 
                 <!-- Questions Section -->
-                <div class="mb-8 sm:mb-10 md:mb-12">
-                    <div class="mb-6 sm:mb-8">
-                        <div class="flex flex-col lg:flex-row justify-between items-start mb-4 sm:mb-5 gap-4 sm:gap-5">
-                            <div class="flex-1 w-full lg:w-auto">
-                                <h5 class="text-indigo-600 text-lg sm:text-xl font-semibold mb-1">
-                                    <i class="fas fa-question-circle mr-2 sm:mr-3"></i>Daftar Pertanyaan
+                <div class="mb-6 sm:mb-8 md:mb-10 lg:mb-12">
+                    <div class="mb-4 sm:mb-5 md:mb-6">
+                        <div class="flex flex-col md:flex-row md:justify-between md:items-start mb-3 sm:mb-4 md:mb-5 gap-3 sm:gap-4 md:gap-5">
+                            <div class="flex-1">
+                                <h5 class="text-indigo-600 text-base sm:text-lg md:text-xl font-semibold mb-1">
+                                    <i class="fas fa-question-circle mr-2"></i>Daftar Pertanyaan
                                 </h5>
-                                <p class="text-gray-500 text-xs sm:text-sm m-0">Minimal 1 pertanyaan diperlukan untuk membuat Pre Test</p>
+                                <p class="text-gray-500 text-xs m-0">Minimal 1 pertanyaan diperlukan untuk membuat Pre Test</p>
                             </div>
-                            <button type="button" class="w-full lg:w-auto inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/40 text-sm sm:text-base" id="add-question">
-                                <i class="fas fa-plus mr-2"></i>Tambah Pertanyaan
+                            <button type="button" class="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold text-xs sm:text-sm md:text-base rounded-full hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-300/40 transition-all duration-300 w-full sm:w-auto justify-center mt-2 sm:mt-0" id="add-question">
+                                <i class="fas fa-plus mr-1 sm:mr-2"></i>Tambah Pertanyaan
                             </button>
                         </div>
-                        <div class="h-1 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full"></div>
+                        <div class="h-1 bg-gradient-to-r from-indigo-500 via-purple-600 to-transparent rounded-full"></div>
                     </div>
 
-                    <div id="questions-container" class="min-h-[100px]">
+                    <div id="questions-container" class="min-h-16 sm:min-h-20 md:min-h-24">
                         <!-- Questions will be added here via JavaScript -->
                     </div>
 
-                    <div id="empty-state" class="text-center py-8 sm:py-12 px-4 sm:px-5 text-gray-500 hidden">
-                        <i class="fas fa-question-circle text-3xl sm:text-4xl md:text-5xl mb-4 sm:mb-5 opacity-50"></i>
-                        <h6 class="text-base sm:text-lg font-semibold mb-2">Belum ada pertanyaan</h6>
-                        <p class="m-0 text-sm sm:text-base">Klik tombol "Tambah Pertanyaan" untuk memulai</p>
+                    <div id="empty-state" class="text-center py-6 sm:py-8 md:py-10 lg:py-12 text-gray-500 hidden">
+                        <i class="fas fa-question-circle text-2xl sm:text-3xl md:text-4xl lg:text-5xl mb-3 sm:mb-4 md:mb-5 opacity-50"></i>
+                        <h6 class="text-sm sm:text-base md:text-lg font-semibold mb-2 sm:mb-3">Belum ada pertanyaan</h6>
+                        <p class="m-0 text-xs sm:text-sm md:text-base">Klik tombol "Tambah Pertanyaan" untuk memulai</p>
                     </div>
                 </div>
 
                 <!-- Action Buttons -->
-                <div class="mt-8 sm:mt-10 md:mt-12">
-                    <div class="h-0.5 bg-gradient-to-r from-transparent via-indigo-200 to-transparent mb-6 sm:mb-8"></div>
-                    <div class="flex flex-col lg:flex-row justify-between items-stretch lg:items-center gap-4 sm:gap-5">
-                        <a href="{{ route('materials.show', $material) }}" class="w-full lg:w-auto inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-indigo-50 text-indigo-500 border-2 border-indigo-200 font-semibold rounded-full transition-all duration-300 hover:bg-indigo-200 hover:text-indigo-600 hover:-translate-y-0.5 text-sm sm:text-base">
-                            <i class="fas fa-arrow-left mr-2"></i>Kembali ke Materi
+                <div class="mt-6 sm:mt-8 md:mt-10 lg:mt-12">
+                    <div class="h-0.5 bg-gradient-to-r from-transparent via-indigo-200 to-transparent mb-4 sm:mb-5 md:mb-6"></div>
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-3 sm:gap-4 md:gap-5">
+                        <a href="{{ route('materials.show', $material) }}" class="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-indigo-50 text-indigo-600 font-semibold text-xs sm:text-sm md:text-base rounded-full border-2 border-indigo-100 hover:bg-indigo-100 hover:text-indigo-700 hover:-translate-y-0.5 transition-all duration-300 justify-center order-2 md:order-1">
+                            <i class="fas fa-arrow-left mr-1 sm:mr-2"></i>Kembali ke Materi
                         </a>
-                        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4">
-                            <button type="button" class="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-white text-indigo-500 border-2 border-indigo-500 font-semibold rounded-full transition-all duration-300 hover:bg-indigo-500 hover:text-white text-sm sm:text-base" onclick="previewQuiz()">
-                                <i class="fas fa-eye mr-2"></i>Preview
+                        <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 md:gap-4 order-1 md:order-2 mb-4 md:mb-0">
+                            <button type="button" class="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-white text-indigo-600 font-semibold text-xs sm:text-sm md:text-base rounded-full border-2 border-indigo-600 hover:bg-indigo-600 hover:text-white transition-all duration-300 justify-center" onclick="previewQuiz()">
+                                <i class="fas fa-eye mr-1 sm:mr-2"></i>Preview
                             </button>
-                            <button type="submit" class="w-full sm:w-auto inline-flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold rounded-full transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/40 text-sm sm:text-base">
-                                <i class="fas fa-save mr-2"></i>Simpan Pre Test
+                            <button type="submit" class="inline-flex items-center px-3 sm:px-4 md:px-6 py-2 sm:py-3 bg-gradient-to-br from-indigo-500 to-purple-600 text-white font-semibold text-xs sm:text-sm md:text-base rounded-full hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-300/40 transition-all duration-300 justify-center">
+                                <i class="fas fa-save mr-1 sm:mr-2"></i>Simpan Pre Test
                             </button>
                         </div>
                     </div>
@@ -154,44 +152,44 @@ function addQuestion() {
 
     const questionsContainer = document.getElementById('questions-container');
     const questionHtml = `
-        <div class="bg-white border-2 border-indigo-50 rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-6 transition-all duration-300 hover:border-indigo-200 hover:shadow-lg hover:shadow-indigo-500/15 hover:-translate-y-0.5 opacity-0 translate-y-5" data-question="${questionCount}">
-            <div class="bg-gradient-to-br from-indigo-50 to-indigo-100 p-3 sm:p-4 md:p-5 flex flex-col sm:flex-row items-center gap-3 sm:gap-4">
-                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white w-10 sm:w-12 h-10 sm:h-12 rounded-full flex items-center justify-center font-bold relative flex-shrink-0">
+        <div class="bg-white border-2 border-indigo-50 rounded-xl sm:rounded-2xl overflow-hidden mb-4 sm:mb-5 md:mb-6 transition-all duration-300 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-100/15 hover:-translate-y-0.5 opacity-0 translate-y-5" data-question="${questionCount}">
+            <div class="bg-gradient-to-br from-indigo-50 to-purple-50 p-4 flex flex-col md:flex-row md:items-center gap-3 sm:gap-4">
+                <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center font-bold relative flex-shrink-0 mx-auto md:mx-0">
                     <i class="fas fa-question absolute text-xs top-1 sm:top-2"></i>
-                    <span class="text-base sm:text-lg mt-1">${questionCount}</span>
+                    <span class="text-base sm:text-lg mt-0.5 sm:mt-1">${questionCount}</span>
                 </div>
-                <div class="flex-1 text-center sm:text-left">
-                    <h6 class="m-0 text-gray-800 text-base sm:text-lg font-semibold">Pertanyaan ${questionCount}</h6>
+                <div class="flex-1 text-center md:text-left">
+                    <h6 class="text-gray-800 text-base sm:text-lg font-semibold m-0">Pertanyaan ${questionCount}</h6>
                 </div>
-                <button type="button" class="bg-red-500 text-white w-8 sm:w-10 h-8 sm:h-10 rounded-full flex items-center justify-center border-none cursor-pointer transition-all duration-300 hover:bg-red-400 hover:scale-110 remove-question flex-shrink-0" title="Hapus pertanyaan">
+                <button type="button" class="bg-red-500 text-white w-8 h-8 sm:w-10 sm:h-10 rounded-full flex items-center justify-center border-0 cursor-pointer hover:bg-red-600 hover:scale-110 transition-all duration-300 remove-question mx-auto md:mx-0 mt-2 md:mt-0" title="Hapus pertanyaan">
                     <i class="fas fa-trash text-xs sm:text-sm"></i>
                 </button>
             </div>
 
             <div class="p-4 sm:p-5 md:p-6">
-                <div class="mb-4 sm:mb-6">
-                    <label class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">Teks Pertanyaan</label>
+                <div class="mb-4 sm:mb-5 md:mb-6">
+                    <label class="block text-gray-800 font-semibold mb-2 text-xs sm:text-sm">Teks Pertanyaan</label>
                     <textarea name="questions[${questionCount-1}][question]"
-                              class="w-full p-3 sm:p-4 border-2 border-indigo-100 rounded-lg sm:rounded-xl text-sm sm:text-base transition-all duration-300 resize-y min-h-[80px] sm:min-h-[100px] font-inherit focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100 focus:-translate-y-0.5" rows="3"
+                              class="w-full p-3 border-2 border-indigo-100 rounded-lg sm:rounded-xl text-xs sm:text-sm md:text-base transition-all duration-300 resize-y min-h-20 sm:min-h-24 font-inherit focus:border-indigo-500 focus:shadow-lg focus:shadow-indigo-100 focus:outline-none focus:-translate-y-0.5 question-text" rows="3"
                               placeholder="Tuliskan pertanyaan Anda di sini..." required></textarea>
                 </div>
 
-                <div class="mb-4 sm:mb-6">
-                    <label class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">Pilihan Jawaban</label>
+                <div class="mb-4 sm:mb-5 md:mb-6">
+                    <label class="block text-gray-800 font-semibold mb-2 text-xs sm:text-sm">Pilihan Jawaban</label>
                     <div class="flex flex-col gap-3 sm:gap-4">
                         ${generateOptionHtml('A', questionCount-1, 0)}
                         ${generateOptionHtml('B', questionCount-1, 1)}
                         ${generateOptionHtml('C', questionCount-1, 2)}
                         ${generateOptionHtml('D', questionCount-1, 3)}
                     </div>
-                    <div class="mt-3 sm:mt-4 p-3 bg-blue-50 text-blue-600 rounded-lg text-xs sm:text-sm">
+                    <div class="mt-3 p-2 sm:p-3 bg-blue-50 text-blue-700 rounded-lg text-xs sm:text-sm">
                         <i class="fas fa-info-circle mr-2"></i>Pilih radio button untuk menentukan jawaban yang benar
                     </div>
                 </div>
 
                 <div class="bg-indigo-50 p-3 sm:p-4 md:p-5 rounded-lg sm:rounded-xl border-2 border-indigo-100">
-                    <label class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">Nilai Poin</label>
-                    <select name="questions[${questionCount-1}][points]" class="w-full max-w-xs p-2 sm:p-3 border-2 border-indigo-100 rounded-lg text-sm sm:text-base bg-white transition-all duration-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100">
+                    <label class="block text-gray-800 font-semibold mb-2 text-xs sm:text-sm">Nilai Poin</label>
+                    <select name="questions[${questionCount-1}][points]" class="w-full max-w-xs p-2 sm:p-3 border-2 border-indigo-100 rounded-lg text-xs sm:text-sm bg-white transition-all duration-300 focus:border-indigo-500 focus:outline-none focus:shadow-md focus:shadow-indigo-100">
                         <option value="1" selected>1 Poin</option>
                         <option value="2">2 Poin</option>
                         <option value="3">3 Poin</option>
@@ -217,17 +215,15 @@ function addQuestion() {
 
 function generateOptionHtml(letter, questionIndex, optionIndex) {
     return `
-        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-indigo-50 rounded-lg sm:rounded-xl border-2 border-transparent transition-all duration-300 hover:border-indigo-200 hover:bg-white">
-            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white w-8 sm:w-9 h-8 sm:h-9 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0">
-                ${letter}
-            </div>
+        <div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4 p-3 sm:p-4 bg-indigo-50 rounded-lg sm:rounded-xl border-2 border-transparent hover:border-indigo-200 hover:bg-white transition-all duration-300">
+            <div class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center font-bold text-xs sm:text-sm flex-shrink-0 mx-auto sm:mx-0">${letter}</div>
             <input type="text" name="questions[${questionIndex}][options][]"
-                   class="flex-1 w-full sm:flex-1 border border-indigo-200 rounded-lg p-2 sm:p-2.5 text-sm sm:text-base transition-all duration-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100"
+                   class="flex-1 border border-indigo-200 rounded-lg p-2 sm:p-3 text-xs sm:text-sm transition-all duration-300 focus:border-indigo-500 focus:outline-none focus:shadow-md focus:shadow-indigo-100"
                    placeholder="Masukkan pilihan ${letter}" required>
-            <label class="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-gray-600 flex-shrink-0">
+            <label class="flex items-center gap-2 cursor-pointer text-xs sm:text-sm text-gray-500 justify-center sm:justify-start mt-2 sm:mt-0">
                 <input type="radio" name="questions[${questionIndex}][correct_answer]"
                        value="${optionIndex}" class="hidden" required>
-                <span class="w-5 sm:w-6 h-5 sm:h-6 border-2 border-indigo-200 rounded-full flex items-center justify-center transition-all duration-300 bg-white flex-shrink-0">
+                <span class="w-5 h-5 sm:w-6 sm:h-6 border-2 border-indigo-200 rounded-full flex items-center justify-center transition-all duration-300 bg-white flex-shrink-0">
                     <i class="fas fa-check text-xs text-white opacity-0 transition-all duration-300"></i>
                 </span>
                 <span class="whitespace-nowrap">Benar</span>
@@ -237,36 +233,55 @@ function generateOptionHtml(letter, questionIndex, optionIndex) {
 }
 
 function attachQuestionEventListeners() {
+    // Handle remove buttons
     const removeButtons = document.querySelectorAll('.remove-question');
     removeButtons.forEach(button => {
         button.removeEventListener('click', handleRemoveQuestion);
         button.addEventListener('click', handleRemoveQuestion);
     });
 
-    // Attach radio button listeners
-    const radioInputs = document.querySelectorAll('input[type="radio"]');
-    radioInputs.forEach(radio => {
-        radio.addEventListener('change', function() {
-            // Reset all radio customs in the same group
-            const groupName = this.name;
-            const groupRadios = document.querySelectorAll(`input[name="${groupName}"]`);
-            groupRadios.forEach(r => {
-                const custom = r.nextElementSibling;
-                const icon = custom.querySelector('i');
-                if (r === this) {
-                    custom.classList.add('bg-gradient-to-br', 'from-indigo-500', 'to-purple-600', 'border-indigo-500');
-                    custom.classList.remove('border-indigo-200');
-                    icon.classList.remove('opacity-0');
-                    icon.classList.add('opacity-100');
-                } else {
-                    custom.classList.remove('bg-gradient-to-br', 'from-indigo-500', 'to-purple-600', 'border-indigo-500');
-                    custom.classList.add('border-indigo-200');
-                    icon.classList.add('opacity-0');
-                    icon.classList.remove('opacity-100');
-                }
-            });
+    // Handle radio button styling for all questions
+    const allQuestions = document.querySelectorAll('[data-question]');
+    allQuestions.forEach(questionCard => {
+        const radioInputs = questionCard.querySelectorAll('input[type="radio"]');
+        radioInputs.forEach(radio => {
+            // Remove existing event listener to prevent duplicates
+            radio.removeEventListener('change', handleRadioChange);
+            radio.addEventListener('change', handleRadioChange);
         });
     });
+}
+
+function handleRadioChange() {
+    // Reset all radio buttons in this specific question
+    const questionCard = this.closest('[data-question]');
+    if (!questionCard) return;
+
+    const allSpans = questionCard.querySelectorAll('input[type="radio"] + span');
+
+    allSpans.forEach(span => {
+        span.classList.remove('bg-gradient-to-br', 'from-indigo-500', 'to-purple-600', 'border-indigo-500');
+        span.classList.add('border-indigo-200', 'bg-white');
+        const icon = span.querySelector('i');
+        if (icon) {
+            icon.classList.remove('opacity-100');
+            icon.classList.add('opacity-0');
+        }
+    });
+
+    // Style the selected radio
+    if (this.checked) {
+        const span = this.nextElementSibling;
+        if (span) {
+            span.classList.remove('border-indigo-200', 'bg-white');
+            span.classList.add('bg-gradient-to-br', 'from-indigo-500', 'to-purple-600', 'border-indigo-500');
+            const icon = span.querySelector('i');
+            if (icon) {
+                icon.classList.remove('opacity-0');
+                icon.classList.add('opacity-100');
+            }
+        }
+    }
 }
 
 function handleRemoveQuestion(e) {
@@ -356,171 +371,4 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 </script>
 
-<style>
-/* Custom animations for icons that Tailwind doesn't cover */
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-    40% { transform: translateY(-5px); }
-    60% { transform: translateY(-3px); }
-}
-
-.animate-bounce-custom {
-    animation: bounce 2s infinite;
-}
-
-/* Custom scrollbar styling */
-.questions-container::-webkit-scrollbar {
-    width: 8px;
-}
-
-.questions-container::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-}
-
-.questions-container::-webkit-scrollbar-thumb {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 4px;
-}
-
-.questions-container::-webkit-scrollbar-thumb:hover {
-    background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
-}
-
-/* Loading state */
-.loading {
-    opacity: 0.7;
-    pointer-events: none;
-    position: relative;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid #667eea;
-    border-top-color: transparent;
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-/* Responsive improvements */
-@media (max-width: 640px) {
-    .max-w-7xl {
-        max-width: 100%;
-    }
-
-    /* Better text wrapping on small screens */
-    .break-words {
-        word-break: break-word;
-        hyphens: auto;
-    }
-
-    /* Stack form elements better on mobile */
-    .flex-col.lg\:flex-row > * {
-        width: 100%;
-    }
-
-    /* Better button spacing on mobile */
-    .flex.flex-col.sm\:flex-row.gap-3 {
-        gap: 0.75rem;
-    }
-
-    /* Ensure full width buttons on very small screens */
-    @media (max-width: 480px) {
-        .w-full.sm\:w-auto {
-            width: 100% !important;
-        }
-    }
-}
-
-@media (max-width: 768px) {
-    /* Optimize spacing for tablet sizes */
-    .gap-4.sm\:gap-5 {
-        gap: 1rem;
-    }
-
-    /* Better form field sizing */
-    .max-w-xs {
-        max-width: 100%;
-    }
-}
-
-/* Print styles */
-@media print {
-    .bg-gradient-to-br,
-    .shadow-2xl,
-    button,
-    .hover\:shadow-lg,
-    .hover\:-translate-y-0\.5 {
-        display: none !important;
-    }
-
-    .bg-white {
-        box-shadow: none !important;
-        border: 1px solid #ccc !important;
-    }
-
-    [data-question] {
-        break-inside: avoid;
-        margin-bottom: 20px;
-    }
-}
-
-/* Focus ring improvements for accessibility */
-.focus\:ring-4:focus {
-    --tw-ring-offset-shadow: 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);
-    --tw-ring-shadow: 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);
-    box-shadow: var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000);
-}
-
-/* Custom disabled states */
-button:disabled {
-    opacity: 0.6 !important;
-    cursor: not-allowed !important;
-    transform: none !important;
-}
-
-input:disabled,
-textarea:disabled,
-select:disabled {
-    background-color: #f7fafc !important;
-    color: #a0aec0 !important;
-    cursor: not-allowed !important;
-}
-
-/* Touch-friendly improvements for mobile */
-@media (hover: none) {
-    .hover\:-translate-y-0\.5:hover {
-        transform: none;
-    }
-
-    .hover\:scale-110:hover {
-        transform: scale(1.05);
-    }
-}
-
-/* Improve tap targets for mobile */
-@media (max-width: 768px) {
-    button,
-    input[type="radio"] + span,
-    .cursor-pointer {
-        min-height: 44px;
-        min-width: 44px;
-    }
-
-    /* Better spacing for mobile form elements */
-    .p-3.sm\:p-4 {
-        padding: 1rem;
-    }
-}
-</style>
 @endsection
