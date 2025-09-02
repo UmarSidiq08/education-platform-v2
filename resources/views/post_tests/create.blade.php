@@ -107,7 +107,7 @@
         <!-- Main Form -->
         <div class="bg-white rounded-xl shadow-lg border border-gray-200">
             <div class="p-4 sm:p-6 lg:p-8">
-                <form action="#" method="POST" id="postTestForm">
+                <form action="{{ route('post_tests.store', $class) }}" method="POST" id="postTestForm">
                     <!-- Basic Information -->
                     <div class="mb-6 sm:mb-8">
                         <h3 class="text-lg sm:text-xl font-bold text-gray-800 mb-4 sm:mb-6 pb-3 border-b border-gray-200">
@@ -202,7 +202,7 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-between pt-4 sm:pt-6 border-t border-gray-200">
-                        <a href="#"
+                        <a href="{{ route('classes.show', $class->id) }}"
                            class="flex items-center justify-center px-4 sm:px-6 py-2 sm:py-3 border border-gray-300 rounded-lg text-gray-700 font-semibold hover:bg-gray-50 transition-all duration-300 text-sm sm:text-base order-2 sm:order-1">
                             <i class="fas fa-arrow-left mr-2"></i>Kembali
                         </a>

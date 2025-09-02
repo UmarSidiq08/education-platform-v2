@@ -3,7 +3,8 @@
 @section('content')
     <div class="max-w-7xl mx-auto px-8 py-8 font-sans">
         <!-- Header Section -->
-        <div class="relative mb-12 p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl text-white overflow-hidden">
+        <div
+            class="relative mb-12 p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-2xl text-white overflow-hidden">
             <div class="relative z-10">
                 <h1 class="text-4xl font-extrabold mb-2">Create New Learning Material</h1>
                 <p class="text-lg opacity-90 mb-4">Design engaging content for your students</p>
@@ -30,7 +31,7 @@
                             <p class="text-sm text-slate-600">Create comprehensive learning content</p>
                         </div>
                         <a href="{{ route('classes.show', $class->id) }}"
-                           class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 font-medium hover:bg-slate-100 hover:-translate-y-0.5 transition-all duration-300">
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-lg text-slate-600 font-medium hover:bg-slate-100 hover:-translate-y-0.5 transition-all duration-300">
                             <i class="fas fa-arrow-left"></i> Back to Class
                         </a>
                     </div>
@@ -77,15 +78,18 @@
                                 <!-- Title -->
                                 <div class="flex flex-col gap-2">
                                     <div class="flex justify-between items-center">
-                                        <label for="title" class="text-base font-semibold text-slate-800">Material Title</label>
-                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">Required</span>
+                                        <label for="title" class="text-base font-semibold text-slate-800">Material
+                                            Title</label>
+                                        <span
+                                            class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">Required</span>
                                     </div>
                                     <div class="relative">
-                                        <i class="fas fa-heading absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                                        <i
+                                            class="fas fa-heading absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                                         <input type="text"
-                                               class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:border-indigo-600 focus:ring-3 focus:ring-indigo-200 transition-all duration-300 @error('title') border-red-500 @enderror"
-                                               id="title" name="title" value="{{ old('title') }}" required
-                                               placeholder="Enter an engaging material title">
+                                            class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:border-indigo-600 focus:ring-3 focus:ring-indigo-200 transition-all duration-300 @error('title') border-red-500 @enderror"
+                                            id="title" name="title" value="{{ old('title') }}" required
+                                            placeholder="Enter an engaging material title">
                                     </div>
                                     @error('title')
                                         <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
@@ -95,14 +99,16 @@
                                 <!-- Description -->
                                 <div class="flex flex-col gap-2">
                                     <div class="flex justify-between items-center">
-                                        <label for="description" class="text-base font-semibold text-slate-800">Short Description</label>
-                                        <span class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">Optional</span>
+                                        <label for="description" class="text-base font-semibold text-slate-800">Short
+                                            Description</label>
+                                        <span
+                                            class="px-2 py-1 bg-blue-100 text-blue-800 text-xs font-semibold rounded">Optional</span>
                                     </div>
                                     <div class="relative">
                                         <i class="fas fa-align-left absolute left-4 top-5 text-slate-400"></i>
-                                        <textarea class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:border-indigo-600 focus:ring-3 focus:ring-indigo-200 transition-all duration-300 resize-vertical @error('description') border-red-500 @enderror"
-                                                  id="description" name="description" rows="3"
-                                                  placeholder="Provide a brief description of this material...">{{ old('description') }}</textarea>
+                                        <textarea
+                                            class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-lg text-base focus:border-indigo-600 focus:ring-3 focus:ring-indigo-200 transition-all duration-300 resize-vertical @error('description') border-red-500 @enderror"
+                                            id="description" name="description" rows="3" placeholder="Provide a brief description of this material...">{{ old('description') }}</textarea>
                                     </div>
                                     @error('description')
                                         <div class="text-red-600 text-sm mt-1">{{ $message }}</div>
@@ -112,10 +118,13 @@
                                 <!-- Content with Rich Text Editor -->
                                 <div class="flex flex-col gap-2">
                                     <div class="flex justify-between items-center">
-                                        <label for="content" class="text-base font-semibold text-slate-800">Material Content</label>
-                                        <span class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">Required</span>
+                                        <label for="content" class="text-base font-semibold text-slate-800">Material
+                                            Content</label>
+                                        <span
+                                            class="px-2 py-1 bg-red-100 text-red-800 text-xs font-semibold rounded">Required</span>
                                     </div>
-                                    <div class="border-2 border-slate-200 rounded-xl overflow-hidden transition-all duration-300 focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-200">
+                                    <div
+                                        class="border-2 border-slate-200 rounded-xl overflow-hidden transition-all duration-300 focus-within:border-indigo-600 focus-within:ring-4 focus-within:ring-indigo-200">
                                         <div id="quill-editor" style="height: 400px;">{!! old('content') !!}</div>
                                         <textarea name="content" id="content" class="hidden" required>{{ old('content') }}</textarea>
                                     </div>
@@ -124,7 +133,8 @@
                                     @enderror
                                     <div class="flex items-center gap-2 mt-2 text-sm text-slate-600">
                                         <i class="fas fa-lightbulb text-amber-500"></i>
-                                        <span>Tip: Use the toolbar above to format your content with headings, bold text, lists, and more</span>
+                                        <span>Tip: Use the toolbar above to format your content with headings, bold text,
+                                            lists, and more</span>
                                     </div>
                                 </div>
                             </div>
@@ -140,8 +150,10 @@
                                     <div class="p-4">
                                         <!-- Video Upload Option -->
                                         <div class="mb-4">
-                                            <label class="text-sm font-semibold text-slate-800 mb-2 block">Upload Video File</label>
-                                            <div class="relative border-2 border-dashed border-slate-300 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-600 hover:bg-slate-50 transition-all duration-300">
+                                            <label class="text-sm font-semibold text-slate-800 mb-2 block">Upload Video
+                                                File</label>
+                                            <div
+                                                class="relative border-2 border-dashed border-slate-300 rounded-lg p-4 text-center cursor-pointer hover:border-indigo-600 hover:bg-slate-50 transition-all duration-300">
                                                 <input type="file"
                                                     class="absolute inset-0 w-full h-full opacity-0 cursor-pointer @error('video') border-red-500 @enderror"
                                                     id="video" name="video" accept="video/*"
@@ -171,9 +183,12 @@
 
                                         <!-- Video URL Option -->
                                         <div class="mb-4">
-                                            <label for="video_url" class="text-sm font-semibold text-slate-800 mb-2 block">Online Video Link</label>
+                                            <label for="video_url"
+                                                class="text-sm font-semibold text-slate-800 mb-2 block">Online Video
+                                                Link</label>
                                             <div class="relative">
-                                                <i class="fas fa-link absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
+                                                <i
+                                                    class="fas fa-link absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400"></i>
                                                 <input type="url"
                                                     class="w-full pl-10 pr-3 py-2 border border-slate-200 rounded-lg text-sm focus:border-indigo-600 focus:ring-2 focus:ring-indigo-200 transition-all duration-300 @error('video_url') border-red-500 @enderror"
                                                     id="video_url" name="video_url" value="{{ old('video_url') }}"
@@ -198,11 +213,15 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label for="video_thumbnail" class="text-sm font-semibold text-slate-800 mb-2 block">Thumbnail Video</label>
-                                            <input type="file" class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
-                                                   id="video_thumbnail" name="video_thumbnail">
+                                            <label for="video_thumbnail"
+                                                class="text-sm font-semibold text-slate-800 mb-2 block">Thumbnail
+                                                Video</label>
+                                            <input type="file"
+                                                class="w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-medium file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100"
+                                                id="video_thumbnail" name="video_thumbnail">
                                             @if (isset($material) && $material->video_thumbnail)
-                                                <img src="{{ $material->video_thumbnail_url }}" width="100" class="mt-2 rounded-lg">
+                                                <img src="{{ $material->video_thumbnail_url }}" width="100"
+                                                    class="mt-2 rounded-lg">
                                             @endif
                                         </div>
                                     </div>
@@ -222,13 +241,18 @@
                                                     class="absolute opacity-0 w-0 h-0 @error('is_published') border-red-500 @enderror"
                                                     id="is_published" name="is_published" value="1"
                                                     {{ old('is_published', 0) ? 'checked' : '' }}>
-                                                <label class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-green-50 transition-all duration-300" for="is_published">
-                                                    <div class="w-5 h-5 border-2 border-slate-300 rounded mt-0.5 flex-shrink-0 transition-all duration-300 peer-checked:bg-emerald-600 peer-checked:border-emerald-600 relative">
-                                                        <i class="fas fa-check text-white text-xs absolute top-0.5 left-0.5 opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></i>
+                                                <label
+                                                    class="flex items-start gap-3 cursor-pointer p-3 rounded-lg hover:bg-green-50 transition-all duration-300"
+                                                    for="is_published">
+                                                    <div
+                                                        class="w-5 h-5 border-2 border-slate-300 rounded mt-0.5 flex-shrink-0 transition-all duration-300 peer-checked:bg-emerald-600 peer-checked:border-emerald-600 relative">
+                                                        <i
+                                                            class="fas fa-check text-white text-xs absolute top-0.5 left-0.5 opacity-0 peer-checked:opacity-100 transition-opacity duration-300"></i>
                                                     </div>
                                                     <div>
                                                         <strong class="block text-slate-800 mb-1">Publish Material</strong>
-                                                        <small class="text-slate-600">Material will be visible to students</small>
+                                                        <small class="text-slate-600">Material will be visible to
+                                                            students</small>
                                                     </div>
                                                 </label>
                                             </div>
@@ -241,16 +265,43 @@
 
                                 <!-- Action Buttons -->
                                 <div class="flex flex-col gap-3">
-                                    <button type="submit" class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/40 transition-all duration-300">
+                                    <button type="submit"
+                                        class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-700 text-white font-semibold rounded-lg hover:-translate-y-0.5 hover:shadow-lg hover:shadow-indigo-500/40 transition-all duration-300">
                                         <i class="fas fa-save"></i> Save Material
                                     </button>
-                                    <a href="{{ route('classes.show', $class->id) }}" class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-white text-slate-600 font-medium border border-slate-200 rounded-lg hover:bg-slate-50 hover:-translate-y-0.5 transition-all duration-300 no-underline">
+                                    <a href="{{ route('classes.show', $class->id) }}"
+                                        class="inline-flex items-center justify-center gap-2 w-full px-6 py-3 bg-white text-slate-600 font-medium border border-slate-200 rounded-lg hover:bg-slate-50 hover:-translate-y-0.5 transition-all duration-300 no-underline">
                                         <i class="fas fa-times"></i> Cancel
                                     </a>
                                 </div>
                             </div>
                         </div>
                     </form>
+                </div>
+                <!-- Loading Modal -->
+                <div id="loadingModal"
+                    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+                    <div class="bg-white rounded-xl p-8 max-w-md w-full mx-4">
+                        <div class="text-center">
+                            <!-- Animated spinner -->
+                            <div
+                                class="w-16 h-16 border-4 border-indigo-100 border-t-indigo-600 rounded-full animate-spin mx-auto mb-4">
+                            </div>
+
+                            <h3 class="text-xl font-semibold text-slate-800 mb-2">Uploading Material</h3>
+                            <p class="text-slate-600 mb-4">Please wait while we process your video and save the material...
+                            </p>
+
+                            <!-- Progress bar -->
+                            <div class="w-full bg-slate-200 rounded-full h-2 mb-4">
+                                <div id="uploadProgress"
+                                    class="bg-indigo-600 h-2 rounded-full transition-all duration-300" style="width: 0%">
+                                </div>
+                            </div>
+
+                            <p class="text-sm text-slate-500" id="progressText">Initializing...</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -267,16 +318,42 @@
             theme: 'snow',
             modules: {
                 toolbar: [
-                    [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-                    [{ 'font': [] }],
-                    [{ 'size': ['small', false, 'large', 'huge'] }],
+                    [{
+                        'header': [1, 2, 3, 4, 5, 6, false]
+                    }],
+                    [{
+                        'font': []
+                    }],
+                    [{
+                        'size': ['small', false, 'large', 'huge']
+                    }],
                     ['bold', 'italic', 'underline', 'strike'],
-                    [{ 'color': [] }, { 'background': [] }],
-                    [{ 'script': 'sub'}, { 'script': 'super' }],
-                    [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                    [{ 'indent': '-1'}, { 'indent': '+1' }],
-                    [{ 'direction': 'rtl' }],
-                    [{ 'align': [] }],
+                    [{
+                        'color': []
+                    }, {
+                        'background': []
+                    }],
+                    [{
+                        'script': 'sub'
+                    }, {
+                        'script': 'super'
+                    }],
+                    [{
+                        'list': 'ordered'
+                    }, {
+                        'list': 'bullet'
+                    }],
+                    [{
+                        'indent': '-1'
+                    }, {
+                        'indent': '+1'
+                    }],
+                    [{
+                        'direction': 'rtl'
+                    }],
+                    [{
+                        'align': []
+                    }],
                     ['blockquote', 'code-block'],
                     ['link', 'image', 'video'],
                     ['clean']
@@ -368,6 +445,66 @@
                 checkIcon.classList.remove('opacity-100');
             }
         });
+        // Handle form submission with loading animation
+        document.getElementById('materialForm').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const content = quill.getText().trim();
+
+            if (!title || !content) {
+                e.preventDefault();
+                alert('Title and content are required!');
+                return false;
+            }
+
+            // Ensure hidden textarea has the latest content
+            document.getElementById('content').value = quill.root.innerHTML;
+
+            // Show loading modal
+            const loadingModal = document.getElementById('loadingModal');
+            const progressBar = document.getElementById('uploadProgress');
+            const progressText = document.getElementById('progressText');
+
+            loadingModal.classList.remove('hidden');
+
+            // Disable submit button to prevent double submission
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
+
+            // Simulate progress if it's a video upload (since we can't get actual progress with standard form submission)
+            const videoInput = document.getElementById('video');
+            let hasVideo = false;
+
+            if (videoInput && videoInput.files && videoInput.files[0]) {
+                hasVideo = true;
+                const file = videoInput.files[0];
+                const fileSize = file.size;
+
+                // Simulate progress for large files
+                if (fileSize > 10485760) { // 10MB
+                    let progress = 0;
+                    const interval = setInterval(() => {
+                        progress += 5;
+                        if (progress <= 95) {
+                            progressBar.style.width = progress + '%';
+                            progressText.textContent =
+                                `Uploading ${Math.round(progress)}% - ${(fileSize * progress / 100 / 1048576).toFixed(1)}MB of ${(fileSize / 1048576).toFixed(1)}MB`;
+                        } else {
+                            clearInterval(interval);
+                        }
+                    }, 500);
+                } else {
+                    progressBar.style.width = '50%';
+                    progressText.textContent = "Processing video...";
+                }
+            } else {
+                progressBar.style.width = '50%';
+                progressText.textContent = "Saving material...";
+            }
+
+            // The form will continue to submit normally
+            // The modal will disappear when the page reloads after submission
+        });
     </script>
 
     <style>
@@ -447,6 +584,26 @@
             .ql-editor {
                 padding: 16px !important;
             }
+        }
+
+        /* Animation for the spinner */
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .animate-spin {
+            animation: spin 1s linear infinite;
+        }
+
+        /* Ensure the modal is on top of everything */
+        .z-50 {
+            z-index: 50;
         }
     </style>
 @endsection

@@ -11,17 +11,13 @@ use Illuminate\Support\Facades\Storage;
 
 class MaterialController extends Controller
 {
-    // Menampilkan form tambah materi
     public function create(ClassModel $class)
     {
         if ($class->mentor_id !== auth()->id()) {
             abort(403);
         }
-
         return view('materials.create', compact('class'));
     }
-
-    // Menyimpan materi baru
     public function store(Request $request)
     {
         $validated = $request->validate([
@@ -83,8 +79,7 @@ class MaterialController extends Controller
         if ($user->role === 'mentor') {
             // Mentor bisa akses semua materi seperti siswa
             // Tidak ada pembatasan khusus untuk mentor
-        }
-        elseif ($user->role === 'siswa') {
+        } elseif ($user->role === 'siswa') {
             // Siswa bisa akses semua materi
         } else {
             abort(403, 'Akses ditolak.');

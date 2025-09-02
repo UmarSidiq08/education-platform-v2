@@ -64,39 +64,5 @@
             </div>
         </div>
     </div>
-
-    <!-- Quick Actions -->
-    {{-- <div class="bg-white rounded-xl shadow-sm p-6">
-        <h2 class="text-xl font-bold text-gray-800 mb-6">Aksi Cepat</h2>
-        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <a href="{{ route('admin.users.create') ?? '#' }}" class="bg-blue-50 hover:bg-blue-100 rounded-lg p-4 text-center transition-colors group">
-                <div class="bg-blue-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-user-plus text-white"></i>
-                </div>
-                <p class="text-sm font-medium text-gray-800">Tambah User</p>
-            </a>
-
-            <a href="{{ route('admin.siswa.index') ?? '#' }}" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 text-center transition-colors group">
-                <div class="bg-green-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-list text-white"></i>
-                </div>
-                <p class="text-sm font-medium text-gray-800">Kelola Siswa</p>
-            </a>
-
-            <a href="{{ route('admin.mentor.index') ?? '#' }}" class="bg-yellow-50 hover:bg-yellow-100 rounded-lg p-4 text-center transition-colors group">
-                <div class="bg-yellow-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-users-cog text-white"></i>
-                </div>
-                <p class="text-sm font-medium text-gray-800">Kelola Mentor</p>
-            </a>
-
-            <a href="{{ route('admin.reports') ?? '#' }}" class="bg-purple-50 hover:bg-purple-100 rounded-lg p-4 text-center transition-colors group">
-                <div class="bg-purple-500 w-12 h-12 rounded-lg flex items-center justify-center mx-auto mb-3 group-hover:scale-110 transition-transform">
-                    <i class="fas fa-chart-bar text-white"></i>
-                </div>
-                <p class="text-sm font-medium text-gray-800">Laporan</p>
-            </a>
-        </div>
-    </div> --}}
 </div>
 @endsection
