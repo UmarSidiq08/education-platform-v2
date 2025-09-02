@@ -225,7 +225,7 @@
             <div class="bg-black/30 border-t border-white/10 py-4 sm:py-6 mt-4">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col lg:flex-row justify-between items-center gap-4 lg:gap-6">
                     <div class="text-center lg:text-left order-2 lg:order-1 w-full lg:w-auto">
-                        <p class="text-slate-400 mb-2 text-xs sm:text-sm">&copy; 2025 Gletzer Julio Ivanees & Umar Sidiq. All rights reserved.</p>
+                        <p class="text-slate-400 mb-2 text-xs sm:text-sm">&copy; <a href="https://www.instagram.com/gletzerg/">2025 Gletzer Julio Ivanees &</a><a href="https://www.instagram.com/umrsdiq_/"> Umar Sidiq.</a> All rights reserved.</p>
                         <div class="flex gap-3 sm:gap-5 flex-wrap justify-center lg:justify-start">
                             <a href="#privacy" class="text-slate-300 text-xs hover:text-primary transition-colors duration-300">Privacy Policy</a>
                             <a href="#terms" class="text-slate-300 text-xs hover:text-primary transition-colors duration-300">Terms of Service</a>

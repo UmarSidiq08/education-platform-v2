@@ -302,11 +302,11 @@
     }
 
     .slide-bg-2 {
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        background: linear-gradient(135deg, #998a00 0%, #785400 100%);
     }
 
     .slide-bg-3 {
-        background: linear-gradient(135deg, #ff0000 0%, #edc3c3 100%);
+        background: linear-gradient(135deg, #8a7100 0%, #edc3c3 100%);
     }
 
     .slide-pattern {
