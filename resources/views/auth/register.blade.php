@@ -11,7 +11,7 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
+    <link rel="icon" type="image/png" href="{{ asset('images/favicon.png') }}">
     <!-- Scripts -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -729,7 +729,8 @@
                 })
                 .then(data => {
                     // Clear loading state
-                    teacherClassSelect.innerHTML = '<option value="">Pilih kelas yang ingin diikuti...</option>';
+                    teacherClassSelect.innerHTML =
+                    '<option value="">Pilih kelas yang ingin diikuti...</option>';
 
                     if (Array.isArray(data) && data.length > 0) {
                         // Sort classes alphabetically for better UX
@@ -746,13 +747,15 @@
                         // Initialize Select2 after options are loaded
                         initializeSelect2();
                     } else {
-                        teacherClassSelect.innerHTML += '<option value="" disabled>Tidak ada kelas tersedia</option>';
+                        teacherClassSelect.innerHTML +=
+                            '<option value="" disabled>Tidak ada kelas tersedia</option>';
                         initializeSelect2();
                     }
                 })
                 .catch(error => {
                     console.error('Error loading teacher classes:', error);
-                    teacherClassSelect.innerHTML = '<option value="" disabled>Gagal memuat kelas: ' + error.message + '</option>';
+                    teacherClassSelect.innerHTML = '<option value="" disabled>Gagal memuat kelas: ' + error
+                        .message + '</option>';
                     initializeSelect2();
                 });
 
@@ -801,7 +804,8 @@
                 clearTimeout(resizeTimeout);
                 resizeTimeout = setTimeout(function() {
                     // Reinitialize Select2 on resize for better mobile experience
-                    if ($(teacherClassSelect).hasClass("select2-hidden-accessible") && !teacherClassSection.classList.contains('hidden')) {
+                    if ($(teacherClassSelect).hasClass("select2-hidden-accessible") && !
+                        teacherClassSection.classList.contains('hidden')) {
                         initializeSelect2();
                     }
                 }, 250);
@@ -849,10 +853,11 @@
             const submitBtn = document.getElementById('submit-btn');
             if (isLoading) {
                 submitBtn.disabled = true;
-                submitBtn.innerHTML = '<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Mendaftar...</span>';
+                submitBtn.innerHTML =
+                    '<span class="flex items-center justify-center"><svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Mendaftar...</span>';
             } else {
                 submitBtn.disabled = false;
-                submitBtn.innerHTML = '{{ __("Register") }}';
+                submitBtn.innerHTML = '{{ __('Register') }}';
             }
         }
     </script>
