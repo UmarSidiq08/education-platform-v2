@@ -1,0 +1,331 @@
+// Education Platform v2 - Database Schema
+// Generated from Laravel Migrations
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table users {
+  id bigint [primary key, increment]
+  name varchar [unique, not null]
+  email varchar [unique, not null]
+  password varchar [not null]
+  role enum('siswa', 'mentor', 'guru') [default: 'siswa']
+  is_verified boolean [default: false]
+  email_verified_at timestamp [null]
+  remember_token varchar [null]
+  phone varchar [null]
+  location varchar [null]
+  bio text [null]
+  avatar varchar [null]
+  profile_photo_path varchar [null]
+  
+  // Mentor specific fields
+  expertise varchar [null, note: 'e.g., Web Development']
+  specialties json [null, note: 'e.g., ["React", "Node.js", "TypeScript"]']
+  rating decimal(3,2) [default: 0.00, note: 'Rating out of 5.00']
+  total_students integer [default: 0]
+  mentor_badge varchar [null, note: 'e.g., "Top Mentor", "AI Specialist"']
+  badge_color varchar [null, note: 'e.g., "bg-gradient-to-r from-yellow-400 to-orange-400"']
+  
+  // Stats fields
+  skills json [null]
+  total_projects integer [default: 0]
+  completed_tasks integer [default: 0]
+  total_hours integer [default: 0]
+  achievements integer [default: 0]
+  
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table teacher_classes {
+  id bigint [primary key, increment]
+  name varchar [not null, note: 'e.g., Matematika']
+  subject varchar [null, note: 'e.g., Matematika Dasar']
+  description text [null]
+  teacher_id bigint [not null, ref: > users.id]
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    teacher_id
+    name
+  }
+}
+
+Table classes {
+  id bigint [primary key, increment]
+  name varchar [not null]
+  description text [null]
+  mentor_id bigint [not null, ref: > users.id]
+  teacher_class_id bigint [null, ref: > teacher_classes.id]
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    mentor_id
+    teacher_class_id
+  }
+}
+
+Table materials {
+  id bigint [primary key, increment]
+  title varchar [not null]
+  description text [null]
+  content longtext [not null]
+  video_path varchar [null]
+  video_url text [null]
+  video_thumbnail varchar [null]
+  class_id bigint [not null, ref: > classes.id]
+  order integer [default: 0]
+  is_published boolean [default: false]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table quizzes {
+  id bigint [primary key, increment]
+  title varchar [not null]
+  description text [null]
+  material_id bigint [not null, ref: > materials.id]
+  created_by bigint [not null, ref: > users.id]
+  time_limit integer [default: 30, note: 'dalam menit']
+  total_questions integer [default: 0]
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table questions {
+  id bigint [primary key, increment]
+  quiz_id bigint [not null, ref: > quizzes.id]
+  question text [not null]
+  options json [not null, note: 'untuk multiple choice']
+  correct_answer varchar [not null]
+  points integer [default: 1]
+  order integer [default: 1]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table quiz_attempts {
+  id bigint [primary key, increment]
+  quiz_id bigint [not null, ref: > quizzes.id]
+  user_id bigint [not null, ref: > users.id]
+  answers json [not null, note: 'menyimpan jawaban user']
+  score integer [not null]
+  total_questions integer [not null]
+  correct_answers integer [not null]
+  time_remaining integer [null, note: 'Waktu tersisa dalam detik']
+  started_at timestamp [not null]
+  finished_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    (quiz_id, user_id, finished_at)
+    (user_id, finished_at)
+  }
+}
+
+Table post_tests {
+  id bigint [primary key, increment]
+  class_id bigint [not null, ref: > classes.id]
+  mentor_id bigint [not null, ref: > users.id]
+  title varchar [not null]
+  description text [null]
+  time_limit integer [default: 0]
+  passing_score integer [default: 70]
+  is_active boolean [default: true]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table post_test_questions {
+  id bigint [primary key, increment]
+  post_test_id bigint [not null, ref: > post_tests.id]
+  question text [not null]
+  options json [not null]
+  correct_answer integer [not null]
+  points integer [default: 1]
+  order integer [default: 0]
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table post_test_attempts {
+  id bigint [primary key, increment]
+  post_test_id bigint [not null, ref: > post_tests.id]
+  user_id bigint [not null, ref: > users.id]
+  answers json [null]
+  score integer [default: 0]
+  total_questions integer [default: 0]
+  correct_answers integer [default: 0]
+  time_remaining integer [default: 0]
+  attempt_number integer [default: 1]
+  requires_approval boolean [default: false]
+  mentor_approved boolean [default: false]
+  approval_requested_at timestamp [null]
+  approved_at timestamp [null]
+  approval_reason text [null]
+  is_approval_attempt boolean [default: false]
+  is_used boolean [default: false]
+  started_at timestamp [null]
+  finished_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+  
+  Note: 'User dapat melakukan multiple attempts untuk post test'
+}
+
+Table mentor_requests {
+  id bigint [primary key, increment]
+  mentor_id bigint [not null, ref: > users.id]
+  teacher_class_id bigint [not null, ref: > teacher_classes.id]
+  status enum('pending', 'approved', 'rejected') [default: 'pending']
+  message text [null, note: 'Pesan dari mentor (opsional)']
+  requested_at timestamp [not null, note: 'Kapan request dibuat']
+  approved_at timestamp [null, note: 'Kapan di-approve']
+  rejected_at timestamp [null, note: 'Kapan di-reject']
+  approved_by bigint [null, ref: > users.id, note: 'Siapa yang approve (teacher_id)']
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    mentor_id
+    teacher_class_id
+    status
+    requested_at
+    (mentor_id, teacher_class_id) [unique]
+  }
+}
+
+Table activities {
+  id bigint [primary key, increment]
+  user_id bigint [not null, ref: > users.id]
+  action varchar [not null]
+  type enum('success', 'info', 'warning', 'error') [default: 'info']
+  created_at timestamp
+  updated_at timestamp
+}
+
+// Permission Tables (Laravel Spatie Permission Package)
+Table permissions {
+  id bigint [primary key, increment]
+  name varchar [not null]
+  guard_name varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    (name, guard_name) [unique]
+  }
+}
+
+Table roles {
+  id bigint [primary key, increment]
+  name varchar [not null]
+  guard_name varchar [not null]
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    (name, guard_name) [unique]
+  }
+}
+
+Table model_has_permissions {
+  permission_id bigint [not null, ref: > permissions.id]
+  model_type varchar [not null]
+  model_morph_key bigint [not null]
+  
+  indexes {
+    (model_morph_key, model_type)
+    (permission_id, model_morph_key, model_type) [pk]
+  }
+}
+
+Table model_has_roles {
+  role_id bigint [not null, ref: > roles.id]
+  model_type varchar [not null]
+  model_morph_key bigint [not null]
+  
+  indexes {
+    (model_morph_key, model_type)
+    (role_id, model_morph_key, model_type) [pk]
+  }
+}
+
+Table role_has_permissions {
+  permission_id bigint [not null, ref: > permissions.id]
+  role_id bigint [not null, ref: > roles.id]
+  
+  indexes {
+    (permission_id, role_id) [pk]
+  }
+}
+
+// Standard Laravel Tables
+Table password_reset_tokens {
+  email varchar [primary key]
+  token varchar [not null]
+  created_at timestamp [null]
+}
+
+Table failed_jobs {
+  id bigint [primary key, increment]
+  uuid varchar [unique, not null]
+  connection text [not null]
+  queue text [not null]
+  payload longtext [not null]
+  exception longtext [not null]
+  failed_at timestamp [not null, default: `CURRENT_TIMESTAMP`]
+}
+
+Table personal_access_tokens {
+  id bigint [primary key, increment]
+  tokenable_type varchar [not null]
+  tokenable_id bigint [not null]
+  name varchar [not null]
+  token varchar [unique, not null]
+  abilities text [null]
+  last_used_at timestamp [null]
+  expires_at timestamp [null]
+  created_at timestamp
+  updated_at timestamp
+  
+  indexes {
+    (tokenable_type, tokenable_id)
+  }
+}
+
+Table sessions {
+  id varchar [primary key]
+  user_id bigint [null, ref: > users.id]
+  ip_address varchar(45) [null]
+  user_agent text [null]
+  payload longtext [not null]
+  last_activity integer [not null]
+  
+  indexes {
+    user_id
+    last_activity
+  }
+}
+
+// Additional Relationships Notes
+Note: '''
+## Business Logic Flow:
+1. GURU creates teacher_classes
+2. MENTOR requests to join teacher_class via mentor_requests
+3. MENTOR creates classes based on approved teacher_class
+4. SISWA follows classes created by mentor
+5. Classes contain materials with quizzes and post_tests
+6. Students can attempt quizzes and post_tests with tracking
+
+## Key Features:
+- Multi-role system (siswa, mentor, guru)
+- Hierarchical learning structure
+- Quiz and post-test system with multiple attempts
+- Approval system for mentor requests and post-test results
+- Activity logging for all user actions
+- Permission management using Laravel Spatie package
+'''
