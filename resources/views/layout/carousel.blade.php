@@ -47,9 +47,8 @@ nav, .navbar {
                 </div>
                 <div class="slide-content">
                     <div class="content-badge">⚡ Quick Learning</div>
-                    <h2 class="slide-title">Cara menjadi jago dalam waktu 2 jam</h2>
-                    <p class="slide-description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin
-                        imperdiet tincidunt nunc, i.</p>
+                    <h2 class="slide-title">Belajar Kapan Saja, di Mana Saja</h2>
+                    <p class="slide-description">Akses pembelajaran online tanpa batas, fleksibel sesuai waktumu.</p>
                     <div class="slide-stats">
                         <div class="stat-item">
                             <span class="stat-number">2k+</span>
