@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->string('name')->unique()->change();
+        Schema::table('mentor_requests', function (Blueprint $table) {
+            $table->string('request_origin')->nullable()->after('teacher_class_id');
         });
     }
 
@@ -21,8 +21,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropUnique(['name']);
-        });
+        //
     }
 };

@@ -88,17 +88,32 @@
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-4">
                     <!-- Home Button -->
-                    <a href="{{ auth()->check() && auth()->user()->role === 'guru' ? route('admin.dashboard') : route('navbar.mentor') }}"
+                    <a href="{{ auth()->user()->role === 'guru' ? route('admin.dashboard') : route('navbar.mentor') }}"
                         onclick="
-       if (document.referrer && document.referrer !== window.location.href) {
-           history.back();
-           return false;
+   @if (auth()->user()->role !== 'guru') // Untuk siswa dan mentor
+       const referrer = document.referrer;
+       const currentUrl = window.location.href;
+
+       if (referrer && referrer !== currentUrl) {
+           // Cek apakah referrer mengarah ke edit profile
+           const isFromEdit = referrer.includes('edit') ||
+                             referrer.includes('/profile/edit') ||
+                             referrer.includes('edit-profile') ||
+                             referrer.includes('profile-edit');
+
+           if (!isFromEdit) {
+               // Referrer bukan edit page, aman untuk kembali
+               history.back();
+               return false;
+           }
        }
-       return true;
+
+       return true; @endif
    "
                         class="px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-lg transition-all duration-200 font-medium">
                         Kembali
                     </a>
+
 
                     <!-- Logout -->
                     <form method="POST" action="{{ route('logout') }}">
@@ -249,6 +264,7 @@
             </div>
         </div>
     </div>
+
 
 </body>
 

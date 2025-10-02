@@ -165,6 +165,7 @@
         }
 
         @media (max-width: 768px) {
+
             /* Main container adjustments */
             .bg-main-gradient {
                 margin-left: -1rem;
@@ -240,7 +241,7 @@
                 align-items: stretch;
             }
 
-            .stats-bar > div {
+            .stats-bar>div {
                 justify-content: center;
                 text-align: center;
             }
@@ -319,6 +320,7 @@
         }
 
         @media (max-width: 640px) {
+
             /* Ultra small screens */
             .bg-main-gradient {
                 margin-left: -1rem;
@@ -460,6 +462,7 @@
         }
 
         @media (max-width: 480px) {
+
             /* Extra small screens */
             .header-section h1 {
                 font-size: 1.25rem;
@@ -534,7 +537,10 @@
 
         /* Additional ripple animation CSS */
         @keyframes ripple {
-            to { transform: scale(4); opacity: 0; }
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
         }
 
         @keyframes confetti-fall {
@@ -542,6 +548,7 @@
                 transform: translateY(-10px) rotate(0deg);
                 opacity: 1;
             }
+
             100% {
                 transform: translateY(100vh) rotate(720deg);
                 opacity: 0;
@@ -552,18 +559,21 @@
     <div class="bg-main-gradient min-h-screen -mx-4 -mt-5 px-4 sm:px-6 lg:px-8">
         <div class="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-6 lg:py-8 font-sans">
             <!-- Header Section -->
-            <div class="header-section relative mb-8 sm:mb-12 p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl sm:rounded-2xl text-white overflow-hidden">
+            <div
+                class="header-section relative mb-8 sm:mb-12 p-4 sm:p-6 lg:p-8 bg-gradient-to-br from-indigo-600 to-purple-700 rounded-xl sm:rounded-2xl text-white overflow-hidden">
                 <div class="relative z-10">
                     <h1 class="text-2xl sm:text-3xl lg:text-4xl font-extrabold mb-2 text-responsive">
                         <i class="fas fa-graduation-cap me-2 sm:me-3"></i>
                         <span class="break-words">Belajar: {{ $class->name }}</span>
                     </h1>
-                    <p class="text-sm sm:text-base lg:text-lg opacity-90 mb-4 sm:mb-6 text-responsive">Mulai perjalanan belajar Anda dan kembangkan kemampuan</p>
+                    <p class="text-sm sm:text-base lg:text-lg opacity-90 mb-4 sm:mb-6 text-responsive">Mulai perjalanan
+                        belajar Anda dan kembangkan kemampuan</p>
 
                     <div class="flex flex-wrap gap-2 sm:gap-3 justify-center sm:justify-start">
                         <a href="{{ route('classes.show', $class->id) }}"
                             class="group inline-flex items-center gap-1 sm:gap-2 px-4 sm:px-6 py-2.5 sm:py-3 bg-white text-indigo-600 font-semibold rounded-md sm:rounded-lg transition-all duration-300 hover:bg-indigo-50 hover:-translate-y-1 text-sm sm:text-base btn-responsive">
-                            <i class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform text-sm sm:text-base"></i>
+                            <i
+                                class="fas fa-arrow-left group-hover:-translate-x-1 transition-transform text-sm sm:text-base"></i>
                             <span class="hidden xs:inline">Kembali ke Detail Kelas</span>
                             <span class="xs:hidden">Kembali</span>
                         </a>
@@ -572,9 +582,15 @@
 
                 <!-- Decorative circles - hidden on very small screens -->
                 <div class="absolute top-0 right-0 w-full h-full overflow-hidden pointer-events-none hidden sm:block">
-                    <div class="absolute -top-6 sm:-top-12 -right-6 sm:-right-12 w-24 sm:w-36 lg:w-48 h-24 sm:h-36 lg:h-48 bg-white bg-opacity-10 rounded-full"></div>
-                    <div class="absolute top-1/2 right-12 sm:right-24 w-18 sm:w-24 lg:w-36 h-18 sm:h-24 lg:h-36 bg-white bg-opacity-10 rounded-full"></div>
-                    <div class="absolute -bottom-4 sm:-bottom-8 right-24 sm:right-48 w-12 sm:w-16 lg:w-24 h-12 sm:h-16 lg:h-24 bg-white bg-opacity-10 rounded-full"></div>
+                    <div
+                        class="absolute -top-6 sm:-top-12 -right-6 sm:-right-12 w-24 sm:w-36 lg:w-48 h-24 sm:h-36 lg:h-48 bg-white bg-opacity-10 rounded-full">
+                    </div>
+                    <div
+                        class="absolute top-1/2 right-12 sm:right-24 w-18 sm:w-24 lg:w-36 h-18 sm:h-24 lg:h-36 bg-white bg-opacity-10 rounded-full">
+                    </div>
+                    <div
+                        class="absolute -bottom-4 sm:-bottom-8 right-24 sm:right-48 w-12 sm:w-16 lg:w-24 h-12 sm:h-16 lg:h-24 bg-white bg-opacity-10 rounded-full">
+                    </div>
                 </div>
             </div>
 
@@ -584,12 +600,16 @@
                     <!-- Content Section -->
                     <div class="p-4 sm:p-6 lg:p-8">
                         <!-- Progress Section -->
-                        @if ($totalMaterials > 0 && auth()->user()->role === 'siswa')
-                            <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 sm:p-6 rounded-lg sm:rounded-xl mb-4 sm:mb-6 text-white">
+                        @if (
+                            $totalMaterials > 0 &&
+                                (auth()->user()->role === 'siswa' || (auth()->user()->role === 'mentor' && $class->mentor_id !== auth()->id())))
+                            <div
+                                class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 sm:p-6 rounded-lg sm:rounded-xl mb-4 sm:mb-6 text-white">
                                 <div class="flex flex-col sm:flex-row items-center justify-between mb-4 gap-2 sm:gap-0">
                                     <div class="text-center sm:text-left w-full sm:w-auto">
                                         <h3 class="text-lg sm:text-xl font-bold mb-1">Progress Belajar</h3>
-                                        <p class="text-white/80 text-sm sm:text-base">{{ $completedMaterials }} dari {{ $totalMaterials }} materi selesai (≥80%)</p>
+                                        <p class="text-white/80 text-sm sm:text-base">{{ $completedMaterials }} dari
+                                            {{ $totalMaterials }} materi selesai (≥80%)</p>
                                     </div>
                                     <div class="text-center sm:text-right">
                                         <div class="text-2xl sm:text-3xl font-bold">{{ $progressPercentage }}%</div>
@@ -603,29 +623,39 @@
                                 </div>
 
                                 @if ($progressPercentage == 100)
-                                    <div class="flex items-center justify-center sm:justify-start gap-2 text-green-200 font-semibold text-sm sm:text-base">
+                                    <div
+                                        class="flex items-center justify-center sm:justify-start gap-2 text-green-200 font-semibold text-sm sm:text-base">
                                         <i class="fas fa-trophy"></i>
-                                        <span class="text-center sm:text-left">Selamat! Anda telah menyelesaikan semua materi dengan nilai ≥80%!</span>
+                                        <span class="text-center sm:text-left">Selamat! Anda telah menyelesaikan semua
+                                            materi dengan nilai ≥80%!</span>
                                     </div>
                                 @elseif ($progressPercentage >= 75)
-                                    <div class="flex items-center justify-center sm:justify-start gap-2 text-yellow-200 font-semibold text-sm sm:text-base">
+                                    <div
+                                        class="flex items-center justify-center sm:justify-start gap-2 text-yellow-200 font-semibold text-sm sm:text-base">
                                         <i class="fas fa-fire"></i>
-                                        <span class="text-center sm:text-left">Hampir selesai! Pastikan semua Pre Test mencapai nilai ≥80%!</span>
+                                        <span class="text-center sm:text-left">Hampir selesai! Pastikan semua Pre Test
+                                            mencapai nilai ≥80%!</span>
                                     </div>
                                 @elseif ($progressPercentage >= 50)
-                                    <div class="flex items-center justify-center sm:justify-start gap-2 text-blue-200 font-semibold text-sm sm:text-base">
+                                    <div
+                                        class="flex items-center justify-center sm:justify-start gap-2 text-blue-200 font-semibold text-sm sm:text-base">
                                         <i class="fas fa-rocket"></i>
-                                        <span class="text-center sm:text-left">Kerja bagus! Jangan lupa nilai Pre Test minimal 80% untuk menyelesaikan materi!</span>
+                                        <span class="text-center sm:text-left">Kerja bagus! Jangan lupa nilai Pre Test
+                                            minimal 80% untuk menyelesaikan materi!</span>
                                     </div>
                                 @elseif ($progressPercentage > 0)
-                                    <div class="flex items-center justify-center sm:justify-start gap-2 text-purple-200 font-semibold text-sm sm:text-base">
+                                    <div
+                                        class="flex items-center justify-center sm:justify-start gap-2 text-purple-200 font-semibold text-sm sm:text-base">
                                         <i class="fas fa-seedling"></i>
-                                        <span class="text-center sm:text-left">Awal yang baik! Lanjutkan belajar dan capai nilai ≥80% untuk setiap Pre Test!</span>
+                                        <span class="text-center sm:text-left">Awal yang baik! Lanjutkan belajar dan capai
+                                            nilai ≥80% untuk setiap Pre Test!</span>
                                     </div>
                                 @else
-                                    <div class="flex items-center justify-center sm:justify-start gap-2 text-white/80 font-semibold text-sm sm:text-base">
+                                    <div
+                                        class="flex items-center justify-center sm:justify-start gap-2 text-white/80 font-semibold text-sm sm:text-base">
                                         <i class="fas fa-play"></i>
-                                        <span class="text-center sm:text-left">Siap memulai? Capai nilai ≥80% di setiap Pre Test untuk menyelesaikan materi!</span>
+                                        <span class="text-center sm:text-left">Siap memulai? Capai nilai ≥80% di setiap Pre
+                                            Test untuk menyelesaikan materi!</span>
                                     </div>
                                 @endif
                             </div>
@@ -634,13 +664,15 @@
                         <!-- POST TEST SECTION -->
                         @if (auth()->user()->role === 'mentor' && auth()->id() === $class->mentor_id)
                             <div class="mb-6 sm:mb-8">
-                                <div class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-lg">
+                                <div
+                                    class="bg-gradient-to-r from-blue-500 to-indigo-600 rounded-lg sm:rounded-xl p-4 sm:p-6 shadow-lg">
                                     <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
                                         <div class="text-center sm:text-left w-full sm:w-auto">
                                             <h3 class="text-lg sm:text-xl font-bold text-white mb-2">
                                                 <i class="fas fa-graduation-cap mr-2 sm:mr-3"></i>Post Test Management
                                             </h3>
-                                            <p class="text-blue-100 text-sm sm:text-base">Kelola post test untuk mengukur pemahaman siswa</p>
+                                            <p class="text-blue-100 text-sm sm:text-base">Kelola post test untuk mengukur
+                                                pemahaman siswa</p>
                                         </div>
                                         <a href="{{ route('post_tests.create', $class) }}"
                                             class="bg-white text-blue-600 px-4 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-lg font-semibold hover:bg-blue-50 transition-all duration-300 hover:-translate-y-0.5 shadow-md text-sm sm:text-base whitespace-nowrap">
@@ -653,7 +685,8 @@
 
                         @if ($class->activePostTest)
                             <div class="mb-6 sm:mb-8">
-                                <div class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
+                                <div
+                                    class="bg-white rounded-lg sm:rounded-xl shadow-lg border border-gray-200 overflow-hidden">
                                     <!-- Header -->
                                     <div class="bg-gradient-to-r from-indigo-500 to-purple-600 p-4 sm:p-6">
                                         <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
@@ -661,7 +694,8 @@
                                                 <h4 class="text-xl sm:text-2xl font-bold text-white mb-2">
                                                     <i class="fas fa-graduation-cap mr-2 sm:mr-3"></i>Post Test Kelas
                                                 </h4>
-                                                <p class="text-indigo-100 text-sm sm:text-base">Uji pemahaman Anda setelah menyelesaikan semua materi</p>
+                                                <p class="text-indigo-100 text-sm sm:text-base">Uji pemahaman Anda setelah
+                                                    menyelesaikan semua materi</p>
                                             </div>
                                             <div class="text-white text-center sm:text-right">
                                                 <div class="text-2xl sm:text-3xl font-bold">80%</div>
@@ -674,85 +708,20 @@
                                     <div class="p-4 sm:p-6">
                                         @php
                                             $postTest = $class->activePostTest;
-
-                                            // HITUNG SEMUA ATTEMPT ASLI YANG SUDAH SELESAI (normal + approval attempts)
-                                            $totalFinishedAttempts = $postTest
-                                                ->attempts()
-                                                ->where('user_id', auth()->id())
-                                                ->whereNotNull('finished_at')
-                                                ->where(function ($query) {
-                                                    $query
-                                                        ->where('requires_approval', false)
-                                                        ->orWhere('is_approval_attempt', true);
-                                                })
-                                                ->count();
-
-                                            // Cek pending approval (yang belum di-approve)
-                                            $pendingApproval = $postTest
-                                                ->attempts()
-                                                ->where('user_id', auth()->id())
-                                                ->where('requires_approval', true)
-                                                ->where('mentor_approved', false)
-                                                ->exists();
-
-                                            // Cek approval yang tersedia (approved tapi belum digunakan, dan dibuat setelah attempt terakhir)
-                                            $lastFinishedAttempt = $postTest
-                                                ->attempts()
-                                                ->where('user_id', auth()->id())
-                                                ->whereNotNull('finished_at')
-                                                ->where(function ($query) {
-                                                    $query
-                                                        ->where('requires_approval', false)
-                                                        ->orWhere('is_approval_attempt', true);
-                                                })
-                                                ->latest('finished_at')
-                                                ->first();
-
-                                            $hasAvailableApproval = false;
-                                            if ($totalFinishedAttempts >= 2) {
-                                                $availableApprovalQuery = $postTest
-                                                    ->attempts()
-                                                    ->where('user_id', auth()->id())
-                                                    ->where('requires_approval', true)
-                                                    ->where('mentor_approved', true)
-                                                    ->where('is_used', false);
-
-                                                if ($lastFinishedAttempt) {
-                                                    $availableApprovalQuery = $availableApprovalQuery->where(
-                                                        'approved_at',
-                                                        '>',
-                                                        $lastFinishedAttempt->finished_at,
-                                                    );
-                                                }
-
-                                                $hasAvailableApproval = $availableApprovalQuery->exists();
-                                            }
-
-                                            // Ambil attempt terakhir untuk nilai
-                                            $lastScore = $lastFinishedAttempt
-                                                ? $lastFinishedAttempt->getPercentageAttribute()
-                                                : 0;
-                                            $hasPassed = $lastScore >= 80;
-
-                                            // Tentukan apakah bisa mengerjakan test
-                                            $canTakeTest = false;
-                                            if ($totalFinishedAttempts < 2) {
-                                                // Attempt 1-2: boleh langsung
-                                                $canTakeTest = true;
-                                            } elseif ($totalFinishedAttempts >= 2 && $hasAvailableApproval) {
-                                                // Attempt 3+: hanya jika ada approval yang tersedia
-                                                $canTakeTest = true;
-                                            }
+                                            $isOwner =
+                                                auth()->user()->role === 'mentor' && auth()->id() === $class->mentor_id;
                                         @endphp
 
-                                        @if (auth()->user()->role === 'mentor' && auth()->id() === $class->mentor_id)
-                                            <!-- Mentor View -->
-                                            <div class="post-test-stats grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+                                        @if ($isOwner)
+                                            <!-- Mentor Pemilik View -->
+                                            <div
+                                                class="post-test-stats grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
                                                 <!-- Stats Cards -->
                                                 <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
                                                     <div class="flex items-center justify-between">
                                                         <div>
-                                                            <p class="text-blue-600 font-semibold text-xs sm:text-sm">Total Soal</p>
+                                                            <p class="text-blue-600 font-semibold text-xs sm:text-sm">Total
+                                                                Soal</p>
                                                             <p class="text-xl sm:text-2xl font-bold text-blue-800">
                                                                 {{ $postTest->questions->count() }}</p>
                                                         </div>
@@ -765,7 +734,8 @@
                                                 <div class="bg-green-50 rounded-lg p-4 border border-green-200">
                                                     <div class="flex items-center justify-between">
                                                         <div>
-                                                            <p class="text-green-600 font-semibold text-xs sm:text-sm">Durasi</p>
+                                                            <p class="text-green-600 font-semibold text-xs sm:text-sm">
+                                                                Durasi</p>
                                                             <p class="text-xl sm:text-2xl font-bold text-green-800">
                                                                 {{ $postTest->time_limit ?? 'Unlimited' }} min</p>
                                                         </div>
@@ -778,7 +748,8 @@
                                                 <div class="bg-purple-50 rounded-lg p-4 border border-purple-200">
                                                     <div class="flex items-center justify-between">
                                                         <div>
-                                                            <p class="text-purple-600 font-semibold text-xs sm:text-sm">Passing Score</p>
+                                                            <p class="text-purple-600 font-semibold text-xs sm:text-sm">
+                                                                Passing Score</p>
                                                             <p class="text-xl sm:text-2xl font-bold text-purple-800">80%</p>
                                                         </div>
                                                         <div class="bg-purple-500 rounded-full p-2 sm:p-3">
@@ -793,16 +764,107 @@
                                                     <i class="fas fa-edit mr-1 sm:mr-2"></i> Edit Post Test
                                                 </a>
                                             </div>
-                                        @elseif(auth()->user()->role === 'siswa')
-                                            @if ($progressPercentage == 100)
+                                        @elseif(auth()->user()->role === 'siswa' || (auth()->user()->role === 'mentor' && !$isOwner))
+                                            {{-- Siswa dan Mentor Non-Pemilik View --}}
+                                            @php
+                                                // HITUNG SEMUA ATTEMPT ASLI YANG SUDAH SELESAI (normal + approval attempts)
+                                                $totalFinishedAttempts = $postTest
+                                                    ->attempts()
+                                                    ->where('user_id', auth()->id())
+                                                    ->whereNotNull('finished_at')
+                                                    ->where(function ($query) {
+                                                        $query
+                                                            ->where('requires_approval', false)
+                                                            ->orWhere('is_approval_attempt', true);
+                                                    })
+                                                    ->count();
+
+                                                // Cek pending approval (yang belum di-approve)
+                                                $pendingApproval = $postTest
+                                                    ->attempts()
+                                                    ->where('user_id', auth()->id())
+                                                    ->where('requires_approval', true)
+                                                    ->where('mentor_approved', false)
+                                                    ->exists();
+
+                                                // Cek approval yang tersedia (approved tapi belum digunakan, dan dibuat setelah attempt terakhir)
+                                                $lastFinishedAttempt = $postTest
+                                                    ->attempts()
+                                                    ->where('user_id', auth()->id())
+                                                    ->whereNotNull('finished_at')
+                                                    ->where(function ($query) {
+                                                        $query
+                                                            ->where('requires_approval', false)
+                                                            ->orWhere('is_approval_attempt', true);
+                                                    })
+                                                    ->latest('finished_at')
+                                                    ->first();
+
+                                                $hasAvailableApproval = false;
+                                                if ($totalFinishedAttempts >= 2) {
+                                                    $availableApprovalQuery = $postTest
+                                                        ->attempts()
+                                                        ->where('user_id', auth()->id())
+                                                        ->where('requires_approval', true)
+                                                        ->where('mentor_approved', true)
+                                                        ->where('is_used', false);
+
+                                                    if ($lastFinishedAttempt) {
+                                                        $availableApprovalQuery = $availableApprovalQuery->where(
+                                                            'approved_at',
+                                                            '>',
+                                                            $lastFinishedAttempt->finished_at,
+                                                        );
+                                                    }
+
+                                                    $hasAvailableApproval = $availableApprovalQuery->exists();
+                                                }
+
+                                                // Ambil attempt terakhir untuk nilai
+                                                $lastScore = $lastFinishedAttempt
+                                                    ? $lastFinishedAttempt->getPercentageAttribute()
+                                                    : 0;
+                                                $hasPassed = $lastScore >= 80;
+
+                                                // Tentukan apakah bisa mengerjakan test
+                                                $canTakeTest = false;
+                                                if ($totalFinishedAttempts < 2) {
+                                                    // Attempt 1-2: boleh langsung
+                                                    $canTakeTest = true;
+                                                } elseif ($totalFinishedAttempts >= 2 && $hasAvailableApproval) {
+                                                    // Attempt 3+: hanya jika ada approval yang tersedia
+                                                    $canTakeTest = true;
+                                                }
+
+                                                // Untuk mentor non-pemilik, kita perlu cek progress secara berbeda
+                                                // Karena mereka tidak memiliki progress requirement seperti siswa
+                                                $canAccessPostTest = true;
+                                                // Cek akses post test berdasarkan role dan completion
+                                                if (
+                                                    auth()->user()->role === 'mentor' &&
+                                                    $class->mentor_id === auth()->id()
+                                                ) {
+                                                    // Mentor pemilik: akses penuh tanpa cek pre test
+                                                    $canAccessPostTest = true;
+                                                } else {
+                                                    // Siswa dan mentor non-pemilik: harus selesaikan semua pre test (100%)
+                                                    $canAccessPostTest = $progressPercentage == 100;
+                                                }
+                                            @endphp
+
+                                            @if ($canAccessPostTest)
                                                 <div class="post-test-grid grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                                                     <!-- Status Card -->
                                                     <div class="space-y-4">
                                                         <!-- Attempt Status -->
                                                         <div class="bg-gray-50 rounded-lg p-4 border border-gray-200">
-                                                            <div class="flex flex-col sm:flex-row items-center justify-between mb-3 gap-2">
-                                                                <h5 class="font-semibold text-gray-800 text-sm sm:text-base">Status Attempt</h5>
-                                                                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
+                                                            <div
+                                                                class="flex flex-col sm:flex-row items-center justify-between mb-3 gap-2">
+                                                                <h5
+                                                                    class="font-semibold text-gray-800 text-sm sm:text-base">
+                                                                    Status Attempt</h5>
+                                                                <span
+                                                                    class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                                                                     @if ($totalFinishedAttempts <= 2)
                                                                         {{ $totalFinishedAttempts }}/2 Percobaan
                                                                     @else
@@ -815,8 +877,11 @@
                                                             @if ($lastFinishedAttempt)
                                                                 <div class="space-y-2">
                                                                     <div class="flex justify-between items-center">
-                                                                        <span class="text-gray-600 text-sm sm:text-base">Nilai Terakhir:</span>
-                                                                        <span class="font-bold text-lg {{ $hasPassed ? 'text-green-600' : 'text-red-600' }}">
+                                                                        <span
+                                                                            class="text-gray-600 text-sm sm:text-base">Nilai
+                                                                            Terakhir:</span>
+                                                                        <span
+                                                                            class="font-bold text-lg {{ $hasPassed ? 'text-green-600' : 'text-red-600' }}">
                                                                             {{ $lastScore }}%
                                                                         </span>
                                                                     </div>
@@ -824,29 +889,44 @@
                                                                         <div class="bg-gradient-to-r {{ $hasPassed ? 'from-green-400 to-green-600' : 'from-red-400 to-red-600' }} h-2 rounded-full transition-all duration-1000"
                                                                             style="width: {{ $lastScore }}%"></div>
                                                                     </div>
-                                                                    <div class="flex justify-between text-xs text-gray-500">
+                                                                    <div
+                                                                        class="flex justify-between text-xs text-gray-500">
                                                                         <span>0%</span>
-                                                                        <span class="text-orange-600 font-medium">80% (Pass)</span>
+                                                                        <span class="text-orange-600 font-medium">80%
+                                                                            (Pass)</span>
                                                                         <span>100%</span>
                                                                     </div>
                                                                 </div>
                                                             @else
-                                                                <p class="text-gray-500 text-center py-4 text-sm sm:text-base">
-                                                                    <i class="fas fa-info-circle mr-2"></i>Belum ada percobaan
+                                                                <p
+                                                                    class="text-gray-500 text-center py-4 text-sm sm:text-base">
+                                                                    <i class="fas fa-info-circle mr-2"></i>Belum ada
+                                                                    percobaan
                                                                 </p>
                                                             @endif
                                                         </div>
 
                                                         <!-- Instructions -->
                                                         <div class="bg-blue-50 rounded-lg p-4 border border-blue-200">
-                                                            <h5 class="font-semibold text-blue-800 mb-2 text-sm sm:text-base">
+                                                            <h5
+                                                                class="font-semibold text-blue-800 mb-2 text-sm sm:text-base">
                                                                 <i class="fas fa-info-circle mr-2"></i>Informasi Penting
                                                             </h5>
                                                             <ul class="text-blue-700 text-xs sm:text-sm space-y-1">
                                                                 <li>• Nilai minimum untuk lulus adalah 80%</li>
-                                                                <li>• Anda memiliki 2 percobaan gratis</li>
-                                                                <li>• Setelah 2 percobaan dengan nilai < 80%, perlu approval mentor untuk setiap percobaan tambahan</li>
-                                                                <li>• Satu approval hanya berlaku untuk satu percobaan</li>
+                                                                @if (auth()->user()->role === 'siswa')
+                                                                    <li>• Anda memiliki 2 percobaan gratis</li>
+                                                                    <li>• Setelah 2 percobaan dengan nilai < 80%, perlu
+                                                                            approval mentor untuk setiap percobaan
+                                                                            tambahan</li>
+                                                                    <li>• Satu approval hanya berlaku untuk satu percobaan
+                                                                    </li>
+                                                                @else
+                                                                    <li>• Sebagai mentor, Anda memiliki akses untuk
+                                                                        mengerjakan post test</li>
+                                                                    <li>• Sistem approval tetap berlaku setelah 2 percobaan
+                                                                    </li>
+                                                                @endif
                                                             </ul>
                                                         </div>
                                                     </div>
@@ -855,15 +935,20 @@
                                                     <div class="flex flex-col justify-center">
                                                         @if ($hasPassed)
                                                             <!-- Already Passed -->
-                                                            <div class="text-center p-4 sm:p-6 bg-green-50 rounded-lg border border-green-200">
+                                                            <div
+                                                                class="text-center p-4 sm:p-6 bg-green-50 rounded-lg border border-green-200">
                                                                 <div class="text-4xl sm:text-5xl text-green-500 mb-4">
                                                                     <i class="fas fa-trophy"></i>
                                                                 </div>
-                                                                <h5 class="text-lg sm:text-xl font-bold text-green-800 mb-2">Selamat!</h5>
+                                                                <h5
+                                                                    class="text-lg sm:text-xl font-bold text-green-800 mb-2">
+                                                                    Selamat!</h5>
                                                                 <p class="text-green-700 mb-4 text-sm sm:text-base">
-                                                                    Anda telah berhasil mencapai nilai passing score dengan {{ $lastScore }}%
+                                                                    Anda telah berhasil mencapai nilai passing score dengan
+                                                                    {{ $lastScore }}%
                                                                 </p>
-                                                                <div class="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium text-sm sm:text-base">
+                                                                <div
+                                                                    class="bg-green-100 text-green-800 px-4 py-2 rounded-lg font-medium text-sm sm:text-base">
                                                                     Post Test Selesai
                                                                 </div>
                                                             </div>
@@ -874,74 +959,99 @@
                                                                     <div class="text-4xl sm:text-5xl text-indigo-500 mb-4">
                                                                         <i class="fas fa-play-circle"></i>
                                                                     </div>
-                                                                    <h5 class="text-lg sm:text-xl font-bold text-gray-800 mb-2">
+                                                                    <h5
+                                                                        class="text-lg sm:text-xl font-bold text-gray-800 mb-2">
                                                                         @if ($totalFinishedAttempts > 0)
                                                                             @if ($totalFinishedAttempts < 2)
-                                                                                Percobaan ke-{{ $totalFinishedAttempts + 1 }} (Gratis)
+                                                                                Percobaan
+                                                                                ke-{{ $totalFinishedAttempts + 1 }}
+                                                                                (Gratis)
                                                                             @else
-                                                                                Percobaan ke-{{ $totalFinishedAttempts + 1 }} (Dengan Approval)
+                                                                                Percobaan
+                                                                                ke-{{ $totalFinishedAttempts + 1 }} (Dengan
+                                                                                Approval)
                                                                             @endif
                                                                         @else
                                                                             Mulai Post Test
                                                                         @endif
                                                                     </h5>
-                                                                    <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
+                                                                    <p
+                                                                        class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
                                                                         @if ($totalFinishedAttempts > 0)
                                                                             Tingkatkan nilai Anda untuk mencapai 80%
                                                                         @else
-                                                                            Uji pemahaman Anda terhadap materi yang telah dipelajari
+                                                                            Uji pemahaman Anda terhadap materi yang telah
+                                                                            dipelajari
                                                                         @endif
                                                                     </p>
                                                                     <a href="{{ route('post_tests.show', $class->activePostTest) }}"
                                                                         class="bg-gradient-to-r from-indigo-500 to-purple-600 text-white px-6 sm:px-8 py-2.5 sm:py-3 rounded-md sm:rounded-lg font-semibold hover:from-indigo-600 hover:to-purple-700 transition-all duration-300 hover:-translate-y-0.5 shadow-lg text-sm sm:text-base btn-responsive">
                                                                         <i class="fas fa-eye mr-1 sm:mr-2"></i>
                                                                         @if ($totalFinishedAttempts >= 2)
-                                                                            <span class="hidden xs:inline">Gunakan Approval</span>
+                                                                            <span class="hidden xs:inline">Gunakan
+                                                                                Approval</span>
                                                                             <span class="xs:hidden">Mulai</span>
                                                                         @else
-                                                                            <span class="hidden xs:inline">Mulai Sekarang</span>
+                                                                            <span class="hidden xs:inline">Mulai
+                                                                                Sekarang</span>
                                                                             <span class="xs:hidden">Mulai</span>
                                                                         @endif
                                                                     </a>
                                                                 </div>
                                                             @else
                                                                 <!-- Need Approval -->
-                                                                <div class="p-4 sm:p-6 bg-orange-50 rounded-lg border border-orange-200">
+                                                                <div
+                                                                    class="p-4 sm:p-6 bg-orange-50 rounded-lg border border-orange-200">
                                                                     @if ($pendingApproval)
                                                                         <div class="text-center">
-                                                                            <div class="text-3xl sm:text-4xl text-orange-500 mb-4">
+                                                                            <div
+                                                                                class="text-3xl sm:text-4xl text-orange-500 mb-4">
                                                                                 <i class="fas fa-hourglass-half"></i>
                                                                             </div>
-                                                                            <h5 class="text-base sm:text-lg font-bold text-orange-800 mb-2">
+                                                                            <h5
+                                                                                class="text-base sm:text-lg font-bold text-orange-800 mb-2">
                                                                                 Menunggu Approval</h5>
-                                                                            <p class="text-orange-700 mb-4 text-sm sm:text-base">
-                                                                                Permintaan Anda sedang menunggu persetujuan dari mentor
+                                                                            <p
+                                                                                class="text-orange-700 mb-4 text-sm sm:text-base">
+                                                                                Permintaan Anda sedang menunggu persetujuan
+                                                                                dari mentor
                                                                             </p>
-                                                                            <div class="bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-medium text-sm sm:text-base">
-                                                                                <i class="fas fa-clock mr-2"></i>Dalam Proses Review
+                                                                            <div
+                                                                                class="bg-orange-100 text-orange-800 px-4 py-2 rounded-lg font-medium text-sm sm:text-base">
+                                                                                <i class="fas fa-clock mr-2"></i>Dalam
+                                                                                Proses Review
                                                                             </div>
                                                                         </div>
                                                                     @else
                                                                         <div class="text-center">
-                                                                            <div class="text-3xl sm:text-4xl text-orange-500 mb-4">
+                                                                            <div
+                                                                                class="text-3xl sm:text-4xl text-orange-500 mb-4">
                                                                                 <i class="fas fa-hand-paper"></i>
                                                                             </div>
-                                                                            <h5 class="text-base sm:text-lg font-bold text-orange-800 mb-2">
+                                                                            <h5
+                                                                                class="text-base sm:text-lg font-bold text-orange-800 mb-2">
                                                                                 Butuh Approval Mentor</h5>
-                                                                            <p class="text-orange-700 mb-4 sm:mb-6 text-sm sm:text-base">
+                                                                            <p
+                                                                                class="text-orange-700 mb-4 sm:mb-6 text-sm sm:text-base">
                                                                                 @if ($totalFinishedAttempts >= 2)
-                                                                                    Anda telah menggunakan {{ $totalFinishedAttempts }} percobaan
-                                                                                    dengan nilai di bawah 80%. Silakan minta approval dari mentor untuk
+                                                                                    Anda telah menggunakan
+                                                                                    {{ $totalFinishedAttempts }} percobaan
+                                                                                    dengan nilai di bawah 80%. Silakan minta
+                                                                                    approval dari mentor untuk
                                                                                     percobaan tambahan.
                                                                                 @else
-                                                                                    Anda telah menggunakan 2 percobaan gratis dengan nilai di bawah 80%.
-                                                                                    Silakan minta approval dari mentor untuk percobaan tambahan.
+                                                                                    Anda telah menggunakan 2 percobaan
+                                                                                    gratis dengan nilai di bawah 80%.
+                                                                                    Silakan minta approval dari mentor untuk
+                                                                                    percobaan tambahan.
                                                                                 @endif
                                                                             </p>
                                                                             <a href="{{ route('post_tests.request_approval.form', $postTest) }}"
                                                                                 class="bg-gradient-to-r from-orange-500 to-red-500 text-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-md sm:rounded-lg font-semibold hover:from-orange-600 hover:to-red-600 transition-all duration-300 hover:-translate-y-0.5 shadow-lg text-sm sm:text-base btn-responsive">
-                                                                                <i class="fas fa-paper-plane mr-1 sm:mr-2"></i>
-                                                                                <span class="hidden xs:inline">Minta Approval</span>
+                                                                                <i
+                                                                                    class="fas fa-paper-plane mr-1 sm:mr-2"></i>
+                                                                                <span class="hidden xs:inline">Minta
+                                                                                    Approval</span>
                                                                                 <span class="xs:hidden">Approval</span>
                                                                             </a>
                                                                         </div>
@@ -952,16 +1062,20 @@
                                                     </div>
                                                 </div>
                                             @else
-                                                <!-- Progress Incomplete -->
-                                                <div class="text-center p-6 sm:p-8 bg-gray-50 rounded-lg border border-gray-200">
+                                                <!-- Progress Incomplete (hanya untuk siswa) -->
+                                                <div
+                                                    class="text-center p-6 sm:p-8 bg-gray-50 rounded-lg border border-gray-200">
                                                     <div class="text-4xl sm:text-5xl text-gray-400 mb-4">
                                                         <i class="fas fa-lock"></i>
                                                     </div>
-                                                    <h5 class="text-lg sm:text-xl font-bold text-gray-700 mb-2">Post Test Terkunci</h5>
+                                                    <h5 class="text-lg sm:text-xl font-bold text-gray-700 mb-2">Post Test
+                                                        Terkunci</h5>
                                                     <p class="text-gray-600 mb-4 sm:mb-6 text-sm sm:text-base">
-                                                        Selesaikan semua materi dengan nilai minimal 80% untuk membuka post test
+                                                        Selesaikan semua materi dengan nilai minimal 80% untuk membuka post
+                                                        test
                                                     </p>
-                                                    <div class="bg-blue-100 text-blue-800 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-block text-sm sm:text-base">
+                                                    <div
+                                                        class="bg-blue-100 text-blue-800 px-4 sm:px-6 py-2 sm:py-3 rounded-lg font-semibold inline-block text-sm sm:text-base">
                                                         Progress Anda: {{ $progressPercentage }}%
                                                     </div>
                                                 </div>
@@ -973,11 +1087,13 @@
                         @elseif(auth()->user()->role === 'mentor' && auth()->id() === $class->mentor_id)
                             <!-- No Post Test Yet - Mentor View -->
                             <div class="mb-6 sm:mb-8">
-                                <div class="empty-state bg-white rounded-lg sm:rounded-xl border-2 border-dashed border-gray-300 p-8 sm:p-12 text-center">
+                                <div
+                                    class="empty-state bg-white rounded-lg sm:rounded-xl border-2 border-dashed border-gray-300 p-8 sm:p-12 text-center">
                                     <div class="text-4xl sm:text-6xl text-gray-400 mb-4 sm:mb-6">
                                         <i class="fas fa-graduation-cap"></i>
                                     </div>
-                                    <h5 class="text-xl sm:text-2xl font-bold text-gray-700 mb-3 sm:mb-4">Belum Ada Post Test</h5>
+                                    <h5 class="text-xl sm:text-2xl font-bold text-gray-700 mb-3 sm:mb-4">Belum Ada Post
+                                        Test</h5>
                                     <p class="text-gray-500 text-base sm:text-lg mb-6 sm:mb-8 max-w-2xl mx-auto">
                                         Buat post test untuk menguji pemahaman siswa setelah mereka menyelesaikan semua
                                         materi pembelajaran. Post test akan membantu mengukur efektivitas pembelajaran.
@@ -994,25 +1110,34 @@
 
                         @if ($class->materials->count() > 0)
                             <!-- Stats Bar -->
-                            <div class="stats-bar bg-gray-50 p-4 sm:p-5 rounded-lg sm:rounded-xl mb-4 sm:mb-6 border border-gray-200">
-                                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-8 flex-wrap">
-                                    <div class="flex items-center gap-2 sm:gap-2.5 text-gray-600 font-semibold text-sm sm:text-base">
-                                        <div class="w-6 sm:w-8 h-6 sm:h-8 bg-stat-gradient rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
+                            <div
+                                class="stats-bar bg-gray-50 p-4 sm:p-5 rounded-lg sm:rounded-xl mb-4 sm:mb-6 border border-gray-200">
+                                <div
+                                    class="flex flex-col sm:flex-row justify-center items-center gap-4 sm:gap-6 lg:gap-8 flex-wrap">
+                                    <div
+                                        class="flex items-center gap-2 sm:gap-2.5 text-gray-600 font-semibold text-sm sm:text-base">
+                                        <div
+                                            class="w-6 sm:w-8 h-6 sm:h-8 bg-stat-gradient rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
                                             <i class="fas fa-book"></i>
                                         </div>
                                         <span>{{ $class->materials->count() }} Materi Tersedia</span>
                                     </div>
-                                    <div class="flex items-center gap-2 sm:gap-2.5 text-gray-600 font-semibold text-sm sm:text-base">
-                                        <div class="w-6 sm:w-8 h-6 sm:h-8 bg-stat-gradient rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
+                                    <div
+                                        class="flex items-center gap-2 sm:gap-2.5 text-gray-600 font-semibold text-sm sm:text-base">
+                                        <div
+                                            class="w-6 sm:w-8 h-6 sm:h-8 bg-stat-gradient rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
                                             <i class="fas fa-user-tie"></i>
                                         </div>
                                         <span class="truncate">Mentor: {{ $class->mentor->name ?? 'Unknown' }}</span>
                                     </div>
-                                    <div class="flex items-center gap-2 sm:gap-2.5 text-gray-600 font-semibold text-sm sm:text-base">
-                                        <div class="w-6 sm:w-8 h-6 sm:h-8 bg-stat-gradient rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
+                                    <div
+                                        class="flex items-center gap-2 sm:gap-2.5 text-gray-600 font-semibold text-sm sm:text-base">
+                                        <div
+                                            class="w-6 sm:w-8 h-6 sm:h-8 bg-stat-gradient rounded-full flex items-center justify-center text-white text-xs sm:text-sm">
                                             <i class="fas fa-clock"></i>
                                         </div>
-                                        <span class="hidden sm:inline">Terakhir Update: {{ $class->updated_at->format('d M Y') }}</span>
+                                        <span class="hidden sm:inline">Terakhir Update:
+                                            {{ $class->updated_at->format('d M Y') }}</span>
                                         <span class="sm:hidden">{{ $class->updated_at->format('d M Y') }}</span>
                                     </div>
                                 </div>
@@ -1035,14 +1160,18 @@
                                             ];
                                     @endphp
 
-                                    <div class="material-card bg-white border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 transition-all duration-300 border-l-4 border-l-indigo-600 shadow-sm hover:-translate-y-0.5 hover:shadow-lg hover:border-l-green-500
+                                    <div
+                                        class="material-card bg-white border border-gray-200 rounded-lg sm:rounded-xl p-3 sm:p-4 lg:p-5 transition-all duration-300 border-l-4 border-l-indigo-600 shadow-sm hover:-translate-y-0.5 hover:shadow-lg hover:border-l-green-500
                                         {{ $completionStatus['completed'] ? 'completed' : ($completionStatus['attempted'] ? 'attempted' : '') }}">
-                                        <div class="material-card-content flex flex-col lg:flex-row justify-between items-start gap-3 sm:gap-4 lg:gap-5">
+                                        <div
+                                            class="material-card-content flex flex-col lg:flex-row justify-between items-start gap-3 sm:gap-4 lg:gap-5">
                                             <div class="flex-1 w-full lg:w-auto">
                                                 <div class="material-header">
-                                                    <h3 class="text-base sm:text-lg lg:text-xl font-semibold text-gray-800 m-0 mb-2 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2.5">
+                                                    <h3
+                                                        class="text-base sm:text-lg lg:text-xl font-semibold text-gray-800 m-0 mb-2 flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-2.5">
                                                         <div class="material-title-row flex items-center gap-2 sm:gap-2.5">
-                                                            <div class="material-number w-7 sm:w-8 lg:w-9 h-7 sm:h-8 lg:h-9 bg-material-gradient rounded-md sm:rounded-lg flex items-center justify-center text-white flex-shrink-0 text-xs sm:text-sm">
+                                                            <div
+                                                                class="material-number w-7 sm:w-8 lg:w-9 h-7 sm:h-8 lg:h-9 bg-material-gradient rounded-md sm:rounded-lg flex items-center justify-center text-white flex-shrink-0 text-xs sm:text-sm">
                                                                 @if ($completionStatus['completed'])
                                                                     <i class="fas fa-check"></i>
                                                                 @elseif ($completionStatus['attempted'])
@@ -1051,20 +1180,27 @@
                                                                     {{ $index + 1 }}
                                                                 @endif
                                                             </div>
-                                                            <span class="text-responsive break-words">{{ $material->title }}</span>
+                                                            <span
+                                                                class="text-responsive break-words">{{ $material->title }}</span>
                                                         </div>
-                                                        <div class="material-badges w-full sm:w-auto flex flex-wrap gap-1 sm:gap-2">
+                                                        <div
+                                                            class="material-badges w-full sm:w-auto flex flex-wrap gap-1 sm:gap-2">
                                                             @if ($completionStatus['completed'])
                                                                 <span class="completed-badge">
                                                                     <i class="fas fa-trophy"></i>
-                                                                    <span class="hidden xs:inline">Selesai ({{ $completionStatus['percentage'] }}%)</span>
-                                                                    <span class="xs:hidden">{{ $completionStatus['percentage'] }}%</span>
+                                                                    <span class="hidden xs:inline">Selesai
+                                                                        ({{ $completionStatus['percentage'] }}%)
+                                                                    </span>
+                                                                    <span
+                                                                        class="xs:hidden">{{ $completionStatus['percentage'] }}%</span>
                                                                 </span>
                                                             @elseif ($completionStatus['attempted'])
                                                                 <span class="attempted-badge">
                                                                     <i class="fas fa-redo"></i>
-                                                                    <span class="hidden xs:inline">Coba Lagi ({{ $completionStatus['percentage'] }}%)</span>
-                                                                    <span class="xs:hidden">{{ $completionStatus['percentage'] }}%</span>
+                                                                    <span class="hidden xs:inline">Coba Lagi
+                                                                        ({{ $completionStatus['percentage'] }}%)</span>
+                                                                    <span
+                                                                        class="xs:hidden">{{ $completionStatus['percentage'] }}%</span>
                                                                 </span>
                                                             @endif
                                                         </div>
@@ -1072,36 +1208,46 @@
                                                 </div>
 
                                                 @if ($material->description)
-                                                    <p class="text-gray-600 leading-relaxed m-0 mb-3 text-sm sm:text-base text-responsive">
+                                                    <p
+                                                        class="text-gray-600 leading-relaxed m-0 mb-3 text-sm sm:text-base text-responsive">
                                                         {{ $material->description }}
                                                     </p>
                                                 @endif
 
-                                                <div class="material-info flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-gray-500 text-xs sm:text-sm">
+                                                <div
+                                                    class="material-info flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-4 text-gray-500 text-xs sm:text-sm">
                                                     <div class="flex items-center gap-1">
                                                         <i class="fas fa-calendar-alt"></i>
-                                                        <span class="hidden sm:inline">Dibuat: {{ $material->created_at->format('d M Y H:i') }}</span>
-                                                        <span class="sm:hidden">{{ $material->created_at->format('d M Y') }}</span>
+                                                        <span class="hidden sm:inline">Dibuat:
+                                                            {{ $material->created_at->format('d M Y H:i') }}</span>
+                                                        <span
+                                                            class="sm:hidden">{{ $material->created_at->format('d M Y') }}</span>
                                                     </div>
 
                                                     @if ($activeQuiz)
                                                         <div class="flex items-center gap-1">
                                                             <i class="fas fa-question-circle"></i>
-                                                            <span>Quiz: {{ $activeQuiz->questions->count() }} pertanyaan</span>
+                                                            <span>Quiz: {{ $activeQuiz->questions->count() }}
+                                                                pertanyaan</span>
                                                         </div>
 
                                                         @if ($completionStatus['attempted'])
-                                                            <div class="flex items-center gap-1 {{ $completionStatus['completed'] ? 'text-green-600' : 'text-orange-600' }}">
+                                                            <div
+                                                                class="flex items-center gap-1 {{ $completionStatus['completed'] ? 'text-green-600' : 'text-orange-600' }}">
                                                                 <i class="fas fa-star"></i>
-                                                                <span class="hidden sm:inline">Best: {{ $completionStatus['score'] }} poin ({{ $completionStatus['percentage'] }}%)</span>
-                                                                <span class="sm:hidden">{{ $completionStatus['percentage'] }}%</span>
+                                                                <span class="hidden sm:inline">Best:
+                                                                    {{ $completionStatus['score'] }} poin
+                                                                    ({{ $completionStatus['percentage'] }}%)</span>
+                                                                <span
+                                                                    class="sm:hidden">{{ $completionStatus['percentage'] }}%</span>
                                                             </div>
                                                         @endif
 
                                                         @if (!$completionStatus['completed'] && $completionStatus['attempted'])
                                                             <div class="flex items-center gap-1 text-red-600">
                                                                 <i class="fas fa-info-circle"></i>
-                                                                <span class="hidden sm:inline">Perlu ≥80% untuk selesai</span>
+                                                                <span class="hidden sm:inline">Perlu ≥80% untuk
+                                                                    selesai</span>
                                                                 <span class="sm:hidden">≥80%</span>
                                                             </div>
                                                         @endif
@@ -1109,7 +1255,8 @@
                                                 </div>
                                             </div>
 
-                                            <div class="material-actions flex flex-row gap-1 sm:gap-2 items-center flex-shrink-0 w-full lg:w-auto justify-center lg:justify-start">
+                                            <div
+                                                class="material-actions flex flex-row gap-1 sm:gap-2 items-center flex-shrink-0 w-full lg:w-auto justify-center lg:justify-start">
                                                 @if (auth()->id() === $class->mentor_id && auth()->user()->role === 'mentor')
                                                     <a href="{{ route('materials.show', $material) }}"
                                                         class="btn btn-success flex-1 sm:flex-initial text-xs sm:text-sm px-3 sm:px-4 py-2 sm:py-2.5">
@@ -1128,7 +1275,8 @@
                                                         onsubmit="return confirm('Yakin mau hapus materi ini?');">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button class="btn-icon bg-red-500 text-white border-0 p-2 sm:p-2.5 rounded-md font-semibold transition-all duration-300 text-center inline-flex items-center justify-center w-8 sm:w-9 h-8 sm:h-9 min-w-8 sm:min-w-9 hover:bg-red-600 hover:-translate-y-0.5 text-xs sm:text-sm"
+                                                        <button
+                                                            class="btn-icon bg-red-500 text-white border-0 p-2 sm:p-2.5 rounded-md font-semibold transition-all duration-300 text-center inline-flex items-center justify-center w-8 sm:w-9 h-8 sm:h-9 min-w-8 sm:min-w-9 hover:bg-red-600 hover:-translate-y-0.5 text-xs sm:text-sm"
                                                             style="box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);"
                                                             title="Hapus Materi">
                                                             <i class="fas fa-trash"></i>

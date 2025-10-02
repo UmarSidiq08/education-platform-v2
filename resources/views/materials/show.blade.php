@@ -107,6 +107,7 @@
                 </div>
 
                 <!-- Enhanced Quiz Section -->
+                <!-- Enhanced Quiz Section -->
                 @if ($material->activeQuiz)
                     <div class="mt-8 mb-16">
                         <div
@@ -129,7 +130,11 @@
                                     @endif
                                 </div>
 
-                                @if (auth()->user()->role === 'siswa' && $quizAttempt)
+                                {{-- Tampilkan skor untuk siswa dan mentor yang sudah mengerjakan --}}
+                                @if (
+                                    (auth()->user()->role === 'siswa' ||
+                                        (auth()->user()->role === 'mentor' && auth()->id() !== $material->class->mentor_id)) &&
+                                        $quizAttempt)
                                     <div class="relative z-10">
                                         <div
                                             class="bg-white/20 w-20 h-20 rounded-full flex flex-col items-center justify-center backdrop-blur border-3 border-white/30">
@@ -184,8 +189,9 @@
                                     </div>
                                 </div>
 
-                                <!-- Section untuk menampilkan status quiz siswa - UPDATED untuk multiple attempts -->
-                                @if (auth()->user()->role === 'siswa')
+                                {{-- Section untuk siswa dan mentor non-pemilik yang dapat mengerjakan quiz --}}
+                                @if (auth()->user()->role === 'siswa' ||
+                                        (auth()->user()->role === 'mentor' && auth()->id() !== $material->class->mentor_id))
                                     @if ($quizAttempt)
                                         <!-- Sudah mengerjakan - Detail Results dengan info multiple attempts -->
                                         <div
@@ -255,8 +261,8 @@
                                                     <i class="fas fa-eye mr-3"></i>Lihat Detail & Riwayat
                                                 </a>
 
-                                                <form action="{{ route('quizzes.start', $activeQuiz) }}" method="POST"
-                                                    class="inline">
+                                                <form action="{{ route('quizzes.start', $material->activeQuiz) }}"
+                                                    method="POST" class="inline">
                                                     @csrf
                                                     <button type="submit"
                                                         class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg font-semibold hover:from-green-600 hover:to-green-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:-translate-y-0.5">
@@ -272,7 +278,8 @@
                                                         <span class="font-semibold">Tips:</span>
                                                     </div>
                                                     <p class="text-orange-700 mt-1">Nilai Anda masih bisa ditingkatkan!
-                                                        Pelajari kembali materi dan coba Pre Test lagi untuk mendapatkan skor
+                                                        Pelajari kembali materi dan coba Pre Test lagi untuk mendapatkan
+                                                        skor
                                                         yang lebih baik.</p>
                                                 </div>
                                             @elseif($quizAttempt->percentage >= 90)
@@ -301,10 +308,11 @@
                                                     berulang kali, skor tertinggi akan menjadi nilai akhir</p>
                                             </div>
                                             <div class="relative z-10">
-                                                 <form action="{{ route('quizzes.start', $activeQuiz) }}" method="POST"
-                                                      class="inline-flex items-center px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl animate-pulse">
+                                                <form action="{{ route('quizzes.start', $material->activeQuiz) }}"
+                                                    method="POST" class="inline">
                                                     @csrf
-                                                    <button type="submit">
+                                                    <button type="submit"
+                                                        class="inline-flex items-center px-10 py-4 bg-white text-indigo-600 rounded-xl font-bold text-lg transition-all duration-300 hover:bg-gray-100 hover:-translate-y-1 hover:shadow-2xl animate-pulse">
                                                         <i class="fas fa-play mr-3"></i> Mulai Pre Test Sekarang
                                                     </button>
                                                 </form>
@@ -312,6 +320,8 @@
                                         </div>
                                     @endif
                                 @endif
+
+                                {{-- Section khusus untuk mentor pemilik kelas (CRUD dan statistik) --}}
                                 @if (auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
                                     <!-- Mentor Actions -->
                                     <div class="bg-gray-50 p-8 rounded-2xl border border-gray-100">
@@ -328,14 +338,12 @@
                                                 <span class="font-semibold mb-1">Lihat Statistik</span>
                                                 <small class="text-blue-100 text-sm">Analisis hasil siswa</small>
                                             </a>
-                                            @if ($activeQuiz)
-                                                <a href="{{ route('quizzes.edit', [$material, $activeQuiz]) }}"
-                                                    class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
-                                                    <i class="fas fa-edit text-2xl mb-2"></i>
-                                                    <span class="font-semibold mb-1">Edit Pre Test</span>
-                                                    <small class="text-yellow-100 text-sm">Ubah soal & pengaturan</small>
-                                                </a>
-                                            @endif
+                                            <a href="{{ route('quizzes.edit', [$material, $material->activeQuiz]) }}"
+                                                class="flex flex-col items-center justify-center p-6 bg-gradient-to-br from-yellow-500 to-yellow-600 text-white rounded-xl font-semibold text-center min-h-[120px] transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
+                                                <i class="fas fa-edit text-2xl mb-2"></i>
+                                                <span class="font-semibold mb-1">Edit Pre Test</span>
+                                                <small class="text-yellow-100 text-sm">Ubah soal & pengaturan</small>
+                                            </a>
                                         </div>
                                     </div>
                                 @endif
@@ -343,7 +351,7 @@
                         </div>
                     </div>
                 @elseif(auth()->user()->role === 'mentor' && auth()->id() === $material->class->mentor_id)
-                    <!-- No Quiz - Create New -->
+                    <!-- No Quiz - Create New (hanya untuk mentor pemilik kelas) -->
                     <div class="mt-8 mb-16">
                         <div
                             class="bg-white rounded-3xl p-12 text-center shadow-2xl border-2 border-dashed border-gray-200 transition-all duration-300 hover:border-indigo-500 hover:shadow-3xl">
@@ -352,7 +360,8 @@
                                 <i class="fas fa-lightbulb"></i>
                             </div>
                             <h4 class="text-gray-900 font-bold mb-4 text-2xl">Tingkatkan Pembelajaran dengan Pre Test</h4>
-                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat Pre Test interaktif untuk membantu siswa
+                            <p class="text-gray-500 text-lg leading-relaxed mb-8">Buat Pre Test interaktif untuk membantu
+                                siswa
                                 menguji pemahaman mereka tentang materi ini</p>
                             <div class="flex justify-center gap-8 mb-10 flex-wrap">
                                 <div class="flex items-center text-gray-600 font-medium">

@@ -52,7 +52,7 @@
 
         <!-- Card Body -->
         <div class="p-4 sm:p-6 lg:p-10">
-            <form action="{{ route('quizzes.update', [$material, $quiz]) }}" method="POST" id="quiz-form">
+            <form action="{{ route('quizzes.update', [$material, $quiz]) }}" method="POST" id="quiz-form" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
 
@@ -191,6 +191,7 @@ function addQuestion(questionData = null) {
     const options = questionData ? questionData.options : ['', '', '', ''];
     const correctAnswer = questionData ? questionData.correct_answer : 0;
     const points = questionData ? questionData.points : 1;
+    const existingImage = questionData && questionData.image ? questionData.image : null;
 
     const questionHtml = `
         <div class="bg-white border-2 border-indigo-50 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300 hover:border-indigo-200 hover:shadow-xl hover:shadow-indigo-500/10 hover:-translate-y-1 question-card" data-question="${questionCount}">
@@ -220,6 +221,42 @@ function addQuestion(questionData = null) {
                               rows="3" placeholder="Tuliskan pertanyaan Anda di sini..." required>${questionText}</textarea>
                 </div>
 
+                <!-- Image Upload Section -->
+                <div class="mb-4 sm:mb-6">
+                    <label class="block text-gray-800 font-semibold mb-2 text-sm sm:text-base">
+                        Gambar Pertanyaan <span class="text-gray-500 font-normal">(opsional)</span>
+                    </label>
+                    <div class="flex flex-col gap-3">
+                        ${existingImage ? `<input type="hidden" name="questions[${questionIndex}][existing_image]" value="${existingImage}" class="existing-image-input">` : ''}
+                        <div class="relative">
+                            <input type="file"
+                                   name="questions[${questionIndex}][image]"
+                                   accept="image/*"
+                                   class="hidden image-input"
+                                   id="image-${questionCount}"
+                                   onchange="previewImage(this, ${questionCount})">
+                            <label for="image-${questionCount}"
+                                   class="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-indigo-200 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-300">
+                                <i class="fas fa-image text-indigo-500"></i>
+                                <span class="text-sm text-gray-600">${existingImage ? 'Ganti gambar' : 'Klik untuk upload gambar'}</span>
+                            </label>
+                        </div>
+                        <div id="preview-${questionCount}" class="${existingImage ? '' : 'hidden'}">
+                            <div class="relative inline-block">
+                                <img src="${existingImage ? '/storage/' + existingImage : ''}" alt="Preview" class="max-w-full h-auto rounded-lg border-2 border-indigo-100 max-h-64">
+                                <button type="button"
+                                        onclick="removeImage(${questionCount})"
+                                        class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="text-xs text-gray-500">
+                            <i class="fas fa-info-circle mr-1"></i>Format: JPG, JPEG, PNG, GIF. Maksimal 2MB
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Options -->
                 <div class="mb-4 sm:mb-6">
                     <label class="block text-gray-800 font-semibold mb-2 sm:mb-3 text-sm sm:text-base">Pilihan Jawaban</label>
@@ -245,6 +282,11 @@ function addQuestion(questionData = null) {
                         <option value="3" ${points == 3 ? 'selected' : ''}>3 Poin</option>
                         <option value="4" ${points == 4 ? 'selected' : ''}>4 Poin</option>
                         <option value="5" ${points == 5 ? 'selected' : ''}>5 Poin</option>
+                        <option value="6" ${points == 6 ? 'selected' : ''}>6 Poin</option>
+                        <option value="7" ${points == 7 ? 'selected' : ''}>7 Poin</option>
+                        <option value="8" ${points == 8 ? 'selected' : ''}>8 Poin</option>
+                        <option value="9" ${points == 9 ? 'selected' : ''}>9 Poin</option>
+                        <option value="10" ${points == 10 ? 'selected' : ''}>10 Poin</option>
                     </select>
                 </div>
             </div>
@@ -252,10 +294,60 @@ function addQuestion(questionData = null) {
     `;
 
     questionsContainer.insertAdjacentHTML('beforeend', questionHtml);
-
-    // Add event listeners untuk pertanyaan yang baru ditambahkan
     attachQuestionEventListeners();
     animateQuestionEntry();
+}
+
+function previewImage(input, questionNum) {
+    const previewDiv = document.getElementById(`preview-${questionNum}`);
+    const img = previewDiv.querySelector('img');
+    const questionCard = input.closest('.question-card');
+    const existingImageInput = questionCard.querySelector('.existing-image-input');
+
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        const maxSize = 2 * 1024 * 1024; // 2MB
+
+        if (file.size > maxSize) {
+            alert(`Ukuran file terlalu besar!\n\nFile: ${file.name}\nUkuran: ${(file.size / 1024 / 1024).toFixed(2)} MB\nMaksimal: 2 MB\n\nSilakan pilih gambar dengan ukuran lebih kecil.`);
+            input.value = '';
+            return;
+        }
+
+        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+        if (!allowedTypes.includes(file.type)) {
+            alert(`Format file tidak didukung!\n\nFile: ${file.name}\nFormat yang diperbolehkan: JPG, JPEG, PNG, GIF`);
+            input.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            img.src = e.target.result;
+            previewDiv.classList.remove('hidden');
+
+            // Hapus existing image input karena akan diganti dengan yang baru
+            if (existingImageInput) {
+                existingImageInput.remove();
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+}
+
+function removeImage(questionNum) {
+    const input = document.getElementById(`image-${questionNum}`);
+    const previewDiv = document.getElementById(`preview-${questionNum}`);
+    const questionCard = input.closest('.question-card');
+    const existingImageInput = questionCard.querySelector('.existing-image-input');
+
+    input.value = '';
+    previewDiv.classList.add('hidden');
+
+    // Hapus existing image input juga
+    if (existingImageInput) {
+        existingImageInput.remove();
+    }
 }
 
 function generateOptionHtml(letter, questionIndex, optionIndex, value = '', isChecked = false) {
@@ -288,17 +380,14 @@ function generateOptionHtml(letter, questionIndex, optionIndex, value = '', isCh
 }
 
 function attachQuestionEventListeners() {
-    // Remove button listeners
     const removeButtons = document.querySelectorAll('.remove-question');
     removeButtons.forEach(button => {
         button.removeEventListener('click', handleRemoveQuestion);
         button.addEventListener('click', handleRemoveQuestion);
     });
 
-    // Radio button event listeners - hanya untuk yang belum ada listener
     const radioButtons = document.querySelectorAll('input[type="radio"].radio-input');
     radioButtons.forEach(radio => {
-        // Remove existing listener to prevent duplicate
         radio.removeEventListener('change', handleRadioChange);
         radio.addEventListener('change', handleRadioChange);
     });
@@ -306,8 +395,6 @@ function attachQuestionEventListeners() {
 
 function handleRadioChange() {
     const questionCard = this.closest('.question-card');
-
-    // Reset semua radio button visual dalam pertanyaan ini
     const allRadioVisuals = questionCard.querySelectorAll('.radio-visual');
     const allIcons = questionCard.querySelectorAll('.radio-visual .fa-check');
 
@@ -319,7 +406,6 @@ function handleRadioChange() {
         icon.className = 'fas fa-check text-white text-xs transition-opacity duration-300 opacity-0';
     });
 
-    // Set visual untuk yang dipilih
     const selectedVisual = this.parentNode.querySelector('.radio-visual');
     const selectedIcon = selectedVisual.querySelector('.fa-check');
 
@@ -347,20 +433,42 @@ function updateQuestionNumbers() {
         const questionNumber = index + 1;
         question.setAttribute('data-question', questionNumber);
 
-        // Update visual number
         const numberSpan = question.querySelector('.w-10.h-10 span, .w-12.h-12 span');
         const titleElement = question.querySelector('h6');
         if (numberSpan) numberSpan.textContent = questionNumber;
         if (titleElement) titleElement.textContent = `Pertanyaan ${questionNumber}`;
 
-        // Update form names
         const textarea = question.querySelector('textarea');
         const inputs = question.querySelectorAll('input[type="text"]');
         const radios = question.querySelectorAll('input[type="radio"]');
         const select = question.querySelector('select');
+        const imageInput = question.querySelector('.image-input');
+        const existingImageInput = question.querySelector('.existing-image-input');
 
         if (textarea) textarea.name = `questions[${questionNumber-1}][question]`;
         if (select) select.name = `questions[${questionNumber-1}][points]`;
+
+        if (imageInput) {
+            imageInput.name = `questions[${questionNumber-1}][image]`;
+            imageInput.id = `image-${questionNumber}`;
+            const label = imageInput.nextElementSibling;
+            if (label) label.setAttribute('for', `image-${questionNumber}`);
+
+            const previewDiv = question.querySelector('[id^="preview-"]');
+            if (previewDiv) {
+                previewDiv.id = `preview-${questionNumber}`;
+                const removeBtn = previewDiv.querySelector('button');
+                if (removeBtn) {
+                    removeBtn.setAttribute('onclick', `removeImage(${questionNumber})`);
+                }
+            }
+
+            imageInput.setAttribute('onchange', `previewImage(this, ${questionNumber})`);
+        }
+
+        if (existingImageInput) {
+            existingImageInput.name = `questions[${questionNumber-1}][existing_image]`;
+        }
 
         inputs.forEach((input) => {
             input.name = `questions[${questionNumber-1}][options][]`;
@@ -371,15 +479,12 @@ function updateQuestionNumbers() {
             radio.name = `questions[${questionNumber-1}][correct_answer]`;
             radio.id = newId;
 
-            // Update corresponding label
             const label = radio.parentNode;
             label.setAttribute('for', newId);
         });
     });
 
     questionCount = questions.length;
-
-    // Re-attach event listeners after updating
     attachQuestionEventListeners();
 }
 
@@ -429,13 +534,49 @@ document.addEventListener('DOMContentLoaded', function() {
                 question: question.question,
                 options: question.options,
                 correct_answer: question.correct_answer,
-                points: question.points
+                points: question.points,
+                image: question.image
             });
         });
     } else {
         addQuestion();
     }
     updateEmptyState();
+
+    // Validasi form sebelum submit
+    const form = document.getElementById('quiz-form');
+    form.addEventListener('submit', function(e) {
+        const imageInputs = document.querySelectorAll('.image-input');
+        const maxSize = 2 * 1024 * 1024; // 2MB
+        let hasError = false;
+        let errorMessages = [];
+
+        imageInputs.forEach((input, index) => {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const questionNum = index + 1;
+
+                // Cek ukuran
+                if (file.size > maxSize) {
+                    hasError = true;
+                    errorMessages.push(`Pertanyaan ${questionNum}: File "${file.name}" terlalu besar (${(file.size / 1024 / 1024).toFixed(2)} MB). Maksimal 2 MB.`);
+                }
+
+                // Cek format
+                const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
+                if (!allowedTypes.includes(file.type)) {
+                    hasError = true;
+                    errorMessages.push(`Pertanyaan ${questionNum}: Format file "${file.name}" tidak didukung. Gunakan JPG, JPEG, PNG, atau GIF.`);
+                }
+            }
+        });
+
+        if (hasError) {
+            e.preventDefault();
+            alert('Terdapat masalah dengan gambar yang diupload:\n\n' + errorMessages.join('\n\n') + '\n\nSilakan perbaiki sebelum menyimpan.');
+            return false;
+        }
+    });
 });
 </script>
 
