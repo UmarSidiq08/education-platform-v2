@@ -433,4 +433,26 @@ class User extends Authenticatable
             ->wherePivot('status', 'approved')
             ->withPivot(['status', 'requested_at', 'approved_at']);
     }
+
+    // Chat relationships
+    public function mentorConversations()
+    {
+        return $this->hasMany(Conversation::class, 'mentor_id');
+    }
+
+    public function studentConversations()
+    {
+        return $this->hasMany(Conversation::class, 'student_id');
+    }
+
+    public function conversations()
+    {
+        return Conversation::where('mentor_id', $this->id)
+            ->orWhere('student_id', $this->id);
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
 }
