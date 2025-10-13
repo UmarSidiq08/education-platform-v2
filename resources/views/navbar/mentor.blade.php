@@ -302,6 +302,47 @@
                                     @endif
                                 @endauth
                             </div>
+                            <!-- Action Buttons -->
+                            <div class="space-y-2">
+                                <a href="{{ route('mentor.show', $mentor->id) }}"
+                                    class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl group relative overflow-hidden text-sm">
+                                    <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                    <span class="relative">Lihat Profil</span>
+                                    <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform relative" fill="none"
+                                        stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9 5l7 7-7 7" />
+                                    </svg>
+                                </a>
+                                
+                                @auth
+                                    @if(auth()->user()->id !== $mentor->id)
+                                        <form action="{{ route('chat.start') }}" method="POST" class="w-full">
+                                            @csrf
+                                            <input type="hidden" name="mentor_id" value="{{ $mentor->id }}">
+                                            <button type="submit"
+                                                class="w-full inline-flex items-center justify-center px-4 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white font-medium rounded-lg hover:from-green-600 hover:to-emerald-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl group relative overflow-hidden text-sm">
+                                                <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                                <svg class="w-4 h-4 mr-1 relative" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-4.6 1.92 1.92-4.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"></path>
+                                                </svg>
+                                                <span class="relative">Hubungi Mentor</span>
+                                            </button>
+                                        </form>
+                                    @endif
+                                @endauth
+                            </div>
+                            <!-- CTA Button -->
+                            <a href="{{ route('mentor.show', $mentor->id) }}"
+                                class="w-full inline-flex items-center justify-center px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 text-white font-medium rounded-lg hover:from-blue-700 hover:via-indigo-700 hover:to-purple-700 transform hover:scale-[1.02] transition-all duration-300 shadow-lg hover:shadow-xl group relative overflow-hidden text-sm mt-3">
+                                <div class="absolute inset-0 bg-gradient-to-r from-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700"></div>
+                                <span class="relative">Lihat Profil</span>
+                                <svg class="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform relative" fill="none"
+                                    stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 5l7 7-7 7" />
+                                </svg>
+                            </a>
                         </div>
                     </div>
                 @endforeach

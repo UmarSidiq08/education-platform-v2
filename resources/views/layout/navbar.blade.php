@@ -637,7 +637,92 @@
         });
     });
     @endauth
+
+    // Chat Unread Count Functions
+    @auth
+    function updateUnreadCount() {
+        fetch('{{ route("chat.unread-count") }}')
+            .then(response => response.json())
+            .then(data => {
+                const count = data.unread_count;
+                const badge = document.getElementById('unreadBadge');
+                const badgeMobile = document.getElementById('unreadBadgeMobile');
+                const floatingBadge = document.getElementById('floatingBadge');
+                const countElement = document.getElementById('unreadCount');
+                const countMobileElement = document.getElementById('unreadCountMobile');
+                const floatingCountElement = document.getElementById('floatingCount');
+                
+                if (count > 0) {
+                    // Show badges
+                    if (badge) {
+                        badge.style.display = 'flex';
+                        countElement.textContent = count > 99 ? '99+' : count;
+                    }
+                    if (badgeMobile) {
+                        badgeMobile.style.display = 'flex';
+                        countMobileElement.textContent = count > 99 ? '99+' : count;
+                    }
+                    if (floatingBadge) {
+                        floatingBadge.style.display = 'flex';
+                        floatingCountElement.textContent = count > 99 ? '99+' : count;
+                    }
+                    
+                    // Update page title with unread count
+                    const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
+                    document.title = `(${count}) ${originalTitle}`;
+                } else {
+                    // Hide badges
+                    if (badge) badge.style.display = 'none';
+                    if (badgeMobile) badgeMobile.style.display = 'none';
+                    if (floatingBadge) floatingBadge.style.display = 'none';
+                    
+                    // Remove count from title
+                    document.title = document.title.replace(/^\(\d+\)\s/, '');
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching unread count:', error);
+            });
+    }
+
+    // Update count on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUnreadCount();
+    });
+
+    // Update count every 30 seconds
+    setInterval(updateUnreadCount, 30000);
+
+    // Update count when page becomes visible (user switches back to tab)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            updateUnreadCount();
+        }
+    });
+
+    // Listen for Livewire events to update count immediately
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('conversation-updated', () => {
+            setTimeout(updateUnreadCount, 1000); // Small delay to ensure DB is updated
+        });
+    });
+    @endauth
 </script>
+
+<!-- Floating Chat Button (Mobile) -->
+@auth
+<div class="fixed bottom-6 right-6 z-50 md:hidden">
+    <a href="{{ route('chat.index') }}" 
+       class="relative inline-flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-4.6 1.92 1.92-4.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"></path>
+        </svg>
+        <span id="floatingBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-bounce" style="display: none;">
+            <span id="floatingCount">0</span>
+        </span>
+    </a>
+</div>
+@endauth
 
 <!-- Floating Chat Button (Mobile) -->
 @auth
