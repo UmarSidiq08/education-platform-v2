@@ -335,6 +335,7 @@
                     class="bg-white rounded-2xl lg:rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-100 form-container">
                     <form method="POST" action="{{ route('register') }}" class="space-y-5 lg:space-y-6">
                         @csrf
+                        <input type="hidden" name="request_origin" value="registration">
 
                         <!-- Name -->
                         <div>

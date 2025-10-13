@@ -37,31 +37,31 @@ class TeacherClassController extends Controller
         return redirect()->route('teacher-classes.index')->with('success', 'TeacherClass berhasil dibuat!');
     }
 
-    public function show(TeacherClass $teacherClass)
-    {
-        // Pastikan hanya teacher yang memiliki class ini yang bisa mengakses
-        if ($teacherClass->teacher_id !== auth()->id()) {
-            abort(403, 'Unauthorized access to this teacher class.');
-        }
+    // public function show(TeacherClass $teacherClass)
+    // {
+    //     // Pastikan hanya teacher yang memiliki class ini yang bisa mengakses
+    //     if ($teacherClass->teacher_id !== auth()->id()) {
+    //         abort(403, 'Unauthorized access to this teacher class.');
+    //     }
 
-        // Load semua relasi yang diperlukan
-        $teacherClass->load([
-            'mentorRequests.mentor',
-            'implementationClasses' => function ($query) {
-                $query->with(['mentor', 'materials']);
-            }
-        ]);
+    //     // Load semua relasi yang diperlukan
+    //     $teacherClass->load([
+    //         'mentorRequests.mentor',
+    //         'implementationClasses' => function ($query) {
+    //             $query->with(['mentor', 'materials']);
+    //         }
+    //     ]);
 
-        return view('teacher-classes.show', compact('teacherClass'));
-    }
+    //     return view('teacher-classes.show', compact('teacherClass'));
+    // }
     // Tambahkan method ini ke TeacherClassController.php
 
     public function edit(TeacherClass $teacherClass)
     {
         // Pastikan hanya teacher yang memiliki class ini yang bisa mengakses
-        if ($teacherClass->teacher_id !== auth()->id()) {
-            abort(403, 'Unauthorized access to this teacher class.');
-        }
+        // if ($teacherClass->teacher_id !== auth()->id()) {
+        //     abort(403, 'Unauthorized access to this teacher class.');
+        // }
 
         return view('teacher-classes.edit', compact('teacherClass'));
     }

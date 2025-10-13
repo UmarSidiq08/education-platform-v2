@@ -24,7 +24,7 @@
                 <div class="p-4">
                     <!-- Teacher Info dengan Foto Profil -->
                     <div class="flex items-center mb-3">
-                        <!-- PERUBAHAN: Ganti SVG icon dengan foto profil -->
+                        <!-- Foto profil teacher -->
                         <div class="relative w-10 h-10 mr-3 flex-shrink-0">
                             <img src="{{ $teacherClass->teacher && $teacherClass->teacher->avatar ? asset('storage/' . $teacherClass->teacher->avatar) : 'https://ui-avatars.com/api/?name=' . urlencode($teacherClass->teacher->name ?? 'Teacher') . '&background=3B82F6&color=ffffff&size=40' }}"
                                 alt="{{ $teacherClass->teacher->name ?? 'Teacher' }}"
@@ -65,11 +65,85 @@
                         </span>
                     </div>
 
-                    <!-- Action Button -->
-                    <a href="{{ route('public.teacher-classes.show', $teacherClass) }}"
-                       class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-center inline-block">
-                        Lihat Detail & Mentor
-                    </a>
+                    <!-- Action Buttons -->
+                    <div class="space-y-2">
+                        <!-- Detail Button -->
+                        <a href="{{ route('public.teacher-classes.show', $teacherClass) }}"
+                           class="w-full bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 text-center inline-block">
+                            Lihat Detail & Mentor
+                        </a>
+
+                        <!-- Request Mentor Button - Hanya untuk user yang login dan bukan owner class -->
+                        @auth
+                            @if(auth()->user()->role === 'mentor' && auth()->user()->id !== $teacherClass->teacher_id)
+                                @php
+                                    // Cek request terbaru untuk class ini
+                                    $latestRequest = auth()->user()->mentorRequests()
+                                        ->where('teacher_class_id', $teacherClass->id)
+                                        ->latest()
+                                        ->first();
+                                @endphp
+
+                                @if(!$latestRequest)
+                                    <!-- Belum pernah request sama sekali -->
+                                    <form action="{{ route('mentor-requests.store') }}" method="POST" class="w-full">
+                                        @csrf
+                                        <input type="hidden" name="teacher_class_id" value="{{ $teacherClass->id }}">
+                                        <input type="hidden" name="request_origin" value="class_page">
+                                        <button type="submit"
+                                                class="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Request Jadi Mentor
+                                        </button>
+                                    </form>
+                                @elseif($latestRequest->isPending())
+                                    <!-- Request terbaru masih pending -->
+                                    <div class="w-full bg-yellow-100 border border-yellow-300 text-yellow-700 font-medium py-2 px-4 rounded-lg text-center flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Request Pending
+                                    </div>
+                                @elseif($latestRequest->isApproved())
+                                    <!-- Request terbaru sudah approved -->
+                                    <div class="w-full bg-green-100 border border-green-300 text-green-700 font-medium py-2 px-4 rounded-lg text-center flex items-center justify-center">
+                                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                        </svg>
+                                        Mentor Disetujui
+                                    </div>
+                                @elseif($latestRequest->isRejected())
+                                    <!-- Request terbaru ditolak, bisa request lagi -->
+                                    <form action="{{ route('mentor-requests.store') }}" method="POST" class="w-full">
+                                        @csrf
+                                        <input type="hidden" name="teacher_class_id" value="{{ $teacherClass->id }}">
+                                        <input type="hidden" name="request_origin" value="class_page">
+                                        <button type="submit"
+                                                class="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2 px-4 rounded-lg transition-colors duration-200 flex items-center justify-center">
+                                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            Request Ulang
+                                        </button>
+                                    </form>
+                                @endif
+                            @elseif(auth()->user()->role === 'siswa')
+                                <!-- Info untuk siswa -->
+                                <div class="w-full bg-gray-100 border border-gray-300 text-gray-600 font-medium py-2 px-4 rounded-lg text-center text-sm">
+                                    Hanya mentor yang bisa request join kelas
+                                </div>
+                            @endif
+                        @endauth
+
+                        @guest
+                            <!-- Info untuk guest -->
+                            <div class="w-full bg-gray-100 border border-gray-300 text-gray-600 font-medium py-2 px-4 rounded-lg text-center text-sm">
+                                <a href="{{ route('login') }}" class="text-blue-600 hover:text-blue-800">Login</a> untuk request jadi mentor
+                            </div>
+                        @endguest
+                    </div>
                 </div>
 
                 <!-- Status Indicator -->

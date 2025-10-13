@@ -121,6 +121,9 @@ Route::middleware('auth')->controller(ClassController::class)->group(function ()
     Route::get('/classes/{id}/learn', 'learn')->name('classes.learn');
 });
 Route::middleware('auth')->controller(MaterialController::class)->group(function () {
+    Route::get('/materials', function () {
+        return redirect()->route('dashboard'); // atau route lain yang cocok
+    })->name('materials.index');
     Route::get('/materials/{material}', 'show')->name('materials.show');
 });
 Route::middleware('auth')->prefix('materials/{material}')->controller(QuizController::class)->group(function () {

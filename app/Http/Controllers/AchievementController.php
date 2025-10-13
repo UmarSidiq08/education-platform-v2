@@ -18,9 +18,7 @@ class AchievementController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->role !== 'siswa') {
-            abort(403, 'Hanya siswa yang dapat mengakses halaman achievement.');
-        }
+
 
         // Get completed classes with post test scores >= 80%
         $completedClasses = $this->getCompletedClasses($user->id);
@@ -235,11 +233,6 @@ class AchievementController extends Controller
     public function show($classId)
     {
         $user = Auth::user();
-
-        if ($user->role !== 'siswa') {
-            abort(403, 'Hanya siswa yang dapat mengakses halaman ini.');
-        }
-
         // Cari class berdasarkan ID
         $class = ClassModel::with(['mentor', 'postTests.questions', 'materials'])->findOrFail($classId);
 

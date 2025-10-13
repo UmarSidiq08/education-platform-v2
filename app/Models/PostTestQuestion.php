@@ -12,6 +12,7 @@ class PostTestQuestion extends Model
     protected $fillable = [
         'post_test_id',
         'question',
+        'image',
         'options',
         'correct_answer',
         'points',

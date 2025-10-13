@@ -340,10 +340,7 @@
             placeholder: 'Write your material content here. Use the toolbar to format your text...'
         });
 
-        // Sync Quill content with hidden textarea
-        quill.on('text-change', function() {
-            document.getElementById('content').value = quill.root.innerHTML;
-        });
+        // Sync Quill content with hidden textare
 
         // Set initial content if exists
         if (document.getElementById('content').value) {
