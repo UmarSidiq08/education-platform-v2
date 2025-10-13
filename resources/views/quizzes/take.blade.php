@@ -5,13 +5,9 @@
 @section('content')
     <!-- Background Decorations -->
     <div class="fixed inset-0 pointer-events-none z-0">
-        <div
-            class="absolute top-[15%] left-[5%] w-32 h-32 lg:w-40 lg:h-40 bg-white bg-opacity-10 rounded-full animate-float">
-        </div>
-        <div class="absolute top-[60%] right-[8%] w-20 h-20 lg:w-25 lg:h-25 bg-white bg-opacity-10 rounded-full animate-float"
-            style="animation-delay: 3s;"></div>
-        <div class="absolute bottom-[25%] left-[15%] w-16 h-16 lg:w-20 lg:h-20 bg-white bg-opacity-10 rounded-full animate-float"
-            style="animation-delay: 6s;"></div>
+        <div class="absolute top-[15%] left-[5%] w-32 h-32 lg:w-40 lg:h-40 bg-white bg-opacity-10 rounded-full animate-float"></div>
+        <div class="absolute top-[60%] right-[8%] w-20 h-20 lg:w-25 lg:h-25 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 3s;"></div>
+        <div class="absolute bottom-[25%] left-[15%] w-16 h-16 lg:w-20 lg:h-20 bg-white bg-opacity-10 rounded-full animate-float" style="animation-delay: 6s;"></div>
     </div>
 
     <!-- Main Container -->
@@ -35,8 +31,7 @@
                             <!-- Timer Section -->
                             <div class="text-center">
                                 <div class="bg-white bg-opacity-20 backdrop-blur-lg rounded-xl p-6 min-w-[150px]">
-                                    <div id="timer" class="text-4xl font-bold font-mono mb-2">{{ $quiz->time_limit }}:00
-                                    </div>
+                                    <div id="timer" class="text-4xl font-bold font-mono mb-2">{{ $quiz->time_limit }}:00</div>
                                     <div class="text-sm opacity-80">Waktu Tersisa</div>
                                 </div>
                             </div>
@@ -47,8 +42,7 @@
                     <div class="bg-white rounded-2xl p-8 mb-8 shadow-2xl">
                         <!-- Quiz Description -->
                         @if ($quiz->description)
-                            <div
-                                class="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl mb-6 text-slate-700">
+                            <div class="flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl mb-6 text-slate-700">
                                 <i class="fas fa-info-circle text-blue-500"></i>
                                 <span>{{ $quiz->description }}</span>
                             </div>
@@ -57,10 +51,8 @@
                         <!-- Stats Grid -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                             <!-- Questions Stat -->
-                            <div
-                                class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
-                                <div
-                                    class="w-10 h-10 bg-primary-gradient rounded-xl flex items-center justify-center text-white">
+                            <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-blue-50 rounded-xl border-l-4 border-blue-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+                                <div class="w-10 h-10 bg-primary-gradient rounded-xl flex items-center justify-center text-white">
                                     <i class="fas fa-list-ol"></i>
                                 </div>
                                 <div>
@@ -70,10 +62,8 @@
                             </div>
 
                             <!-- Time Stat -->
-                            <div
-                                class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-pink-50 rounded-xl border-l-4 border-pink-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
-                                <div
-                                    class="w-10 h-10 bg-secondary-gradient rounded-xl flex items-center justify-center text-white">
+                            <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-pink-50 rounded-xl border-l-4 border-pink-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+                                <div class="w-10 h-10 bg-secondary-gradient rounded-xl flex items-center justify-center text-white">
                                     <i class="fas fa-clock"></i>
                                 </div>
                                 <div>
@@ -83,15 +73,12 @@
                             </div>
 
                             <!-- Points Stat -->
-                            <div
-                                class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl border-l-4 border-cyan-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
-                                <div
-                                    class="w-10 h-10 bg-success-gradient rounded-xl flex items-center justify-center text-white">
+                            <div class="flex items-center gap-4 p-4 bg-gradient-to-r from-slate-50 to-cyan-50 rounded-xl border-l-4 border-cyan-500 hover:transform hover:-translate-y-1 transition-all duration-300 hover:shadow-lg">
+                                <div class="w-10 h-10 bg-success-gradient rounded-xl flex items-center justify-center text-white">
                                     <i class="fas fa-star"></i>
                                 </div>
                                 <div>
-                                    <div class="text-2xl font-bold text-slate-800">{{ $quiz->questions->sum('points') }}
-                                    </div>
+                                    <div class="text-2xl font-bold text-slate-800">{{ $quiz->questions->sum('points') }}</div>
                                     <div class="text-sm text-gray-500">Poin</div>
                                 </div>
                             </div>
@@ -99,67 +86,51 @@
                     </div>
 
                     <!-- Quiz Form -->
-                    <form id="quiz-form" action="{{ route('quizzes.submit', $quiz) }}" method="POST"
-                        class="space-y-8 mb-8">
+                    <form id="quiz-form" action="{{ route('quizzes.submit', $quiz) }}" method="POST" class="space-y-8 mb-8">
                         @csrf
                         <input type="hidden" name="started_at" value="{{ now() }}">
 
                         <!-- Questions Container -->
                         @foreach ($quiz->questions as $index => $question)
-                            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl hover:transform hover:-translate-y-1 transition-all duration-300"
-                                data-question="{{ $index + 1 }}">
+                            <div class="bg-white rounded-2xl shadow-2xl overflow-hidden hover:shadow-3xl hover:transform hover:-translate-y-1 transition-all duration-300" data-question="{{ $index + 1 }}">
                                 <!-- Question Header -->
                                 <div class="bg-primary-gradient p-6 text-white flex items-center gap-4">
-                                    <div
-                                        class="w-12 h-12 bg-white bg-opacity-20 backdrop-blur-lg rounded-full flex items-center justify-center text-lg font-bold">
+                                    <div class="w-12 h-12 bg-white bg-opacity-20 backdrop-blur-lg rounded-full flex items-center justify-center text-lg font-bold">
                                         {{ $index + 1 }}
                                     </div>
                                     <div class="flex-1">
                                         <h3 class="text-xl font-semibold">Soal {{ $index + 1 }}</h3>
                                     </div>
-                                    <div
-                                        class="flex items-center gap-2 bg-white bg-opacity-20 backdrop-blur-lg px-4 py-2 rounded-full">
+                                    <div class="flex items-center gap-2 bg-white bg-opacity-20 backdrop-blur-lg px-4 py-2 rounded-full">
                                         <i class="fas fa-gem"></i>
                                         <span>{{ $question->points }} poin</span>
                                     </div>
                                 </div>
 
                                 <!-- Question Body -->
-                                <!-- Question Body - Update bagian ini di view quizzes/take.blade.php -->
                                 <div class="p-8">
                                     <div class="text-lg font-medium text-slate-800 mb-6 leading-relaxed">
                                         {{ $question->question }}
                                     </div>
 
-                                    <!-- Display Image if exists -->
-                                    @if ($question->image)
-                                        <div class="mb-6">
-                                            <img src="{{ asset('storage/' . $question->image) }}" alt="Question Image"
-                                                class="max-w-full h-auto rounded-xl border-2 border-indigo-100 shadow-lg max-h-96 mx-auto">
-                                        </div>
-                                    @endif
-
                                     <!-- Options -->
                                     <div class="space-y-4">
                                         @foreach ($question->options as $optionIndex => $option)
                                             <div class="relative">
-                                                <input class="absolute opacity-0 cursor-pointer" type="radio"
-                                                    name="answers[{{ $question->id }}]"
-                                                    id="q{{ $question->id }}_option{{ $optionIndex }}"
-                                                    value="{{ $optionIndex }}" required>
-                                                <label
-                                                    class="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl cursor-pointer bg-gray-50 hover:border-blue-400 hover:bg-white hover:shadow-lg transition-all duration-300 relative overflow-hidden group"
-                                                    for="q{{ $question->id }}_option{{ $optionIndex }}">
-                                                    <div
-                                                        class="absolute inset-0 bg-primary-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-300">
-                                                    </div>
-                                                    <div
-                                                        class="w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-600 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 z-10">
+                                                <input class="absolute opacity-0 cursor-pointer"
+                                                       type="radio"
+                                                       name="answers[{{ $question->id }}]"
+                                                       id="q{{ $question->id }}_option{{ $optionIndex }}"
+                                                       value="{{ $optionIndex }}"
+                                                       required>
+                                                <label class="flex items-center gap-4 p-5 border-2 border-gray-200 rounded-xl cursor-pointer bg-gray-50 hover:border-blue-400 hover:bg-white hover:shadow-lg transition-all duration-300 relative overflow-hidden group"
+                                                       for="q{{ $question->id }}_option{{ $optionIndex }}">
+                                                    <div class="absolute inset-0 bg-primary-gradient opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
+                                                    <div class="w-9 h-9 bg-gray-300 rounded-full flex items-center justify-center font-bold text-gray-600 group-hover:bg-blue-500 group-hover:text-white transition-all duration-300 z-10">
                                                         {{ chr(65 + $optionIndex) }}
                                                     </div>
                                                     <div class="flex-1 text-slate-700 z-10">{{ $option }}</div>
-                                                    <div
-                                                        class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
+                                                    <div class="w-6 h-6 bg-gray-300 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 z-10">
                                                         <i class="fas fa-check text-white text-xs"></i>
                                                     </div>
                                                 </label>
@@ -173,14 +144,12 @@
 
                     <!-- Action Buttons -->
                     <div class="flex flex-col-reverse lg:flex-row justify-between items-center gap-4 py-8">
-                        <a href="{{ route('materials.show', $quiz->material) }}"
-                            class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-gray-600 text-white rounded-xl font-semibold shadow-lg hover:bg-gray-700 hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                        <a href="{{ route('materials.show', $quiz->material) }}" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-gray-600 text-white rounded-xl font-semibold shadow-lg hover:bg-gray-700 hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                             <i class="fas fa-arrow-left"></i>
                             <span>Kembali ke Materi</span>
                         </a>
 
-                        <button type="button" id="submit-quiz-btn"
-                            class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary-gradient text-white rounded-xl font-semibold shadow-lg hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
+                        <button type="button" id="submit-quiz-btn" class="w-full lg:w-auto inline-flex items-center justify-center gap-2 px-8 py-3 bg-primary-gradient text-white rounded-xl font-semibold shadow-lg hover:transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300">
                             <i class="fas fa-paper-plane"></i>
                             <span>Selesai & Submit</span>
                         </button>
@@ -198,16 +167,14 @@
 
         <!-- Modal Dialog -->
         <div class="relative flex items-center justify-center min-h-screen p-4">
-            <div
-                class="bg-white rounded-2xl shadow-3xl max-w-md w-full transform scale-95 transition-transform duration-300">
+            <div class="bg-white rounded-2xl shadow-3xl max-w-md w-full transform scale-95 transition-transform duration-300">
                 <!-- Modal Header -->
                 <div class="bg-primary-gradient text-white p-6 rounded-t-2xl flex items-center justify-between">
                     <h5 class="text-lg font-semibold flex items-center gap-2">
                         <i class="fas fa-exclamation-triangle text-yellow-300"></i>
                         Konfirmasi Submit
                     </h5>
-                    <button type="button" id="close-modal-btn"
-                        class="w-8 h-8 flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors">
+                    <button type="button" id="close-modal-btn" class="w-8 h-8 flex items-center justify-center text-white hover:bg-white hover:bg-opacity-20 rounded-full transition-colors">
                         <span class="text-xl">&times;</span>
                     </button>
                 </div>
@@ -219,25 +186,21 @@
                         <strong>Setelah dikirim, Anda tidak dapat mengubah jawaban lagi.</strong>
                     </p>
 
-                    <div id="unanswered-alert"
-                        class="hidden bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 rounded-xl">
+                    <div id="unanswered-alert" class="hidden bg-gradient-to-r from-yellow-50 to-orange-50 border-l-4 border-yellow-400 p-4 rounded-xl">
                         <div class="flex items-center text-yellow-800">
                             <i class="fas fa-exclamation-circle mr-2"></i>
-                            <strong>Perhatian:</strong> Masih ada <span id="unanswered-count">0</span> soal yang belum
-                            dijawab.
+                            <strong>Perhatian:</strong> Masih ada <span id="unanswered-count">0</span> soal yang belum dijawab.
                         </div>
                     </div>
                 </div>
 
                 <!-- Modal Footer -->
                 <div class="flex gap-3 p-6 border-t border-gray-100">
-                    <button type="button" id="cancel-submit-btn"
-                        class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-700 transition-colors">
+                    <button type="button" id="cancel-submit-btn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-gray-600 text-white rounded-xl font-semibold hover:bg-gray-700 transition-colors">
                         <i class="fas fa-times"></i>
                         Batal
                     </button>
-                    <button type="button" id="confirm-submit-btn"
-                        class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary-gradient text-white rounded-xl font-semibold hover:opacity-90 transition-opacity">
+                    <button type="button" id="confirm-submit-btn" class="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 bg-primary-gradient text-white rounded-xl font-semibold hover:opacity-90 transition-opacity">
                         <i class="fas fa-check"></i>
                         Ya, Kirim Jawaban
                     </button>
@@ -250,74 +213,29 @@
     <style>
         /* Custom animations and gradients */
         @keyframes float {
-
-            0%,
-            100% {
-                transform: translateY(0px);
-            }
-
-            50% {
-                transform: translateY(-15px);
-            }
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
         }
 
         @keyframes pulse-warning {
-
-            0%,
-            100% {
-                transform: scale(1);
-            }
-
-            50% {
-                transform: scale(1.05);
-            }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
 
         @keyframes pulse-danger {
-
-            0%,
-            100% {
-                transform: scale(1);
-                opacity: 1;
-            }
-
-            50% {
-                transform: scale(1.1);
-                opacity: 0.7;
-            }
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.7; }
         }
 
-        .bg-primary-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
+        .bg-primary-gradient { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .bg-secondary-gradient { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .bg-success-gradient { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .bg-warning-gradient { background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); }
+        .bg-quiz-gradient { background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); }
 
-        .bg-secondary-gradient {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .bg-success-gradient {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
-        .bg-warning-gradient {
-            background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
-        }
-
-        .bg-quiz-gradient {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-        }
-
-        .animate-float {
-            animation: float 8s ease-in-out infinite;
-        }
-
-        .animate-pulse-warning {
-            animation: pulse-warning 2s infinite;
-        }
-
-        .animate-pulse-danger {
-            animation: pulse-danger 1s infinite;
-        }
+        .animate-float { animation: float 8s ease-in-out infinite; }
+        .animate-pulse-warning { animation: pulse-warning 2s infinite; }
+        .animate-pulse-danger { animation: pulse-danger 1s infinite; }
 
         /* Modal show state */
         .modal.show {
@@ -356,19 +274,16 @@
                 const minutes = Math.floor(timeRemaining / 60);
                 const seconds = timeRemaining % 60;
 
-                timerElement.textContent =
-                    `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+                timerElement.textContent = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 
                 // Warning when 5 minutes left
                 if (timeRemaining <= 300 && timeRemaining > 60) {
-                    timerElement.className =
-                        'text-4xl font-bold font-mono mb-2 text-yellow-400 animate-pulse-warning';
+                    timerElement.className = 'text-4xl font-bold font-mono mb-2 text-yellow-400 animate-pulse-warning';
                 }
 
                 // Danger when 1 minute left
                 if (timeRemaining <= 60) {
-                    timerElement.className =
-                        'text-4xl font-bold font-mono mb-2 text-red-400 animate-pulse-danger';
+                    timerElement.className = 'text-4xl font-bold font-mono mb-2 text-red-400 animate-pulse-danger';
                 }
 
                 // Auto submit when time is up
@@ -389,23 +304,23 @@
 
             function saveTimeToServer(timeRemaining) {
                 fetch(updateTimerUrl, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                        },
-                        body: JSON.stringify({
-                            time_remaining: timeRemaining
-                        })
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({
+                        time_remaining: timeRemaining
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.time_up) {
-                            clearInterval(timerInterval);
-                            submitQuizDirectly();
-                        }
-                    })
-                    .catch(error => console.error('Error saving time:', error));
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.time_up) {
+                        clearInterval(timerInterval);
+                        submitQuizDirectly();
+                    }
+                })
+                .catch(error => console.error('Error saving time:', error));
             }
 
             // Save time when user leaves page
@@ -510,15 +425,13 @@
                 radio.addEventListener('change', function() {
                     // Remove previous selection styling from all options of the same question
                     const questionName = this.name;
-                    const allOptionsForQuestion = document.querySelectorAll(
-                        `input[name="${questionName}"]`);
+                    const allOptionsForQuestion = document.querySelectorAll(`input[name="${questionName}"]`);
 
                     allOptionsForQuestion.forEach(option => {
                         const label = option.nextElementSibling;
                         if (label) {
                             // Reset all labels
-                            label.classList.remove('border-blue-500', 'bg-white',
-                                'shadow-lg');
+                            label.classList.remove('border-blue-500', 'bg-white', 'shadow-lg');
                             label.classList.add('border-gray-200', 'bg-gray-50');
 
                             // Reset marker and check
@@ -526,14 +439,12 @@
                             const check = label.querySelector('.w-6.h-6');
 
                             if (marker) {
-                                marker.classList.remove('bg-blue-500', 'text-white',
-                                    'transform', 'scale-105');
+                                marker.classList.remove('bg-blue-500', 'text-white', 'transform', 'scale-105');
                                 marker.classList.add('bg-gray-300', 'text-gray-600');
                             }
 
                             if (check) {
-                                check.classList.remove('bg-green-500', 'opacity-100',
-                                    'transform', 'scale-110');
+                                check.classList.remove('bg-green-500', 'opacity-100', 'transform', 'scale-110');
                                 check.classList.add('bg-gray-300', 'opacity-0');
                             }
                         }
@@ -549,16 +460,14 @@
                         const marker = selectedLabel.querySelector('.w-9.h-9');
                         if (marker) {
                             marker.classList.remove('bg-gray-300', 'text-gray-600');
-                            marker.classList.add('bg-blue-500', 'text-white', 'transform',
-                                'scale-105');
+                            marker.classList.add('bg-blue-500', 'text-white', 'transform', 'scale-105');
                         }
 
                         // Style check
                         const check = selectedLabel.querySelector('.w-6.h-6');
                         if (check) {
                             check.classList.remove('bg-gray-300', 'opacity-0');
-                            check.classList.add('bg-green-500', 'opacity-100', 'transform',
-                                'scale-110');
+                            check.classList.add('bg-green-500', 'opacity-100', 'transform', 'scale-110');
                         }
 
                         // Smooth animation effect
@@ -595,8 +504,7 @@
                 const isSubmitting = quizForm.classList.contains('submitting');
                 if (!isSubmitting) {
                     e.preventDefault();
-                    e.returnValue =
-                        'Apakah Anda yakin ingin meninggalkan halaman? Progress Pre Test akan hilang.';
+                    e.returnValue = 'Apakah Anda yakin ingin meninggalkan halaman? Progress Pre Test akan hilang.';
                 }
             });
 

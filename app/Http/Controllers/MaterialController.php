@@ -71,37 +71,36 @@ class MaterialController extends Controller
 
     // UPDATED: Menampilkan detail materi dengan akses yang diperluas untuk mentor
     public function show(Material $material)
-{
-    $material->load(['class.mentor', 'activeQuiz.questions']);
-    $user = Auth::user();
+    {
+        $material->load(['class.mentor', 'activeQuiz.questions']);
+        $user = Auth::user();
 
-    // UPDATED: Kontrol akses yang diperluas
-    if ($user->role === 'mentor') {
-        // Mentor bisa akses semua materi seperti siswa
-        // Tidak ada pembatasan khusus untuk mentor
-    } elseif ($user->role === 'siswa') {
-        // Siswa bisa akses semua materi
-    } else {
-        abort(403, 'Akses ditolak.');
+        // UPDATED: Kontrol akses yang diperluas
+        if ($user->role === 'mentor') {
+            // Mentor bisa akses semua materi seperti siswa
+            // Tidak ada pembatasan khusus untuk mentor
+        } elseif ($user->role === 'siswa') {
+            // Siswa bisa akses semua materi
+        } else {
+            abort(403, 'Akses ditolak.');
+        }
+
+        // Tentukan apakah user adalah pemilik materi (untuk hak CRUD)
+        $isOwner = ($user->role === 'mentor' && $user->id === $material->class->mentor_id);
+
+        // UPDATED: Jika ada quiz aktif, ambil completion status dengan 80% logic
+        $quizAttempt = null;
+        $activeQuiz = $material->quizzes()->where('is_active', true)->first();
+        $completionStatus = null;
+
+        if ($activeQuiz && $user->role === 'siswa') {
+            // Gunakan best attempt untuk menentukan status
+            $quizAttempt = $activeQuiz->getBestAttemptByUser($user->id);
+            $completionStatus = $activeQuiz->getCompletionStatusByUser($user->id);
+        }
+
+        return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz', 'completionStatus', 'isOwner'));
     }
-
-    // Tentukan apakah user adalah pemilik materi (untuk hak CRUD)
-    $isOwner = ($user->role === 'mentor' && $user->id === $material->class->mentor_id);
-
-    // UPDATED: Jika ada quiz aktif, ambil completion status untuk siswa dan mentor non-pemilik
-    $quizAttempt = null;
-    $activeQuiz = $material->quizzes()->where('is_active', true)->first();
-    $completionStatus = null;
-
-    // Siswa dan mentor non-pemilik bisa mengerjakan quiz
-    if ($activeQuiz && ($user->role === 'siswa' || ($user->role === 'mentor' && !$isOwner))) {
-        // Gunakan best attempt untuk menentukan status
-        $quizAttempt = $activeQuiz->getBestAttemptByUser($user->id);
-        $completionStatus = $activeQuiz->getCompletionStatusByUser($user->id);
-    }
-
-    return view('materials.show', compact('material', 'quizAttempt', 'activeQuiz', 'completionStatus', 'isOwner'));
-}
 
     // Form edit materi
     public function edit(Material $material)

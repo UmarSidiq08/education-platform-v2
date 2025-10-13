@@ -17,8 +17,7 @@ class MentorRequest extends Model
         'requested_at',
         'approved_at',
         'rejected_at',
-        'approved_by',
-        'request_origin' // TAMBAHAN INI YANG PENTING!
+        'approved_by'
     ];
 
     protected $casts = [
@@ -32,10 +31,6 @@ class MentorRequest extends Model
     const STATUS_PENDING = 'pending';
     const STATUS_APPROVED = 'approved';
     const STATUS_REJECTED = 'rejected';
-
-    // Request origin constants untuk konsistensi
-    const ORIGIN_REGISTRATION = 'registration';
-    const ORIGIN_CLASS_PAGE = 'class_page';
 
     /**
      * Relasi ke User (mentor)
@@ -86,29 +81,12 @@ class MentorRequest extends Model
     }
 
     /**
-     * Scope untuk request dari registrasi
-     */
-    public function scopeFromRegistration($query)
-    {
-        return $query->where('request_origin', self::ORIGIN_REGISTRATION);
-    }
-
-    /**
-     * Scope untuk request dari halaman kelas
-     */
-    public function scopeFromClassPage($query)
-    {
-        return $query->where('request_origin', self::ORIGIN_CLASS_PAGE);
-    }
-
-    /**
      * Check if request is pending
      */
     public function isPending()
     {
         return $this->status === self::STATUS_PENDING;
     }
-
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -128,22 +106,6 @@ class MentorRequest extends Model
     public function isRejected()
     {
         return $this->status === self::STATUS_REJECTED;
-    }
-
-    /**
-     * Check if request is from registration
-     */
-    public function isFromRegistration()
-    {
-        return $this->request_origin === self::ORIGIN_REGISTRATION;
-    }
-
-    /**
-     * Check if request is from class page
-     */
-    public function isFromClassPage()
-    {
-        return $this->request_origin === self::ORIGIN_CLASS_PAGE;
     }
 
     /**
@@ -191,18 +153,6 @@ class MentorRequest extends Model
             self::STATUS_PENDING => 'Menunggu Persetujuan',
             self::STATUS_APPROVED => 'Disetujui',
             self::STATUS_REJECTED => 'Ditolak',
-            default => 'Tidak Diketahui'
-        };
-    }
-
-    /**
-     * Get request origin text
-     */
-    public function getOriginTextAttribute()
-    {
-        return match ($this->request_origin) {
-            self::ORIGIN_REGISTRATION => 'Dari Registrasi',
-            self::ORIGIN_CLASS_PAGE => 'Dari Halaman Kelas',
             default => 'Tidak Diketahui'
         };
     }

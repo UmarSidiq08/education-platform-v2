@@ -165,7 +165,7 @@ nav, .navbar {
 <!-- Bottom Section -->
 <section class="bottom-section">
     <div class="brand-section">
-        <h1 class="brand-title">Erni Muzakir</h1>
+        <h1 class="brand-title">Lumina</h1>
         <p class="brand-subtitle">Teman Setia Waktu Kamu Belajar</p>
             <a href="{{ route('classes.index') }}" class="cta-button">Start learning</a>
     </div>

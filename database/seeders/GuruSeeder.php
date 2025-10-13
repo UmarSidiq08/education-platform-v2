@@ -11,15 +11,21 @@ class GuruSeeder extends Seeder
 {
     public function run()
     {
-        $guru = User::create([
-            'name' => 'Admin Guru',
-            'email' => 'admin@guru.test',
-            'password' => Hash::make('password123'),
-            'role' => 'guru',
-            'is_verified' => true,
-        ]);
+        $existingGuru = User::where('email', 'admin@guru.test')
+            ->orWhere('name', 'Admin Guru')
+            ->first();
+        
+        if (!$existingGuru) {
+            $guru = User::create([
+                'name' => 'Admin Guru',
+                'email' => 'admin@guru.test',
+                'password' => Hash::make('password123'),
+                'role' => 'guru',
+                'is_verified' => true,
+            ]);
 
-        // Langsung assign role
-        $guru->assignRole('guru');
+            // Langsung assign role
+            $guru->assignRole('guru');
+        }
     }
 }

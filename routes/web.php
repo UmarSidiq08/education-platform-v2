@@ -18,6 +18,7 @@ use App\Http\Controllers\TeacherClassController;
 use App\Http\Controllers\MentorRequestController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\PublicTeacherClassController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/', function () {
     if (Auth::check()) {
@@ -33,6 +34,14 @@ Route::get('/', function () {
 
     // Jika user belum login, redirect ke login
     return redirect()->route('login');
+});
+
+// Chat Routes
+Route::middleware('auth')->controller(ChatController::class)->group(function () {
+    Route::get('/chat', 'index')->name('chat.index');
+    Route::get('/chat/{conversation}', 'room')->name('chat.room');
+    Route::post('/chat/start', 'startConversation')->name('chat.start');
+    Route::get('/api/chat/unread-count', 'getUnreadCount')->name('chat.unread-count');
 });
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
@@ -112,9 +121,6 @@ Route::middleware('auth')->controller(ClassController::class)->group(function ()
     Route::get('/classes/{id}/learn', 'learn')->name('classes.learn');
 });
 Route::middleware('auth')->controller(MaterialController::class)->group(function () {
-    Route::get('/materials', function () {
-        return redirect()->route('dashboard'); // atau route lain yang cocok
-    })->name('materials.index');
     Route::get('/materials/{material}', 'show')->name('materials.show');
 });
 Route::middleware('auth')->prefix('materials/{material}')->controller(QuizController::class)->group(function () {

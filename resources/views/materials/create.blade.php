@@ -278,7 +278,6 @@
                         </div>
                     </form>
                 </div>
-
                 <!-- Loading Modal -->
                 <div id="loadingModal"
                     class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
@@ -363,59 +362,14 @@
             placeholder: 'Write your material content here. Use the toolbar to format your text...'
         });
 
-        // Debounce function untuk mencegah terlalu banyak update
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
-                    clearTimeout(timeout);
-                    func(...args);
-                };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
-
-        // Variable untuk track composing state (untuk IME/autocorrect)
-        let isComposing = false;
-
-        // Sync Quill content dengan hidden textarea - DENGAN DEBOUNCE
-        const syncContent = debounce(function() {
-            // Hanya sync jika tidak sedang composing
-            if (!isComposing) {
-                document.getElementById('content').value = quill.root.innerHTML;
-            }
-        }, 300); // Wait 300ms setelah user berhenti mengetik
-
-        // Event listener untuk text-change dengan debouncing
-        quill.on('text-change', function(delta, oldDelta, source) {
-            // Hanya sync jika perubahan dari user, bukan dari API/programmatic
-            if (source === 'user') {
-                syncContent();
-            }
+        // Sync Quill content with hidden textarea
+        quill.on('text-change', function() {
+            document.getElementById('content').value = quill.root.innerHTML;
         });
 
-        // Handle composition events (untuk keyboard mobile & IME)
-        const editorElement = document.querySelector('#quill-editor .ql-editor');
-
-        if (editorElement) {
-            // Compositionstart: user mulai mengetik dengan IME (predictive text, autocorrect, dll)
-            editorElement.addEventListener('compositionstart', function() {
-                isComposing = true;
-            });
-
-            // Compositionend: user selesai dengan IME, text sudah final
-            editorElement.addEventListener('compositionend', function() {
-                isComposing = false;
-                // Force sync setelah composition selesai
-                document.getElementById('content').value = quill.root.innerHTML;
-            });
-        }
-
         // Set initial content if exists
-        const contentTextarea = document.getElementById('content');
-        if (contentTextarea && contentTextarea.value) {
-            quill.root.innerHTML = contentTextarea.value;
+        if (document.getElementById('content').value) {
+            quill.root.innerHTML = document.getElementById('content').value;
         }
 
         function handleVideoUpload(input) {
@@ -459,19 +413,50 @@
             }
         }
 
-        // SINGLE form submission handler - menggabungkan validasi dan loading modal
+        // Form validation
         document.getElementById('materialForm').addEventListener('submit', function(e) {
             const title = document.getElementById('title').value.trim();
             const content = quill.getText().trim(); // Get text content from Quill
 
-            // Validasi
             if (!title || !content) {
                 e.preventDefault();
                 alert('Title and content are required!');
                 return false;
             }
 
-            // Force sync content sebelum submit (pastikan data terbaru)
+            // Ensure hidden textarea has the latest content
+            document.getElementById('content').value = quill.root.innerHTML;
+        });
+
+        // Custom checkbox styling with JavaScript
+        document.getElementById('is_published').addEventListener('change', function() {
+            const checkIcon = this.parentElement.querySelector('.fa-check');
+            const checkBox = this.parentElement.querySelector('div');
+
+            if (this.checked) {
+                checkBox.classList.add('bg-emerald-600', 'border-emerald-600');
+                checkBox.classList.remove('border-slate-300');
+                checkIcon.classList.remove('opacity-0');
+                checkIcon.classList.add('opacity-100');
+            } else {
+                checkBox.classList.remove('bg-emerald-600', 'border-emerald-600');
+                checkBox.classList.add('border-slate-300');
+                checkIcon.classList.add('opacity-0');
+                checkIcon.classList.remove('opacity-100');
+            }
+        });
+        // Handle form submission with loading animation
+        document.getElementById('materialForm').addEventListener('submit', function(e) {
+            const title = document.getElementById('title').value.trim();
+            const content = quill.getText().trim();
+
+            if (!title || !content) {
+                e.preventDefault();
+                alert('Title and content are required!');
+                return false;
+            }
+
+            // Ensure hidden textarea has the latest content
             document.getElementById('content').value = quill.root.innerHTML;
 
             // Show loading modal
@@ -486,10 +471,12 @@
             submitButton.disabled = true;
             submitButton.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Processing...';
 
-            // Simulate progress if it's a video upload
+            // Simulate progress if it's a video upload (since we can't get actual progress with standard form submission)
             const videoInput = document.getElementById('video');
+            let hasVideo = false;
 
             if (videoInput && videoInput.files && videoInput.files[0]) {
+                hasVideo = true;
                 const file = videoInput.files[0];
                 const fileSize = file.size;
 
@@ -515,30 +502,9 @@
                 progressText.textContent = "Saving material...";
             }
 
-            // Form akan continue submit secara normal
-            return true;
+            // The form will continue to submit normally
+            // The modal will disappear when the page reloads after submission
         });
-
-        // Custom checkbox styling dengan JavaScript
-        const publishCheckbox = document.getElementById('is_published');
-        if (publishCheckbox) {
-            publishCheckbox.addEventListener('change', function() {
-                const checkIcon = this.parentElement.querySelector('.fa-check');
-                const checkBox = this.parentElement.querySelector('div');
-
-                if (this.checked) {
-                    checkBox.classList.add('bg-emerald-600', 'border-emerald-600');
-                    checkBox.classList.remove('border-slate-300');
-                    checkIcon.classList.remove('opacity-0');
-                    checkIcon.classList.add('opacity-100');
-                } else {
-                    checkBox.classList.remove('bg-emerald-600', 'border-emerald-600');
-                    checkBox.classList.add('border-slate-300');
-                    checkIcon.classList.add('opacity-0');
-                    checkIcon.classList.remove('opacity-100');
-                }
-            });
-        }
     </script>
 
     <style>

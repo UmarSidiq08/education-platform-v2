@@ -1,5 +1,4 @@
-@extends("layouts.admin")
-@section('content')
+@extends("layouts.app")
     {{-- Extends layouts.app jika menggunakan Laravel Blade --}}
 
     <div class="container mx-auto px-4 py-8 max-w-2xl">
@@ -130,4 +129,5 @@
             document.getElementById('preview-description').textContent = e.target.value || 'Deskripsi akan muncul di sini...';
         });
     </script>
-@endsection
+</body>
+</html>

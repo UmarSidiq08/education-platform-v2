@@ -11,19 +11,15 @@ class MentorRequestController extends Controller
 {
     public function store(Request $request)
     {
-        // Tambahkan validasi untuk request_origin
         $validated = $request->validate([
-            'teacher_class_id' => 'required|exists:teacher_classes,id',
-            'request_origin' => 'nullable|string' // Validasi baru
+            'teacher_class_id' => 'required|exists:teacher_classes,id'
         ]);
 
         MentorRequest::create([
             'mentor_id' => auth()->id(),
             'teacher_class_id' => $validated['teacher_class_id'],
             'status' => 'pending',
-            'requested_at' => now(),
-            // Simpan nilai request_origin dari form
-            'request_origin' => $validated['request_origin'] ?? 'class_page',
+            'requested_at' => now()
         ]);
 
         return back()->with('success', 'Request berhasil dikirim ke guru!');
@@ -43,36 +39,33 @@ class MentorRequestController extends Controller
         return back()->with('success', 'Mentor berhasil disetujui!');
     }
 
-    public function reject(MentorRequest $mentorRequest)
-    {
-        if ($mentorRequest->teacherClass->teacher_id !== auth()->id()) {
-            abort(403);
-        }
-
-        try {
-            // Tolak request
-            $mentorRequest->reject();
-
-            // Cek asal request. Ini adalah logika baru yang membedakan
-            if ($mentorRequest->request_origin === 'registration') {
-                $user = $mentorRequest->mentor;
-                if ($user) {
-                    // Logika ini hanya akan dijalankan jika request berasal dari registrasi
-                    $user->syncRoles(['siswa']);
-                    $user->is_verified = true;
-                    $user->role = 'siswa';
-                    $user->save();
-                }
-                return back()->with('success', 'Request mentor ditolak dan role user diubah menjadi siswa.');
-            }
-
-            // Jika request tidak berasal dari registrasi, hanya tolak request tanpa mengubah role
-            return back()->with('success', 'Request mentor ditolak.');
-        } catch (\Exception $e) {
-            Log::error('Reject Mentor Error: ' . $e->getMessage());
-            return back()->with('error', 'Terjadi kesalahan saat menolak mentor.');
-        }
+public function reject(MentorRequest $mentorRequest)
+{
+    if ($mentorRequest->teacherClass->teacher_id !== auth()->id()) {
+        abort(403);
     }
+
+    try {
+        // Tolak request
+        $mentorRequest->reject();
+
+        $user = $mentorRequest->mentor; // <- ganti user jadi mentor
+        if ($user) {
+            // Sinkron role Spatie langsung
+            $user->syncRoles(['siswa']);
+
+            // Update field tambahan
+            $user->is_verified = true;
+            $user->role = 'siswa'; // opsional
+            $user->save();
+        }
+
+        return back()->with('success', 'Request mentor ditolak dan user diubah menjadi siswa.');
+    } catch (\Exception $e) {
+        Log::error('Reject Mentor Error: '.$e->getMessage());
+        return back()->with('error', 'Terjadi kesalahan saat menolak mentor.');
+    }
+}
 
 
 
@@ -81,7 +74,7 @@ class MentorRequestController extends Controller
     public function pendingRequests()
     {
         $requests = MentorRequest::with(['mentor', 'teacherClass'])
-            ->whereHas('teacherClass', function ($q) {
+            ->whereHas('teacherClass', function($q) {
                 $q->where('teacher_id', auth()->id());
             })
             ->pending()
@@ -95,9 +88,9 @@ class MentorRequestController extends Controller
     public function byClass(TeacherClass $teacherClass)
     {
         // Pastikan hanya teacher yang memiliki class ini yang bisa mengakses
-        // if ($teacherClass->teacher_id !== auth()->id()) {
-        //     abort(403, 'Unauthorized access to this teacher class.');
-        // }
+        if ($teacherClass->teacher_id !== auth()->id()) {
+            abort(403, 'Unauthorized access to this teacher class.');
+        }
 
         $requests = MentorRequest::with(['mentor', 'teacherClass'])
             ->where('teacher_class_id', $teacherClass->id)

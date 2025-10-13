@@ -29,7 +29,7 @@ class RegisteredUserController extends Controller
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-     public function store(Request $request): RedirectResponse
+    public function store(Request $request): RedirectResponse
     {
         // Validasi dasar untuk semua role
         $validationRules = [
@@ -77,8 +77,7 @@ class RegisteredUserController extends Controller
                 'mentor_id' => $user->id,
                 'teacher_class_id' => $request->teacher_class_id,
                 'status' => 'pending',
-                'requested_at' => now(),
-                'request_origin' => 'registration', // Ini penambahan baris baru
+                'requested_at' => now()
             ]);
         }
 

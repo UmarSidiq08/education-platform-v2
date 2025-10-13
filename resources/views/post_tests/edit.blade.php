@@ -29,7 +29,7 @@
         <!-- Main Form -->
         <div class="bg-white rounded-xl shadow-lg border border-gray-200">
             <div class="p-4 sm:p-6 lg:p-8">
-                <form action="{{ route('post_tests.update', [$class, $postTest]) }}" method="POST" id="postTestForm" enctype="multipart/form-data">
+                <form action="{{ route('post_tests.update', [$class, $postTest]) }}" method="POST" id="postTestForm">
                     @csrf
                     @method('PUT')
 
@@ -183,42 +183,6 @@
                           required></textarea>
             </div>
 
-            <!-- Image Upload Section -->
-            <div class="mb-4 sm:mb-6">
-                <label class="block text-sm font-semibold text-gray-700 mb-2">
-                    Gambar Pertanyaan <span class="text-gray-500 font-normal">(opsional)</span>
-                </label>
-                <div class="flex flex-col gap-3">
-                    <input type="hidden" name="questions[0][existing_image]" class="existing-image-input" value="">
-                    <div class="relative">
-                        <input type="file"
-                               name="questions[0][image]"
-                               accept="image/*"
-                               class="hidden image-input"
-                               id="image-0"
-                               onchange="previewImage(this, 0)">
-                        <label for="image-0"
-                               class="flex items-center justify-center gap-2 p-4 border-2 border-dashed border-indigo-200 rounded-lg cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-all duration-300">
-                            <i class="fas fa-image text-indigo-500"></i>
-                            <span class="text-sm text-gray-600">Klik untuk upload gambar</span>
-                        </label>
-                    </div>
-                    <div id="preview-0" class="hidden">
-                        <div class="relative inline-block">
-                            <img src="" alt="Preview" class="max-w-full h-auto rounded-lg border-2 border-indigo-100 max-h-64">
-                            <button type="button"
-                                    onclick="removeImage(0)"
-                                    class="absolute top-2 right-2 bg-red-500 text-white w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-600 transition-colors">
-                                <i class="fas fa-times"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="text-xs text-gray-500">
-                        <i class="fas fa-info-circle mr-1"></i>Format: JPG, JPEG, PNG, GIF. Maksimal 2MB
-                    </div>
-                </div>
-            </div>
-
             <!-- Points -->
             <div class="mb-4 sm:mb-6">
                 <label class="block text-sm font-semibold text-gray-700 mb-2">
@@ -366,6 +330,7 @@ document.addEventListener('DOMContentLoaded', function() {
             addExistingQuestion(question, index);
         });
     } else {
+        // Add first question automatically if no existing questions
         addQuestion();
     }
 
@@ -382,34 +347,9 @@ document.addEventListener('DOMContentLoaded', function() {
         // Update all name attributes with correct index
         updateQuestionNameAttributes(questionElement, index);
 
-        // Update image input IDs
-        const imageInput = questionElement.querySelector('.image-input');
-        const imageLabel = questionElement.querySelector('label[for^="image-"]');
-        const previewDiv = questionElement.querySelector('[id^="preview-"]');
-
-        imageInput.id = `image-${index}`;
-        imageLabel.setAttribute('for', `image-${index}`);
-        previewDiv.id = `preview-${index}`;
-        imageInput.setAttribute('onchange', `previewImage(this, ${index})`);
-
-        const removeBtn = previewDiv.querySelector('button');
-        if (removeBtn) {
-            removeBtn.setAttribute('onclick', `removeImage(${index})`);
-        }
-
         // Populate with existing data
         questionElement.querySelector('.question-text').value = questionData.question;
         questionElement.querySelector('.question-points').value = questionData.points;
-
-        // Handle existing image
-        if (questionData.image) {
-            const existingImageInput = questionElement.querySelector('.existing-image-input');
-            existingImageInput.value = questionData.image;
-
-            const img = previewDiv.querySelector('img');
-            img.src = `/storage/${questionData.image}`;
-            previewDiv.classList.remove('hidden');
-        }
 
         // Populate options
         const optionInputs = questionElement.querySelectorAll('input[type="text"]');
@@ -453,21 +393,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Update all name attributes with correct index
         updateQuestionNameAttributes(questionElement, questionCount);
-
-        // Update image input IDs
-        const imageInput = questionElement.querySelector('.image-input');
-        const imageLabel = questionElement.querySelector('label[for^="image-"]');
-        const previewDiv = questionElement.querySelector('[id^="preview-"]');
-
-        imageInput.id = `image-${questionCount}`;
-        imageLabel.setAttribute('for', `image-${questionCount}`);
-        previewDiv.id = `preview-${questionCount}`;
-        imageInput.setAttribute('onchange', `previewImage(this, ${questionCount})`);
-
-        const removeBtn = previewDiv.querySelector('button');
-        if (removeBtn) {
-            removeBtn.setAttribute('onclick', `removeImage(${questionCount})`);
-        }
 
         // Handle remove button
         questionElement.querySelector('.remove-question').addEventListener('click', function() {
@@ -516,23 +441,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Update all name attributes
             updateQuestionNameAttributes(card, index);
-
-            // Update image-related IDs and attributes
-            const imageInput = card.querySelector('.image-input');
-            const imageLabel = card.querySelector('label[for^="image-"]');
-            const previewDiv = card.querySelector('[id^="preview-"]');
-
-            if (imageInput && imageLabel && previewDiv) {
-                imageInput.id = `image-${index}`;
-                imageLabel.setAttribute('for', `image-${index}`);
-                previewDiv.id = `preview-${index}`;
-                imageInput.setAttribute('onchange', `previewImage(this, ${index})`);
-
-                const removeBtn = previewDiv.querySelector('button');
-                if (removeBtn) {
-                    removeBtn.setAttribute('onclick', `removeImage(${index})`);
-                }
-            }
         });
 
         // Update questionCount to reflect current number of questions
@@ -609,60 +517,5 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
-
-// Global functions for image handling
-function previewImage(input, questionNum) {
-    const previewDiv = document.getElementById(`preview-${questionNum}`);
-    const img = previewDiv.querySelector('img');
-    const existingImageInput = input.closest('.question-card').querySelector('.existing-image-input');
-
-    if (input.files && input.files[0]) {
-        const file = input.files[0];
-        const maxSize = 2 * 1024 * 1024; // 2MB in bytes
-
-        // Validasi ukuran file
-        if (file.size > maxSize) {
-            alert(`Ukuran file terlalu besar!\n\nFile: ${file.name}\nUkuran: ${(file.size / 1024 / 1024).toFixed(2)} MB\nMaksimal: 2 MB\n\nSilakan pilih gambar dengan ukuran lebih kecil.`);
-            input.value = ''; // Reset input
-            return;
-        }
-
-        // Validasi tipe file
-        const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif'];
-        if (!allowedTypes.includes(file.type)) {
-            alert(`Format file tidak didukung!\n\nFile: ${file.name}\nFormat yang diperbolehkan: JPG, JPEG, PNG, GIF`);
-            input.value = ''; // Reset input
-            return;
-        }
-
-        const reader = new FileReader();
-
-        reader.onload = function(e) {
-            img.src = e.target.result;
-            previewDiv.classList.remove('hidden');
-
-            // Clear existing image input since we're uploading new one
-            if (existingImageInput) {
-                existingImageInput.value = '';
-            }
-        };
-
-        reader.readAsDataURL(file);
-    }
-}
-
-function removeImage(questionNum) {
-    const input = document.getElementById(`image-${questionNum}`);
-    const previewDiv = document.getElementById(`preview-${questionNum}`);
-    const existingImageInput = input.closest('.question-card').querySelector('.existing-image-input');
-
-    input.value = '';
-    previewDiv.classList.add('hidden');
-    
-    // Also clear existing image input
-    if (existingImageInput) {
-        existingImageInput.value = '';
-    }
-}
 </script>
 @endsection

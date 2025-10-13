@@ -2,130 +2,151 @@
     style="background: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 100%); backdrop-filter: blur(20px);">
     <div class="flex justify-between items-center max-w-[1400px] mx-auto w-full h-full px-8">
         <div class="flex items-center gap-8">
-            <div class="logo relative w-[100px] h-[100px] flex items-center justify-center">
-                <!-- Logo -->
-                <img src="{{ asset('images/logo.png') }}" alt="Logo"
-                    class="w-full h-full object-contain relative z-10">
-            </div>
+    <div class="logo relative w-[100px] h-[100px] flex items-center justify-center">
+        <!-- Logo -->
+        <img src="{{ asset('images/logo.png') }}" alt="Logo" class="w-full h-full object-contain relative z-10">
+    </div>
 
-            <!-- Mobile Menu Button - Hidden on Desktop -->
-            <button class="mobile-menu-btn hidden md:hidden" id="mobileMenuBtn" onclick="toggleMobileMenu()">
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-                <span class="hamburger-line"></span>
-            </button>
+    <!-- Mobile Menu Button - Hidden on Desktop -->
+    <button class="mobile-menu-btn hidden md:hidden" id="mobileMenuBtn" onclick="toggleMobileMenu()">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    </button>
 
-            <!-- Desktop Navigation - Hidden on Mobile -->
-            <ul class="nav-links flex gap-2 list-none items-center m-0 p-2 rounded-[15px] shadow-xl md:flex hidden"
-                style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);">
+    <!-- Desktop Navigation - Hidden on Mobile -->
+    <ul class="nav-links flex gap-2 list-none items-center m-0 p-2 rounded-[15px] shadow-xl md:flex hidden"
+        style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(15px);">
 
-                <li class="m-0 p-0">
-                    <a href="{{ route('dashboard') }}"
-                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('dashboard') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                        style="{{ request()->routeIs('dashboard') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Dashboard</a>
-                </li>
+        <li class="m-0 p-0">
+            <a href="{{ route('dashboard') }}"
+                class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('dashboard') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                style="{{ request()->routeIs('dashboard') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Dashboard</a>
+        </li>
 
-                <li class="m-0 p-0">
-                    <a href="{{ route('classes.index') }}"
-                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('classes.index') || request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                        style="{{ request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Classes</a>
-                </li>
+        <li class="m-0 p-0">
+            <a href="{{ route('classes.index') }}"
+                class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('classes.index') || request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                style="{{ request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Classes</a>
+        </li>
 
-                <li class="m-0 p-0">
-                    <a href="{{ route('public.teacher-classes.index') }}"
-                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('public.teacher-classes.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                        style="{{ request()->routeIs('public.teacher-classes.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">eMaster</a>
-                </li>
+        <li class="m-0 p-0">
+            <a href="{{ route('public.teacher-classes.index') }}"
+                class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('public.teacher-classes.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                style="{{ request()->routeIs('public.teacher-classes.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">eMaster</a>
+        </li>
 
-                <li class="m-0 p-0">
-                    <a href="{{ route('navbar.mentor') }}"
-                        class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                        style="{{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">eBuddy</a>
-                </li>
+        <li class="m-0 p-0">
+            <a href="{{ route('navbar.mentor') }}"
+                class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                style="{{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">eBuddy</a>
+        </li>
 
-                @if (auth()->user()->role === 'siswa' || auth()->user()->role === 'mentor')
-                    <li class="m-0 p-0">
-                        <a href="{{ route('achievements.index') }}"
-                            class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('achievements.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                            style="{{ request()->routeIs('achievements.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Achievement</a>
-                    </li>
-                @endif
+        @if (auth()->user()->role === 'siswa')
+            <li class="m-0 p-0">
+                <a href="{{ route('achievements.index') }}"
+                    class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('achievements.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                    style="{{ request()->routeIs('achievements.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">Achievement</a>
+            </li>
+        @endif
 
-                @if (auth()->user()->role === 'mentor')
-                    <li class="nav-item m-0 p-0">
-                        <a class="nav-link no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('post_tests.approval_requests') ? 'text-white shadow-lg' : 'text-gray-700' }}"
-                            href="{{ route('post_tests.approval_requests') }}"
-                            style="{{ request()->routeIs('post_tests.approval_requests') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">
-                            <i class="fas fa-clipboard-check mr-1"></i>Approval Requests
-                            @php
-                                $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function (
-                                    $query,
-                                ) {
-                                    $query->where('mentor_id', auth()->id());
-                                })
-                                    ->where('requires_approval', true)
-                                    ->where('mentor_approved', false)
-                                    ->count();
-                            @endphp
-                            @if ($pendingCount > 0)
-                                <span
-                                    class="badge bg-red-500 absolute -top-1 -right-1 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center">{{ $pendingCount }}</span>
-                            @endif
-                        </a>
-                    </li>
-                @endif
-            </ul>
-
-            <!-- Mobile Navigation Menu -->
-            <div class="mobile-nav-menu fixed top-[85px] left-0 right-0 bg-white shadow-lg rounded-b-[20px] z-[999] overflow-hidden transform -translate-y-full opacity-0 invisible transition-all duration-300"
-                id="mobileNavMenu">
-                <div class="p-4 space-y-2">
-                    <a href="{{ route('dashboard') }}"
-                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : '' }}"
-                        onclick="closeMobileMenu()">
-                        <span class="text-lg mr-3">🏠</span>Dashboard
-                    </a>
-
-                    <a href="{{ route('classes.index') }}"
-                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'bg-blue-500 text-white' : '' }}"
-                        onclick="closeMobileMenu()">
-                        <span class="text-lg mr-3">📚</span>Classes
-                    </a>
-
-                    <a href="{{ route('public.teacher-classes.index') }}"
-                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('public.teacher-classes.*') ? 'bg-blue-500 text-white' : '' }}"
-                        onclick="closeMobileMenu()">
-                        <span class="text-lg mr-3">👩‍🏫</span>Guru
-                    </a>
-
-                    <a href="{{ route('navbar.mentor') }}"
-                        class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'bg-blue-500 text-white' : '' }}"
-                        onclick="closeMobileMenu()">
-                        <span class="text-lg mr-3">👨‍🏫</span>Mentor
-                    </a>
-
-                    @if (auth()->user()->role === 'siswa' || auth()->user()->role === 'mentor')
-                        <a href="{{ route('achievements.index') }}"
-                            class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('achievements.*') ? 'bg-blue-500 text-white' : '' }}"
-                            onclick="closeMobileMenu()">
-                            <span class="text-lg mr-3">🏆</span>Achievement
-                        </a>
+        @if (auth()->user()->role === 'mentor')
+            <li class="nav-item m-0 p-0">
+                <a class="nav-link no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('post_tests.approval_requests') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                    href="{{ route('post_tests.approval_requests') }}"
+                    style="{{ request()->routeIs('post_tests.approval_requests') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">
+                    <i class="fas fa-clipboard-check mr-1"></i>Approval Requests
+                    @php
+                        $pendingCount = App\Models\PostTestAttempt::whereHas('postTest.class', function ($query) {
+                            $query->where('mentor_id', auth()->id());
+                        })
+                            ->where('requires_approval', true)
+                            ->where('mentor_approved', false)
+                            ->count();
+                    @endphp
+                    @if ($pendingCount > 0)
+                        <span
+                            class="badge bg-red-500 absolute -top-1 -right-1 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center">{{ $pendingCount }}</span>
                     @endif
+                </a>
+            </li>
+        @endif
 
-                    @if (auth()->user()->role === 'mentor')
-                        <a href="{{ route('post_tests.approval_requests') }}"
-                            class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 relative {{ request()->routeIs('post_tests.approval_requests') ? 'bg-blue-500 text-white' : '' }}"
-                            onclick="closeMobileMenu()">
-                            <span class="text-lg mr-3">✅</span>Approval Requests
-                            @if ($pendingCount > 0)
-                                <span
-                                    class="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center">{{ $pendingCount }}</span>
-                            @endif
-                        </a>
+        <!-- Chat Button -->
+        <li class="m-0 p-0">
+            <a href="{{ route('chat.index') }}"
+                class="no-underline font-semibold px-5 py-3 rounded-[15px] transition-all duration-300 ease-in-out relative whitespace-nowrap text-sm block hover:text-blue-600 hover:-translate-y-0.5 {{ request()->routeIs('chat.*') ? 'text-white shadow-lg' : 'text-gray-700' }}"
+                style="{{ request()->routeIs('chat.*') ? 'background: linear-gradient(135deg, #1976d2 0%, #42a5f5 100%); box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);' : '' }}">
+                <svg class="w-4 h-4 inline-block mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-4.6 1.92 1.92-4.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"></path>
+                </svg>
+                Pesan
+                <span id="unreadBadge" class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center font-bold animate-pulse" style="display: none;">
+                    <span id="unreadCount">0</span>
+                </span>
+            </a>
+        </li>
+    </ul>
+
+    <!-- Mobile Navigation Menu -->
+    <div class="mobile-nav-menu fixed top-[85px] left-0 right-0 bg-white shadow-lg rounded-b-[20px] z-[999] overflow-hidden transform -translate-y-full opacity-0 invisible transition-all duration-300"
+        id="mobileNavMenu">
+        <div class="p-4 space-y-2">
+            <a href="{{ route('dashboard') }}"
+                class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('dashboard') ? 'bg-blue-500 text-white' : '' }}"
+                onclick="closeMobileMenu()">
+                <span class="text-lg mr-3">🏠</span>Dashboard
+            </a>
+
+            <a href="{{ route('classes.index') }}"
+                class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('classes.*') || request()->routeIs('materials.*') ? 'bg-blue-500 text-white' : '' }}"
+                onclick="closeMobileMenu()">
+                <span class="text-lg mr-3">📚</span>Classes
+            </a>
+
+            <a href="{{ route('public.teacher-classes.index') }}"
+                class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('public.teacher-classes.*') ? 'bg-blue-500 text-white' : '' }}"
+                onclick="closeMobileMenu()">
+                <span class="text-lg mr-3">👩‍🏫</span>Guru
+            </a>
+
+            <a href="{{ route('navbar.mentor') }}"
+                class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('navbar.mentor') || request()->routeIs('mentor.*') ? 'bg-blue-500 text-white' : '' }}"
+                onclick="closeMobileMenu()">
+                <span class="text-lg mr-3">👨‍🏫</span>Mentor
+            </a>
+
+            @if (auth()->user()->role === 'siswa')
+                <a href="{{ route('achievements.index') }}"
+                    class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 {{ request()->routeIs('achievements.*') ? 'bg-blue-500 text-white' : '' }}"
+                    onclick="closeMobileMenu()">
+                    <span class="text-lg mr-3">🏆</span>Achievement
+                </a>
+            @endif
+
+            @if (auth()->user()->role === 'mentor')
+                <a href="{{ route('post_tests.approval_requests') }}"
+                    class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 relative {{ request()->routeIs('post_tests.approval_requests') ? 'bg-blue-500 text-white' : '' }}"
+                    onclick="closeMobileMenu()">
+                    <span class="text-lg mr-3">✅</span>Approval Requests
+                    @if ($pendingCount > 0)
+                        <span class="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center">{{ $pendingCount }}</span>
                     @endif
-                </div>
-            </div>
+                </a>
+            @endif
+
+            <!-- Chat Button Mobile -->
+            <a href="{{ route('chat.index') }}"
+                class="mobile-nav-link block px-4 py-3 rounded-[12px] text-gray-700 font-medium transition-all duration-300 relative {{ request()->routeIs('chat.*') ? 'bg-blue-500 text-white' : '' }}"
+                onclick="closeMobileMenu()">
+                <span class="text-lg mr-3">💬</span>Pesan
+                <span id="unreadBadgeMobile" class="absolute top-2 right-2 bg-red-500 text-white text-xs rounded-full px-1.5 py-0.5 min-w-[1.25rem] h-5 flex items-center justify-center font-bold animate-pulse" style="display: none;">
+                    <span id="unreadCountMobile">0</span>
+                </span>
+            </a>
         </div>
+    </div>
+</div>
 
         <div class="user-dropdown relative" id="userDropdown">
             <div class="user-info flex items-center gap-3 px-5 py-2.5 rounded-[30px] cursor-pointer transition-all duration-300 ease-in-out border-0 m-0 hover:-translate-y-px hover:bg-white"
@@ -546,4 +567,89 @@
             attributes: true
         });
     });
+
+    // Chat Unread Count Functions
+    @auth
+    function updateUnreadCount() {
+        fetch('{{ route("chat.unread-count") }}')
+            .then(response => response.json())
+            .then(data => {
+                const count = data.unread_count;
+                const badge = document.getElementById('unreadBadge');
+                const badgeMobile = document.getElementById('unreadBadgeMobile');
+                const floatingBadge = document.getElementById('floatingBadge');
+                const countElement = document.getElementById('unreadCount');
+                const countMobileElement = document.getElementById('unreadCountMobile');
+                const floatingCountElement = document.getElementById('floatingCount');
+                
+                if (count > 0) {
+                    // Show badges
+                    if (badge) {
+                        badge.style.display = 'flex';
+                        countElement.textContent = count > 99 ? '99+' : count;
+                    }
+                    if (badgeMobile) {
+                        badgeMobile.style.display = 'flex';
+                        countMobileElement.textContent = count > 99 ? '99+' : count;
+                    }
+                    if (floatingBadge) {
+                        floatingBadge.style.display = 'flex';
+                        floatingCountElement.textContent = count > 99 ? '99+' : count;
+                    }
+                    
+                    // Update page title with unread count
+                    const originalTitle = document.title.replace(/^\(\d+\)\s/, '');
+                    document.title = `(${count}) ${originalTitle}`;
+                } else {
+                    // Hide badges
+                    if (badge) badge.style.display = 'none';
+                    if (badgeMobile) badgeMobile.style.display = 'none';
+                    if (floatingBadge) floatingBadge.style.display = 'none';
+                    
+                    // Remove count from title
+                    document.title = document.title.replace(/^\(\d+\)\s/, '');
+                }
+            })
+            .catch(error => {
+                console.log('Error fetching unread count:', error);
+            });
+    }
+
+    // Update count on page load
+    document.addEventListener('DOMContentLoaded', function() {
+        updateUnreadCount();
+    });
+
+    // Update count every 30 seconds
+    setInterval(updateUnreadCount, 30000);
+
+    // Update count when page becomes visible (user switches back to tab)
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden) {
+            updateUnreadCount();
+        }
+    });
+
+    // Listen for Livewire events to update count immediately
+    document.addEventListener('livewire:init', () => {
+        Livewire.on('conversation-updated', () => {
+            setTimeout(updateUnreadCount, 1000); // Small delay to ensure DB is updated
+        });
+    });
+    @endauth
 </script>
+
+<!-- Floating Chat Button (Mobile) -->
+@auth
+<div class="fixed bottom-6 right-6 z-50 md:hidden">
+    <a href="{{ route('chat.index') }}" 
+       class="relative inline-flex items-center justify-center w-14 h-14 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-full shadow-lg hover:shadow-xl transform hover:scale-110 transition-all duration-300">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-3.582 8-8 8a8.959 8.959 0 01-2.4-.32l-4.6 1.92 1.92-4.6A8.959 8.959 0 013 12c0-4.418 3.582-8 8-8s8 3.582 8 8z"></path>
+        </svg>
+        <span id="floatingBadge" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold animate-bounce" style="display: none;">
+            <span id="floatingCount">0</span>
+        </span>
+    </a>
+</div>
+@endauth
